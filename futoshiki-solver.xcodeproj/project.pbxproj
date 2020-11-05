@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		22B958F0254F1BB400E2B772 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B958EF254F1BB400E2B772 /* main.cpp */; };
+		22B958F9254F1C0E00E2B772 /* FutoshikiGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B958F7254F1C0E00E2B772 /* FutoshikiGame.cpp */; };
+		22B95909254F23B300E2B772 /* Cell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B95907254F23B300E2B772 /* Cell.cpp */; };
+		22B95910254F565400E2B772 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B9590E254F565400E2B772 /* Constraint.cpp */; };
+		22B9591A2550C10300E2B772 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B959182550C10300E2B772 /* utils.cpp */; };
+		22B95920255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B9591E255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +30,20 @@
 /* Begin PBXFileReference section */
 		22B958EC254F1BB400E2B772 /* futoshiki-solver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "futoshiki-solver"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22B958EF254F1BB400E2B772 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22B958F7254F1C0E00E2B772 /* FutoshikiGame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FutoshikiGame.cpp; sourceTree = "<group>"; };
+		22B958F8254F1C0E00E2B772 /* FutoshikiGame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FutoshikiGame.hpp; sourceTree = "<group>"; };
+		22B95900254F208D00E2B772 /* Matrix11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix11.h; sourceTree = "<group>"; };
+		22B95907254F23B300E2B772 /* Cell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cell.cpp; sourceTree = "<group>"; };
+		22B95908254F23B300E2B772 /* Cell.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cell.hpp; sourceTree = "<group>"; };
+		22B9590B254F2A1800E2B772 /* MatrixIO11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixIO11.h; sourceTree = "<group>"; };
+		22B9590E254F565400E2B772 /* Constraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Constraint.cpp; sourceTree = "<group>"; };
+		22B9590F254F565400E2B772 /* Constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Constraint.hpp; sourceTree = "<group>"; };
+		22B95912254F678100E2B772 /* Constraint.fwd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constraint.fwd.h; sourceTree = "<group>"; };
+		22B95913254F679C00E2B772 /* Cell.fwd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cell.fwd.h; sourceTree = "<group>"; };
+		22B959182550C10300E2B772 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		22B959192550C10300E2B772 /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
+		22B9591E255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
+		22B9591F255343AD00E2B772 /* ConstraintSatisfactionProblem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ConstraintSatisfactionProblem.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +76,39 @@
 		22B958EE254F1BB400E2B772 /* futoshiki-solver */ = {
 			isa = PBXGroup;
 			children = (
+				22B9591C2550C2A900E2B772 /* Utils */,
+				22B9590C254F2A1C00E2B772 /* External */,
+				22B95907254F23B300E2B772 /* Cell.cpp */,
+				22B95908254F23B300E2B772 /* Cell.hpp */,
+				22B95913254F679C00E2B772 /* Cell.fwd.h */,
 				22B958EF254F1BB400E2B772 /* main.cpp */,
+				22B9591E255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp */,
+				22B9591F255343AD00E2B772 /* ConstraintSatisfactionProblem.hpp */,
+				22B958F7254F1C0E00E2B772 /* FutoshikiGame.cpp */,
+				22B958F8254F1C0E00E2B772 /* FutoshikiGame.hpp */,
+				22B9590E254F565400E2B772 /* Constraint.cpp */,
+				22B9590F254F565400E2B772 /* Constraint.hpp */,
+				22B95912254F678100E2B772 /* Constraint.fwd.h */,
 			);
 			path = "futoshiki-solver";
+			sourceTree = "<group>";
+		};
+		22B9590C254F2A1C00E2B772 /* External */ = {
+			isa = PBXGroup;
+			children = (
+				22B9590B254F2A1800E2B772 /* MatrixIO11.h */,
+				22B95900254F208D00E2B772 /* Matrix11.h */,
+			);
+			path = External;
+			sourceTree = "<group>";
+		};
+		22B9591C2550C2A900E2B772 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				22B959182550C10300E2B772 /* utils.cpp */,
+				22B959192550C10300E2B772 /* utils.hpp */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,6 +167,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22B95910254F565400E2B772 /* Constraint.cpp in Sources */,
+				22B9591A2550C10300E2B772 /* utils.cpp in Sources */,
+				22B95909254F23B300E2B772 /* Cell.cpp in Sources */,
+				22B958F9254F1C0E00E2B772 /* FutoshikiGame.cpp in Sources */,
+				22B95920255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp in Sources */,
 				22B958F0254F1BB400E2B772 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +293,7 @@
 		22B958F4254F1BB400E2B772 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -247,6 +302,7 @@
 		22B958F5254F1BB400E2B772 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
