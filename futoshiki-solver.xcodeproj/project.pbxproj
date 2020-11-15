@@ -13,6 +13,8 @@
 		22B95910254F565400E2B772 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B9590E254F565400E2B772 /* Constraint.cpp */; };
 		22B9591A2550C10300E2B772 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B959182550C10300E2B772 /* utils.cpp */; };
 		22B95920255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22B9591E255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp */; };
+		22BE55E9255F2AED00253C1E /* NotEqualConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22BE55E7255F2AED00253C1E /* NotEqualConstraint.cpp */; };
+		22BE55EE255F2BC900253C1E /* SingleTargetConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22BE55EC255F2BC900253C1E /* SingleTargetConstraint.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +46,10 @@
 		22B959192550C10300E2B772 /* utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		22B9591E255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
 		22B9591F255343AD00E2B772 /* ConstraintSatisfactionProblem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ConstraintSatisfactionProblem.hpp; sourceTree = "<group>"; };
+		22BE55E7255F2AED00253C1E /* NotEqualConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NotEqualConstraint.cpp; sourceTree = "<group>"; };
+		22BE55E8255F2AED00253C1E /* NotEqualConstraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NotEqualConstraint.hpp; sourceTree = "<group>"; };
+		22BE55EC255F2BC900253C1E /* SingleTargetConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SingleTargetConstraint.cpp; sourceTree = "<group>"; };
+		22BE55ED255F2BC900253C1E /* SingleTargetConstraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SingleTargetConstraint.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +66,7 @@
 		22B958E3254F1BB400E2B772 = {
 			isa = PBXGroup;
 			children = (
+				22C38734256157F3007540F3 /* web-frontent */,
 				22B958EE254F1BB400E2B772 /* futoshiki-solver */,
 				22B958ED254F1BB400E2B772 /* Products */,
 			);
@@ -88,6 +95,10 @@
 				22B958F8254F1C0E00E2B772 /* FutoshikiGame.hpp */,
 				22B9590E254F565400E2B772 /* Constraint.cpp */,
 				22B9590F254F565400E2B772 /* Constraint.hpp */,
+				22BE55EC255F2BC900253C1E /* SingleTargetConstraint.cpp */,
+				22BE55ED255F2BC900253C1E /* SingleTargetConstraint.hpp */,
+				22BE55E7255F2AED00253C1E /* NotEqualConstraint.cpp */,
+				22BE55E8255F2AED00253C1E /* NotEqualConstraint.hpp */,
 				22B95912254F678100E2B772 /* Constraint.fwd.h */,
 			);
 			path = "futoshiki-solver";
@@ -109,6 +120,13 @@
 				22B959192550C10300E2B772 /* utils.hpp */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		22C38734256157F3007540F3 /* web-frontent */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "web-frontent";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -168,7 +186,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				22B95910254F565400E2B772 /* Constraint.cpp in Sources */,
+				22BE55EE255F2BC900253C1E /* SingleTargetConstraint.cpp in Sources */,
 				22B9591A2550C10300E2B772 /* utils.cpp in Sources */,
+				22BE55E9255F2AED00253C1E /* NotEqualConstraint.cpp in Sources */,
 				22B95909254F23B300E2B772 /* Cell.cpp in Sources */,
 				22B958F9254F1C0E00E2B772 /* FutoshikiGame.cpp in Sources */,
 				22B95920255343AD00E2B772 /* ConstraintSatisfactionProblem.cpp in Sources */,

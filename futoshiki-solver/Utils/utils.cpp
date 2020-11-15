@@ -24,6 +24,12 @@ bool vector2dIsRectangular(std::vector<std::vector<T>> vector2D) {
 template bool vector2dIsRectangular<int>(std::vector<std::vector<int>> vector2D);
 template bool vector2dIsRectangular<Cell>(std::vector<std::vector<Cell>> vector2D);
 
+std::set<int> genSetSequence(unsigned long size) {
+    std::set<int> s;
+    for (int i = 1; i <= size; ++i)
+        s.insert(s.end(), i);
+    return s;
+}
 
 template <typename T>
 std::vector<T> flattenVector2d(const std::vector<std::vector<T>>& v) {

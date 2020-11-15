@@ -20,35 +20,23 @@ enum class ConstraintDirection {Left, Right, Up, Down, Complex};
 
 class Constraint {
 public:
-    static std::pair<Constraint, Constraint> genConstraintPair(ConstraintOperator co,
-                                                        Cell* sourceCell, Cell* targetCell,
-                                                        ConstraintDirection direc);
-
     std::string printConstraint() const;
-    
-    
-    ConstraintDirection getDirection() const;
     ConstraintOperator getOperator() const;
-    Cell* getTargetCell() const;
-
+    virtual bool apply() = 0;
+    virtual void debugPrint() const = 0;
+    
+    virtual ConstraintDirection getDirection() const;
+    
     bool isSatisfied();
     
-    friend std::ostream& operator<<(std::ostream& os, const Constraint& constraint);
-    
-private:
-    Constraint(ConstraintOperator co, Cell* targetCell);
-    Constraint(ConstraintOperator co, Cell* targetCell, ConstraintDirection direc);
-    
-    void setCompliment(Constraint* complimentConstraint);
-    
-    
-    static ConstraintDirection reverseDirection(ConstraintDirection toBeReversed);
     static ConstraintOperator reverseOperator(ConstraintOperator toBeReversed);
     
+    friend std::ostream& operator<<(std::ostream& os, const Constraint& constraint);
+
+protected:
+    Constraint(ConstraintOperator co, Cell* sourceCell);
+    Cell* sourceCell;
     ConstraintOperator co;
-    Cell* targetCell;
-    Constraint* complimentConstraint;
-    ConstraintDirection direction;
 };
 
 #endif /* Constraint_hpp */

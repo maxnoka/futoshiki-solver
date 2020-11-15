@@ -11,24 +11,35 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <set>
 
 #include "Constraint.hpp"
 
-const int blankSymbol = 0;  // to symbolize that a cell does not have a set value
 
 class Cell {
 public:
-    Cell();
+    Cell(std::set<int> possibleValues);
     Cell(int val);
     
     int getVal() const;
-    std::vector<Constraint> getCellConstraints() const;
+    void setVal(int newVal);
     
-    void set(int newVal);
+    void addConstraint(Constraint* constraintToAdd);
+    std::vector<Constraint*> getCellConstraints() const;
     
-    void addConstraint(Constraint constraintToAdd);
+    bool setIfPossible();
+    bool isUnsolved() const;
     
-    std::istream& set(std::istream& is);
+    bool hasSamePossibleValues(std::set<int> compareValues);
+    std::set<int> getPossibleVals() const {return possibleValues;}
+    int getMinPossibleVal();
+    int getMaxPossibleVal();
+    
+    bool applyNotEqualConstraint(std::set<int> noLongerPossible);
+    bool applyGreaterThanConstraint(int mustBeGreaterThanThis);
+    bool applyLessThanConstraint(int mustBeLessThanThis);
+    
+    void clearConstraints();
     
     std::string getId() const;
     void debugPrint();
@@ -37,9 +48,12 @@ public:
     friend std::istream& operator>>(std::istream& is, Cell& cell);
     
 private:
+
+    std::set<int> possibleValues;
+    
     std::string uniqueId;
     int val;
-    std::vector<Constraint> cellConstraints;
+    std::vector<Constraint*> cellConstraints;
 };
 
 #endif /* Node_hpp */

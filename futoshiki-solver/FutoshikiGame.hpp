@@ -28,11 +28,13 @@ public:
                        std::tuple<unsigned long, unsigned long> targetCellCoords,
                        ConstraintDirection direc);
     
+    void solve();
+    
     void debugPrint();
     void printBoard();
     
     
-    Cell getCell(unsigned long colIdx, unsigned long rowIdx) const;
+    Cell getCell(unsigned long colIdx, unsigned long rowIdx);
     int getCellValue(unsigned long colIdx, unsigned long rowIdx) const;
 private:
     ConstraintSatisfactionProblem m_Csp;

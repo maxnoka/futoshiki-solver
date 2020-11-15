@@ -13,9 +13,8 @@
 #include "FutoshikiGame.hpp"
 #include "Constraint.hpp"
 
-
 FutoshikiGame::FutoshikiGame(int gameSize) :
-    m_Csp(std::vector<Cell>(gameSize*gameSize, 0)),
+m_Csp(std::vector<Cell>(gameSize*gameSize, {Utils::genSetSequence(gameSize)})),
     numRows(gameSize),
     numCols(gameSize)
 {
@@ -24,7 +23,7 @@ FutoshikiGame::FutoshikiGame(int gameSize) :
 }
 
 FutoshikiGame::FutoshikiGame(int numRows, int numCols) :
-    m_Csp(std::vector<Cell>(numRows*numCols, 0)),
+m_Csp(std::vector<Cell>(numRows*numCols, {Utils::genSetSequence(std::max(numRows, numCols))})),
     numRows(numRows),
     numCols(numCols)
 {
@@ -52,11 +51,11 @@ FutoshikiGame::FutoshikiGame(std::vector<std::vector<int>> initial_values) :
         throw std::invalid_argument("initial cell values vector is not square");
     }
     
-    auto cells = std::vector<std::vector<Cell>>(numRows, std::vector<Cell>(numCols, 0));
+    auto cells = std::vector<std::vector<Cell>>(numRows, std::vector<Cell>(numCols, {Utils::genSetSequence(std::max(numRows, numCols))}));
     
     for (int i = 0; i < numRows; ++i) {
         for (int j = 0; j < numCols; ++j){
-            cells[i][j] = Cell(initial_values[i][j]);
+            cells[i][j].setVal(initial_values[i][j]);
         }
     }
     
@@ -65,14 +64,18 @@ FutoshikiGame::FutoshikiGame(std::vector<std::vector<int>> initial_values) :
     addRowConstraints();
 }
 
+void FutoshikiGame::solve() {
+    m_Csp.solve();
+}
+
 // a single constraint results in to two constraints:
 // e.g. if [source] < [target], then it also implies [target] > [source]
 void FutoshikiGame::addInequalityConstraint(ConstraintOperator co,
                    std::tuple<unsigned long, unsigned long> sourceCellCoords,
                    std::tuple<unsigned long, unsigned long> targetCellCoords, ConstraintDirection direc) {
     
-    unsigned long sourceCellIndex = get<0>(sourceCellCoords) + get<1>(sourceCellCoords) * numCols;
-    unsigned long targetCellIndex = get<0>(targetCellCoords) + get<1>(targetCellCoords) * numCols;
+    unsigned long sourceCellIndex = get<0>(sourceCellCoords) * numCols + get<1>(sourceCellCoords);
+    unsigned long targetCellIndex = get<0>(targetCellCoords) * numCols + get<1>(targetCellCoords);
     
     m_Csp.addConstraint(co, sourceCellIndex, targetCellIndex, direc);
     return;
@@ -81,28 +84,22 @@ void FutoshikiGame::addInequalityConstraint(ConstraintOperator co,
 void FutoshikiGame::addRowConstraints() {
     // add row inequality constraints
     for (int rowIdx = 0; rowIdx < numRows; ++rowIdx) {
-        for (int sourceCellColIdx = 0; sourceCellColIdx < numCols -  1; ++sourceCellColIdx) {
-            // note what we do here as to not double add constraints (only do combinations not permutations of pairs)
-            for (int targetCellColIdx = sourceCellColIdx + 1; targetCellColIdx < numCols; ++targetCellColIdx) {
-                unsigned long sourceCellIndex = rowIdx * numCols + sourceCellColIdx;
-                unsigned long targetCellIndex = rowIdx * numCols + targetCellColIdx;
-                m_Csp.addConstraint(ConstraintOperator::isNotEqualTo_CO, sourceCellIndex, targetCellIndex, ConstraintDirection::Complex);
-            }
+        std::vector<unsigned long> coupledCellIndeces;
+        for (int sourceCellColIdx = 0; sourceCellColIdx < numCols; ++sourceCellColIdx) {
+            coupledCellIndeces.push_back(rowIdx * numCols + sourceCellColIdx);
         }
+        m_Csp.addCoupledNotEqualConstraint(coupledCellIndeces);
     }
 }
 
 void FutoshikiGame::addColConstraints() {
     // add row inequality constraints
     for (int colIdx = 0; colIdx < numRows; ++colIdx) {
-        for (int sourceCellRowlIdx = 0; sourceCellRowlIdx < numCols -  1; ++sourceCellRowlIdx) {
-            // note what we do here as to not double add constraints (only do combinations not permutations of pairs)
-            for (int targetCellRowIdx = sourceCellRowlIdx + 1; targetCellRowIdx < numCols; ++targetCellRowIdx) {
-                unsigned long sourceCellIndex = sourceCellRowlIdx * numCols + colIdx;
-                unsigned long targetCellIndex = targetCellRowIdx * numCols + colIdx;
-                m_Csp.addConstraint(ConstraintOperator::isNotEqualTo_CO, sourceCellIndex, targetCellIndex, ConstraintDirection::Complex);
-            }
+        std::vector<unsigned long> coupledCellIndeces;
+        for (int sourceCellRowlIdx = 0; sourceCellRowlIdx < numCols; ++sourceCellRowlIdx) {
+            coupledCellIndeces.push_back(sourceCellRowlIdx * numCols + colIdx);
         }
+        m_Csp.addCoupledNotEqualConstraint(coupledCellIndeces);
     }
 }
 
@@ -110,7 +107,7 @@ int FutoshikiGame::getCellValue(unsigned long colIdx, unsigned long rowIdx) cons
     return m_Csp.getCellValue(rowIdx * numCols + colIdx);
 }
 
-Cell FutoshikiGame::getCell(unsigned long colIdx, unsigned long rowIdx) const {
+Cell FutoshikiGame::getCell(unsigned long colIdx, unsigned long rowIdx) {
     return m_Csp.getCell(rowIdx * numCols + colIdx);
 }
 
@@ -152,12 +149,12 @@ void FutoshikiGame::printBoard() {
     // populate the constraints
     for (int i = 0; i < numRows; ++i) {
         for (int j = 0; j < numCols; ++j){
-            std::vector<Constraint> cellConstraints = getCell(j, i).getCellConstraints();
-            for (Constraint c : cellConstraints) {
+            std::vector<Constraint*> cellConstraints = getCell(j, i).getCellConstraints();
+            for (Constraint* c : cellConstraints) {
                 // avoid double printing by only print constrains down and right
                 std::stringstream constraintSymbol;
-                constraintSymbol << c;
-                switch (c.getDirection()) {
+                constraintSymbol << *c;
+                switch (c->getDirection()) {
                     case ConstraintDirection::Right:
                         //     0     1     2     3
                         //    " " + "2" + " " + "<"

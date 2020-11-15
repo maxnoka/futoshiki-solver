@@ -6,41 +6,12 @@
 //
 
 #include "Constraint.hpp"
+#include "Cell.hpp"
 
-std::pair<Constraint, Constraint> Constraint::genConstraintPair(ConstraintOperator co,
-                                                                Cell* sourceCell, Cell* targetCell,
-                                                                ConstraintDirection direc) {
-    
-    Constraint forwardConstraint = Constraint(co, targetCell, direc);
-    Constraint revereseConstraint = Constraint(reverseOperator(co), sourceCell, reverseDirection(direc));
-    
-    revereseConstraint.setCompliment(&forwardConstraint);
-    forwardConstraint.setCompliment(&revereseConstraint);
-    
-    return std::pair<Constraint, Constraint> (forwardConstraint, revereseConstraint);
-    
-}
-
-Constraint::Constraint(ConstraintOperator co, Cell* targetCell, ConstraintDirection direc) :
+Constraint::Constraint(ConstraintOperator co, Cell* sourceCell) :
     co(co),
-    targetCell(targetCell),
-    direction(direc)
+    sourceCell(sourceCell)
 {}
-
-ConstraintDirection Constraint::reverseDirection(ConstraintDirection toBeReversed) {
-    switch (toBeReversed) {
-        case ConstraintDirection::Left :
-            return ConstraintDirection::Right;
-        case ConstraintDirection::Right :
-            return ConstraintDirection::Left;
-        case ConstraintDirection::Up :
-            return ConstraintDirection::Down;
-        case ConstraintDirection::Down :
-            return ConstraintDirection::Up;
-        default :
-            return ConstraintDirection::Complex;
-    }
-}
 
 ConstraintOperator Constraint::reverseOperator(ConstraintOperator toBeReversed) {
     switch (toBeReversed) {
@@ -53,20 +24,12 @@ ConstraintOperator Constraint::reverseOperator(ConstraintOperator toBeReversed) 
     }
 }
 
-ConstraintDirection Constraint::getDirection() const {
-    return direction;
-}
-
 ConstraintOperator Constraint::getOperator() const {
     return co;
 }
 
-Cell* Constraint::getTargetCell() const {
-    return targetCell;
-}
-
-void Constraint::setCompliment(Constraint* complimentConstraint) {
-    complimentConstraint = complimentConstraint;
+ConstraintDirection Constraint::getDirection() const {
+    return ConstraintDirection::Complex;
 }
 
 std::ostream& operator<<(std::ostream& os, const Constraint& constraint) {

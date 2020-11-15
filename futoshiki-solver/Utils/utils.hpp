@@ -10,19 +10,21 @@
 
 #include <stdio.h>
 #include <vector>
+#include <set>
 
 namespace Utils {
 
-template <typename T>
-bool vector2dIsRectangular(std::vector<std::vector<T>> vector2D);
+    template <typename T>
+    bool vector2dIsRectangular(std::vector<std::vector<T>> vector2D);
 
-template <typename T>
-std::vector<T> flattenVector2d(const std::vector<std::vector<T>>& v);
+    template <typename T>
+    std::vector<T> flattenVector2d(const std::vector<std::vector<T>>& v);
 
-namespace uuid {
-std::string generate_uuid_v4();
+    namespace uuid {
+    std::string generate_uuid_v4();
+    }
+
+    std::set<int> genSetSequence(unsigned long size);
+
 }
-
-}
-
 #endif /* utils_hpp */
