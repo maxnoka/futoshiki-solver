@@ -30,6 +30,9 @@ public:
     bool isSatisfied();
     
     static ConstraintOperator reverseOperator(ConstraintOperator toBeReversed);
+    static ConstraintOperator stringToOperator(std::string s);
+    static ConstraintDirection determineConstraintDirection(std::tuple<unsigned int, unsigned int> sourceCellCoords,
+                                                            std::tuple<unsigned int, unsigned int> targetCellCoords);
     
     friend std::ostream& operator<<(std::ostream& os, const Constraint& constraint);
 

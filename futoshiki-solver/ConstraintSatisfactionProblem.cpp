@@ -113,8 +113,8 @@ void ConstraintSatisfactionProblem::debugPrint() {
 }
 
 int ConstraintSatisfactionProblem::getCellWithFewestRemainingOptions() {
-    int bestCellIdx;
-    unsigned long fewestOptions;
+    int bestCellIdx = 0;
+    unsigned long fewestOptions = 0;
     
     // get one that isn't already set and might confuse us
     for (int testIdx = 0; testIdx < m_cells.size(); ++testIdx) {

@@ -7,6 +7,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <sstream>
 
 #include "Utils/utils.hpp"
 
@@ -64,6 +65,17 @@ FutoshikiGame::FutoshikiGame(std::vector<std::vector<int>> initial_values) :
     addRowConstraints();
 }
 
+FutoshikiGame::FutoshikiGame(std::string gridString, std::string constaintStrings)
+    : numRows()
+    , numCols()
+{
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j){
+ //           cells[i][j].setVal(initial_values[i][j]);
+        }
+    }
+}
+
 void FutoshikiGame::solve() {
     m_Csp.solve();
 }
@@ -72,10 +84,12 @@ void FutoshikiGame::solve() {
 // e.g. if [source] < [target], then it also implies [target] > [source]
 void FutoshikiGame::addInequalityConstraint(ConstraintOperator co,
                    std::tuple<unsigned long, unsigned long> sourceCellCoords,
-                   std::tuple<unsigned long, unsigned long> targetCellCoords, ConstraintDirection direc) {
+                   std::tuple<unsigned long, unsigned long> targetCellCoords) {
     
     unsigned long sourceCellIndex = get<0>(sourceCellCoords) * numCols + get<1>(sourceCellCoords);
     unsigned long targetCellIndex = get<0>(targetCellCoords) * numCols + get<1>(targetCellCoords);
+    
+    auto direc = Constraint::determineConstraintDirection(sourceCellCoords, targetCellCoords);
     
     m_Csp.addConstraint(co, sourceCellIndex, targetCellIndex, direc);
     return;
@@ -181,4 +195,86 @@ void FutoshikiGame::printBoard() {
     }
     
     std::cout << "---------------" << std::endl;
+}
+
+std::string FutoshikiGame::serializeGrid() {
+    std::stringstream ss;
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j){
+            ss << getCell(j, i) << ',';
+        }
+        ss.seekp(-1, std::ios_base::end);
+        ss << '\n';
+    }
+    return ss.str();
+}
+    
+std::string FutoshikiGame::serializeConstraints() {
+    std::stringstream ss;
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j){
+            std::vector<Constraint*> cellConstraints = getCell(j, i).getCellConstraints();
+            for (Constraint* c : cellConstraints) {
+                // avoid double printing by only print constrains down and right
+                switch (c->getDirection()) {
+                    case ConstraintDirection::Right:
+                        ss << i << ',' << j << ':';
+                        ss << i << ',' << j + 1 << ':';
+                        ss << *c;
+                        ss << '\n';
+                        break;
+                    case ConstraintDirection::Down:
+                        ss << i << j << ',' << ':';
+                        ss << i + 1 << ',' << j << ':';
+                        ss << *c;
+                        ss << '\n';
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    
+    return ss.str();
+}
+
+std::vector<std::vector<int> > FutoshikiGame::deserializeGrid(std::string board) {
+    std::vector<std::vector<int>> initialValues;
+    
+    auto ss = std::stringstream{board};
+    for (std::string line; std::getline(ss, line, '\n');) {
+        std::vector<int> lineValues;
+        size_t last = 0; size_t next = 0;
+        while ((next = line.find(",", last)) != std::string::npos) {
+            lineValues.emplace_back(stoi(line.substr(last, next-last)));
+            last = next + 1;
+        }
+        lineValues.emplace_back(stoi(line.substr(last)));
+        initialValues.emplace_back(lineValues);
+    }
+    return initialValues;
+}
+
+void FutoshikiGame::addInequalityConstraints(std::string serializedConstraints) {
+    auto ss = std::stringstream{serializedConstraints};
+    for (std::string line; std::getline(ss, line, '\n');) {
+        auto next = line.find(",", 0);
+        auto sourceCoordsX = stoi(line.substr(0, next));
+        auto last = next + 1;
+        next = line.find(":", last);
+        auto sourceCoordsY = stoi(line.substr(last, next));
+        last = next + 1;
+        next = line.find(",", last);
+        auto targetCoordsX = stoi(line.substr(0, next));
+        last = next + 1;
+        next = line.find(":", last);
+        auto targetCoordsY = stoi(line.substr(last, next));
+        last = next + 1;
+        auto operatorString = line.substr(last);
+        
+        addInequalityConstraint(Constraint::stringToOperator(operatorString),
+                                std::make_tuple(sourceCoordsX, sourceCoordsY),
+                                std::make_tuple(targetCoordsX, targetCoordsY));
+    }
 }
