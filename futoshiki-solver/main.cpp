@@ -14,15 +14,22 @@
 
 int main(int argc, const char * argv[]) {
     
-    std::string constraints = "0,0:0,1:>\n0,2:0,3:<\n1,1:1,2:<\n2,2:2,3:<\n3,0:3,1:>";
-    std::string board = "0,0,0,0\n0,0,0,2\n0,0,0,0\n0,0,0,0";
-
+    if (argc != 3) {
+        return 1;
+    }
+    
+    std::string board = argv[1];
+    std::string constraints = argv[2];
+    
     FutoshikiGame game(game.deserializeGrid(board));
     game.addInequalityConstraints(constraints);
-    
-    game.printBoard();
-    game.solve();
-    game.printBoard();
+    if (game.isValid()) {
+        game.solve();
+    }
+    else {
+        return 2;
+    }
+    std::cout << game.serializeGrid();
     
     return 0;
 }

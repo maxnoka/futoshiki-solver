@@ -25,6 +25,7 @@ public:
     Cell* getTargetCell() const {return targetCell;}
     
     bool apply() override;
+    bool checkValid() override;
 
 private:
     SingleTargetConstraint(ConstraintOperator co, Cell* targetCell);

@@ -23,6 +23,7 @@ public:
     std::string printConstraint() const;
     ConstraintOperator getOperator() const;
     virtual bool apply() = 0;
+    virtual bool checkValid() = 0;
     virtual void debugPrint() const = 0;
     
     virtual ConstraintDirection getDirection() const;

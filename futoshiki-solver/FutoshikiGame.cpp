@@ -14,6 +14,10 @@
 #include "FutoshikiGame.hpp"
 #include "Constraint.hpp"
 
+namespace {
+    auto constexpr maxSolveSize = 7;
+}
+
 FutoshikiGame::FutoshikiGame(int gameSize) :
 m_Csp(std::vector<Cell>(gameSize*gameSize, {Utils::genSetSequence(gameSize)})),
     numRows(gameSize),
@@ -77,7 +81,14 @@ FutoshikiGame::FutoshikiGame(std::string gridString, std::string constaintString
 }
 
 void FutoshikiGame::solve() {
+    if (numCols > maxSolveSize || numRows > maxSolveSize) {
+        return;
+    }
     m_Csp.solve();
+}
+
+bool FutoshikiGame::isValid() const {
+    return m_Csp.isValid();
 }
 
 // a single constraint results in to two constraints:
@@ -266,7 +277,7 @@ void FutoshikiGame::addInequalityConstraints(std::string serializedConstraints) 
         auto sourceCoordsY = stoi(line.substr(last, next));
         last = next + 1;
         next = line.find(",", last);
-        auto targetCoordsX = stoi(line.substr(0, next));
+        auto targetCoordsX = stoi(line.substr(last, next));
         last = next + 1;
         next = line.find(":", last);
         auto targetCoordsY = stoi(line.substr(last, next));

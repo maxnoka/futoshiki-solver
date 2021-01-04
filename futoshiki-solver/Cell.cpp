@@ -69,6 +69,14 @@ bool Cell::applyNotEqualConstraint(std::set<int> noLongerPossible) {
     return setIfPossible();
 }
 
+bool Cell::isPossibleLessThanConstraint(int mustBeLessThanThis) {
+    std::set<int>::reverse_iterator rit = possibleValues.rbegin();
+    
+    // remove everything greater than and including mustBeLessThanThis
+    while(rit != possibleValues.rend() && *rit >= mustBeLessThanThis) { rit++;}
+    if (rit == possibleValues.rend()) { return false;}
+    return true;
+}
 
 bool Cell::applyLessThanConstraint(int mustBeLessThanThis) {
     std::set<int>::reverse_iterator rit = possibleValues.rbegin();
@@ -80,6 +88,15 @@ bool Cell::applyLessThanConstraint(int mustBeLessThanThis) {
     if (possibleValues.size() == 0) { throw std::runtime_error("no more options left! impossible");}
     
     return setIfPossible();
+}
+
+bool Cell::isPossibleGreaterThanConstraint(int mustBeGreaterThanThis) {
+    std::set<int>::iterator it = possibleValues.begin();
+    
+    // remove everything less than and including mustBeGreaterThanThis
+    while(it != possibleValues.end() && *it <= mustBeGreaterThanThis) { it++;}
+    if (it == possibleValues.end()) { return false;}
+    return true;
 }
 
 bool Cell::applyGreaterThanConstraint(int mustBeGreaterThanThis) {

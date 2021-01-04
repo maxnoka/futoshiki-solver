@@ -39,6 +39,9 @@ public:
     bool applyGreaterThanConstraint(int mustBeGreaterThanThis);
     bool applyLessThanConstraint(int mustBeLessThanThis);
     
+    bool isPossibleGreaterThanConstraint(int mustBeGreaterThanThis);
+    bool isPossibleLessThanConstraint(int mustBeLessThanThis);
+    
     void clearConstraints();
     
     std::string getId() const;

@@ -52,6 +52,21 @@ void SingleTargetConstraint::setCompliment(Constraint* complimentConstraint) {
     complimentConstraint = complimentConstraint;
 }
 
+bool SingleTargetConstraint::checkValid() {
+    switch (co) {
+        case ConstraintOperator::isLessThan_CO:
+            return sourceCell->isPossibleLessThanConstraint(targetCell->getMaxPossibleVal());
+            break;
+        case ConstraintOperator::isGreaterThan_CO:
+            return sourceCell->isPossibleGreaterThanConstraint(targetCell->getMinPossibleVal());
+            break;
+        default:
+            return false;
+            //throw std::logic_error("do not know how to handle this constraint");
+    }
+    return true;
+}
+
 ConstraintDirection SingleTargetConstraint::reverseDirection(ConstraintDirection toBeReversed) {
     switch (toBeReversed) {
         case ConstraintDirection::Left :

@@ -31,6 +31,8 @@ public:
     void addInequalityConstraints(std::string serializedConstraints);
     
     void solve();
+    bool isValid() const;
+
     
     void debugPrint();
     void printBoard();

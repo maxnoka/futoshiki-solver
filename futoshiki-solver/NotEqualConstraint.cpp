@@ -13,6 +13,26 @@ NotEqualConstraint::NotEqualConstraint(Cell* sourceCell, std::vector<Cell*> targ
     targetCells(targetCells)
 { }
 
+bool NotEqualConstraint::checkValid() {
+    std::multiset<std::set<int>> targetPossibleValues;
+    for (auto targetCell : targetCells) {
+        targetPossibleValues.insert(targetCell->getPossibleVals());
+    }
+    
+    std::set<int> valuesNoLongerPossible;
+    for (auto possibleValCombination : targetPossibleValues){
+        if (targetPossibleValues.count(possibleValCombination) == possibleValCombination.size()) {
+            valuesNoLongerPossible.insert(possibleValCombination.begin(), possibleValCombination.end());
+        }
+    }
+    
+    if (!sourceCell->isUnsolved()) {
+        if (valuesNoLongerPossible.count(sourceCell->getVal())!=0) {
+            return false;
+        }
+    }
+    return true;
+}
 
 bool NotEqualConstraint::apply() {
     std::multiset<std::set<int>> targetPossibleValues;

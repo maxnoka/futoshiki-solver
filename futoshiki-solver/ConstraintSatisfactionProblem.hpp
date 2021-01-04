@@ -38,6 +38,7 @@ public:
     void addCoupledNotEqualConstraint(std::vector<unsigned long> cellIndeces);
     
     std::vector<Cell> solve();
+    bool isValid() const;
     
     void debugPrint();
     bool isSolved() const;

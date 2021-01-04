@@ -22,6 +22,7 @@ public:
     void addComplimentConstraint(Constraint* complimentConstraintToAdd);
     
     bool apply() override;
+    bool checkValid() override;
     
 private:
     virtual void debugPrint() const override;

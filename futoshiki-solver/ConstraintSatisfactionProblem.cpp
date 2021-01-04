@@ -150,6 +150,17 @@ std::vector<Cell> ConstraintSatisfactionProblem::solveByGuessing() {
     
 }
 
+bool ConstraintSatisfactionProblem::isValid() const {
+    for (auto &cell : m_cells) {
+        for (auto &constraint : cell.getCellConstraints()) {
+            if (!constraint->checkValid()) {
+                return false;
+            };
+        }
+    }
+    return true;
+}
+
 std::vector<Cell> ConstraintSatisfactionProblem::solve() {
     //int numCells = m_cells.size();
     //int numIts = 0;
@@ -173,7 +184,7 @@ std::vector<Cell> ConstraintSatisfactionProblem::solve() {
             }
         }
         if (numSolvedThisIt == 0) {
-            std::cerr << "cannot solve without guessing " << std::endl;
+            // std::cerr << "cannot solve without guessing " << std::endl;
             m_cells = solveByGuessing();
             return m_cells;
         }
