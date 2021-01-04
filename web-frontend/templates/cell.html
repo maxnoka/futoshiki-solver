@@ -1,0 +1,5 @@
+<td> 
+    <div class="puzzle-cell-number">
+        <input type="number" autocomplete=off name="cell-value-<?php echo "{$this->row_idx}_{$this->col_idx}"; ?>" id="cell-value-<?php echo "{$this->row_idx}_{$this->col_idx}"; ?>" min="1" max="9" <?php if (!empty($this->val)) { echo 'value="{$this->val}"';}?>>
+    </div>
+</td>

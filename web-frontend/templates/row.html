@@ -1,0 +1,10 @@
+<tr class="puzzle-row-numbers">
+    <?php
+        $board_size = sizeof($this->cells);
+        for ($cellIdx=0; $cellIdx < $board_size - 1; $cellIdx++) {
+            $this->cells[$cellIdx]->render();
+            $rowConstraints[$cellIdx]->render();
+        }
+        $this->cells[$board_size - 1]->render();
+    ?>
+</tr>
