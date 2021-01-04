@@ -27,6 +27,7 @@ int main(int argc, const char * argv[]) {
         game.solve();
     }
     else {
+        std::cout << "not valid";
         return 2;
     }
     std::cout << game.serializeGrid();

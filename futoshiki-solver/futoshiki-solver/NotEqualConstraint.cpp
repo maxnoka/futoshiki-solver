@@ -21,7 +21,7 @@ bool NotEqualConstraint::checkValid() {
     
     std::set<int> valuesNoLongerPossible;
     for (auto possibleValCombination : targetPossibleValues){
-        if (targetPossibleValues.count(possibleValCombination) == possibleValCombination.size()) {
+        if (targetPossibleValues.count(possibleValCombination) >= possibleValCombination.size()) {
             valuesNoLongerPossible.insert(possibleValCombination.begin(), possibleValCombination.end());
         }
     }
