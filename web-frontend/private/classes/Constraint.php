@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . "./../config/config.php");
+
 class Constraint {
     // object properties
     public $colIdx;

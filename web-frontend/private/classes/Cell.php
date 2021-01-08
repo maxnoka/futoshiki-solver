@@ -1,6 +1,7 @@
 <?php
+require_once(__DIR__ . "./../config/config.php");
+
 class Cell {
-    // object properties
     public $val;
     public $row_idx;
     public $col_idx;

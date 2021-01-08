@@ -1,5 +1,5 @@
 <?php
-require('config.php');
+require('../private/config/config.php');
 require( CLASS_PATH . "/Game.php" );
 
 // required headers
@@ -10,10 +10,8 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $game = Game::createFromJson(file_get_contents("php://input"));
-// set response code - 200 OK
 
 $out = $game->solve();
-
 if ($out == "not valid") {
 	http_response_code(400);
     echo json_encode(array("message" => "Unable to solve. Board not solveable."));
@@ -23,3 +21,4 @@ else {
 	echo json_encode($out);
 }
 
+?>

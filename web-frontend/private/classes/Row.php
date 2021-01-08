@@ -1,15 +1,14 @@
 <?php
+require_once(__DIR__ . "./../config/config.php");
 
 require_once('Cell.php');
 
 class Row {
-    // object properties
     public $cells = array();
     public $rowIdx;
 
     public function __construct($board_size, $rowIdx) {
-        // NxN array filled with zeros
-        for ($i=0; $i < $board_size; $i++) { 
+        for ($i = 0; $i < $board_size; $i++) { 
         	$this->cells[] = new Cell(0, $rowIdx, $i);
         }
         $this->$rowIdx = $rowIdx;

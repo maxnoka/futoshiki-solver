@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . "./../config/config.php");
+
 require_once('Row.php');
 require_once('Constraint.php');
 
@@ -8,13 +10,19 @@ class Game {
     public $constraints = array("row" => array(), "col" => array());
 
     public function __construct($board_size) {
-        // NxN array filled with zeros
         $this->board_size = $board_size;
 
+        // have $board_size # of rows
+        // comprised of $board_size # of cols
+        // all set to be empty (zero)
         for ($i=0; $i < $board_size; $i++) { 
             $this->rows[] = new Row($board_size, $i);
         }
+        
+        // create a constraint of each set of adjacent cells
+        // all set with constraint type "+" (no constraint)  
 
+        // the constraints between cells of the same row
         for ($rowIdx=0; $rowIdx < $board_size; $rowIdx++) { 
             for ($colIdx=0; $colIdx < $board_size - 1; $colIdx++) {
                 $new = new Constraint($colIdx, $rowIdx, "+", "row");
@@ -22,6 +30,7 @@ class Game {
             }
         }
 
+        // the constraints between cells of different rows
         for ($rowIdx=0; $rowIdx < $board_size - 1; $rowIdx++) { 
             for ($colIdx=0; $colIdx < $board_size; $colIdx++) {    
                 $new = new Constraint($colIdx, $rowIdx, "+", "col");
@@ -30,6 +39,28 @@ class Game {
         }
     }
 
+    // expect e.g. 
+    //
+    //      {
+    //       "board_size": 3,
+    //       "rows": [[1,0,2],[0,1,0],[0,0,2]],
+    //       "constraints":
+    //          [{"rowIdx":1,"colIdx":2,"operator":">","type":"col"},
+    //           {"rowIdx":1,"colIdx":2,"operator":"<","type":"row"}]
+    //      }
+    // 
+    // Requirements:
+    //  - valid json
+    //  - all three fields shown above required
+    //  - board size is integer in range [2, 7], 
+    //  - rows needs to be size N array of size N arrays (where N is board size)
+    //  - each entry in rows needs to be integer in range [0, N-1]
+    //  - constraints needs to be an array
+    //  - all four fields shown above required
+    //  - rowIdx needs to be integer in range [0, N-1] or [0, N-2] for "row"/"col" type respectiely
+    //  - colIdx needs to be integer in range [0, N-2] or [0, N-1] for "row"/"col" type respectiely
+    //  - constraint operator needs to be in set ["<", ">", "+"] ("+" is no constraint)
+    //  - constraint type needs to be in set ["row"], ["col"]
     public static function createFromJson($json) {
         $data = json_decode($json);
 
@@ -96,9 +127,9 @@ class Game {
                     exit();
                 }
 
-                if ($validVal > $size) {
+                if ($validVal > $size || $validVal < 0) {
                     http_response_code(400);
-                    echo json_encode(array("message" => "Unable to solve. Board value is invalid (must be less than the size of the board)."));
+                    echo json_encode(array("message" => "Unable to solve. Board value is invalid (require integer in range [0, board_size])."));
                     exit();
                 }
                 $obj->rows[$rowIdx]->cells[$cellIdx]->val = $validVal;
@@ -125,6 +156,12 @@ class Game {
             $validColIdx = filter_var(htmlspecialchars($constraintJson->colIdx), FILTER_VALIDATE_INT);
             $validRowIdx = filter_var(htmlspecialchars($constraintJson->rowIdx), FILTER_VALIDATE_INT);
 
+            if ($validColIdx === false || $validRowIdx === false) {
+                http_response_code(400);
+                echo json_encode(array("message" => "Unable to solve. Constraint or row indices invalid (require int)."));
+                exit();
+            }
+
             if ($constraintJson->operator == ">") {$validOperator = ">";}
             else if ($constraintJson->operator == "<") {$validOperator = "<";}
             else if ($constraintJson->operator == "+") {$validOperator = "+";}
@@ -142,7 +179,7 @@ class Game {
                 exit();
             }
 
-            $eitherNegatve = $validColIdx < 0 || $validRowIdx < 0;
+            $eitherNegative = $validColIdx < 0 || $validRowIdx < 0;
             $eitherTooLarge = false;
             if (($validType == "row")) {
                 if ($validColIdx >= $size - 1 || $validRowIdx >= $size) {
@@ -155,7 +192,7 @@ class Game {
                 }
             }
 
-            if ($eitherNegatve || $eitherTooLarge) {
+            if ($eitherNegative || $eitherTooLarge) {
                 http_response_code(400);
                 echo json_encode(array("message" => "Unable to solve. Constraint indices invalid."));
                 exit();
@@ -171,13 +208,22 @@ class Game {
     }
 
     public function solve() {
-        $command = "./futoshiki-solver ";
+        // $command is e.g.
+        //      ./futoshiki-solver "0,0,0,0  
+        //      0,0,0,2 
+        //      0,0,0,0
+        //      0,0,0,0" "0,0:0,1:>
+        //      0,2:0,3:<
+        //      1,1:1,2:<
+        //      2,2:2,3:<
+        //      3,0:3,1:>"
+
+        $command = BIN_PATH . "/futoshiki-solver ";
         $command .= "\"" . $this->serializeBoard() . "\" ";
         $command .= "\"" . $this->serializeConstraints() . "\"";
 
         $output=null;
         $retval=null;
-
         exec($command, $output, $retval);
 
         if ($retval == 2) {
@@ -211,15 +257,23 @@ class Game {
 
     public function serializeConstraints() {
         $constraintStrings = array();
-        foreach ($this->constraints as $i => $constraintArray) {
-            foreach ($constraintArray as $rowIdx => $constraintRow) {
-                foreach ($constraintRow as $constraintIdx => $constraint) {
-                    if ($constraint->operator != "+") {
-                        $constraintStrings[] = $constraint->serializeConstraint();
+
+        foreach ($this->constraints["row"] as $i => $constraintRow) {
+            foreach ($constraintRow as $k => $constraint) {
+                if ($constraint->operator != "+") {
+                    $constraintStrings[] = $constraint->serializeConstraint();
                 }
             }
+        }
+
+        foreach ($this->constraints["col"] as $i => $constraintCol) {
+            foreach ($constraintCol as $k => $constraint) {
+                if ($constraint->operator != "+") {
+                    $constraintStrings[] = $constraint->serializeConstraint();
+                }
             }
         }
+
         return implode("\n", $constraintStrings);
     }
 }
