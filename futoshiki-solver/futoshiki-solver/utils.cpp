@@ -6,7 +6,7 @@
 //
 
 #include "utils.hpp"
-#include "../Cell.hpp"
+#include "Cell.hpp"
 
 #include <random>
 #include <sstream>

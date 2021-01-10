@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <sstream>
 
-#include "Utils/utils.hpp"
+#include "utils.hpp"
 
 #include "FutoshikiGame.hpp"
 #include "Constraint.hpp"
@@ -97,8 +97,8 @@ void FutoshikiGame::addInequalityConstraint(ConstraintOperator co,
                    std::tuple<unsigned long, unsigned long> sourceCellCoords,
                    std::tuple<unsigned long, unsigned long> targetCellCoords) {
     
-    unsigned long sourceCellIndex = get<0>(sourceCellCoords) * numCols + get<1>(sourceCellCoords);
-    unsigned long targetCellIndex = get<0>(targetCellCoords) * numCols + get<1>(targetCellCoords);
+    unsigned long sourceCellIndex = std::get<0>(sourceCellCoords) * numCols + std::get<1>(sourceCellCoords);
+    unsigned long targetCellIndex = std::get<0>(targetCellCoords) * numCols + std::get<1>(targetCellCoords);
     
     auto direc = Constraint::determineConstraintDirection(sourceCellCoords, targetCellCoords);
     

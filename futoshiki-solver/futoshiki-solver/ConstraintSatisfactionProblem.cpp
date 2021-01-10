@@ -9,6 +9,8 @@
 #include "SingleTargetConstraint.hpp"
 #include "NotEqualConstraint.hpp"
 
+#include <algorithm>
+
 namespace {
 const int kMaxSolverIterations = 2000;
 }
