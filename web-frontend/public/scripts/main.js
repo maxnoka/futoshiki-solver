@@ -19,7 +19,7 @@ $(document).on('click', '#puzzle-solve-button', function(){
 
   $.ajax({
     type: "POST",
-    url: "/solve.php",
+    url: "solve.php",
     data: JSON.stringify(toSend),
     success: function(data){
         fillBoard(data);
