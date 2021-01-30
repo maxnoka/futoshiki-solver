@@ -12,7 +12,7 @@
 #include "FutoshikiGame.hpp"
 #include "Constraint.hpp"
 
-int main(int argc, const char * argv[]) {
+int main2(int argc, const char * argv[]) {
     
     if (argc != 3) {
         return 1;
@@ -24,7 +24,7 @@ int main(int argc, const char * argv[]) {
     FutoshikiGame game(game.deserializeGrid(board));
     game.addInequalityConstraints(constraints);
     if (game.isValid()) {
-        game.solve();
+        game.solve(true);
     }
     else {
         std::cout << "not valid";
@@ -35,9 +35,8 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 
-int main2(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]) {
     try {
-        
         std::vector<std::vector<int>> initialValues =
         {   {0, 0, 0, 0},
             {0, 0, 0, 2},
@@ -58,64 +57,20 @@ int main2(int argc, const char * argv[]) {
         game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
                       std::make_tuple(3, 0), std::make_tuple(3, 1));
         
-        
-        /*
-        std::vector<std::vector<int>> initialValues =
-        {   {0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 4},
-        };
-        
-        FutoshikiGame game(initialValues);
-        
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(0, 2), std::make_tuple(0, 3));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(0, 3), std::make_tuple(0, 4));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(1, 2), std::make_tuple(1, 3));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(2, 0), std::make_tuple(3, 0));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(2, 1), std::make_tuple(2, 2));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(2, 4), std::make_tuple(3, 4));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(3, 0), std::make_tuple(3, 1));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(3, 1), std::make_tuple(3, 2));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(3, 1), std::make_tuple(4, 1));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(3, 3), std::make_tuple(4, 3));
-        game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
-                      std::make_tuple(3, 4), std::make_tuple(3, 5));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(4, 0), std::make_tuple(4, 1));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(4, 4), std::make_tuple(4, 5));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(5, 0), std::make_tuple(5, 1));
-        game.addInequalityConstraint(ConstraintOperator::isLessThan_CO,
-                      std::make_tuple(5, 1), std::make_tuple(5, 2));
-        */
-        
         /*
         std::vector<std::vector<int>> initialValues =
         {   {0, 0},
             {0, 0},
         };
+        
         FutoshikiGame game(initialValues);
         */
-        
+         
         std::cout << game.serializeGrid();
         std::cout << game.serializeConstraints();
         
         game.printBoard();
-        game.solve();
+        std::cout << "solved unique: " << game.solve(true) << "\n";
         game.printBoard();
         return 0;
     }

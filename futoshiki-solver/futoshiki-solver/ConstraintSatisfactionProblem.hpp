@@ -37,7 +37,7 @@ public:
     
     void addCoupledNotEqualConstraint(std::vector<unsigned long> cellIndeces);
     
-    std::vector<Cell> solve();
+    std::tuple<std::vector<Cell>, bool> solve(bool checkUnique);
     bool isValid() const;
     
     void debugPrint();
@@ -53,8 +53,9 @@ public:
 private:
     std::vector<Cell> m_cells;
     
-    std::vector<Cell> solveByGuessing();
+    std::tuple<std::vector<Cell>, bool> solveByGuessing(bool checkUnique);
     int getCellWithFewestRemainingOptions();
+    std::vector<int> getRemainingCellIdxs();
     
     unsigned long m_numCells;
     

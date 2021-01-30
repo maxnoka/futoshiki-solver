@@ -114,6 +114,31 @@ void ConstraintSatisfactionProblem::debugPrint() {
     }
 }
 
+std::vector<int> ConstraintSatisfactionProblem::getRemainingCellIdxs() {
+    struct numOptionsComparison {
+        numOptionsComparison(ConstraintSatisfactionProblem* csp)
+            : m_csp(csp)
+        {};
+        
+        bool operator() (int i, int j) {
+            return m_csp->getCell(i).getPossibleVals() > m_csp->getCell(j).getPossibleVals();
+        }
+        
+        ConstraintSatisfactionProblem* m_csp;
+    };
+    
+    std::vector<int> remainingCellIdxs;
+    for (int testIdx = 0; testIdx < m_cells.size(); ++testIdx) {
+        if (m_cells[testIdx].isUnsolved()) {
+            remainingCellIdxs.push_back(testIdx);
+        }
+    }
+    
+    numOptionsComparison comparer(this);
+    std::sort(remainingCellIdxs.begin(), remainingCellIdxs.end(), comparer);
+    return remainingCellIdxs;
+}
+
 int ConstraintSatisfactionProblem::getCellWithFewestRemainingOptions() {
     int bestCellIdx = 0;
     unsigned long fewestOptions = 0;
@@ -137,17 +162,46 @@ int ConstraintSatisfactionProblem::getCellWithFewestRemainingOptions() {
     return bestCellIdx;
 }
 
-std::vector<Cell> ConstraintSatisfactionProblem::solveByGuessing() {
-    int cellToGuessIdx = getCellWithFewestRemainingOptions();
+std::tuple<std::vector<Cell>, bool> ConstraintSatisfactionProblem::solveByGuessing(bool checkUnique) {
+    auto cellsToGuessIdxs = getRemainingCellIdxs(); // sorted with the cells with fewest remaining options first
     
-    for (auto guess : m_cells[cellToGuessIdx].getPossibleVals()) {
-        ConstraintSatisfactionProblem branchCsp(*this);
-        try {
-            branchCsp.getCell(cellToGuessIdx).setVal(guess);
-            branchCsp.m_numUnsolved -= 1;
-            return branchCsp.solve();
-        } catch (std::runtime_error) {} // branch didn't work, try the next
+    std::vector<Cell> lastSol;
+    bool alreadyFoundASolution = false;
+    
+    for (auto cellToGuessIdx : cellsToGuessIdxs) {
+        // check all possible options in one guessable cell
+        for (auto guess : m_cells[cellToGuessIdx].getPossibleVals()) {
+            ConstraintSatisfactionProblem branchCsp(*this);
+            try {
+                branchCsp.getCell(cellToGuessIdx).setVal(guess);
+                branchCsp.m_numUnsolved -= 1;
+                auto [oneSol, proovedUnique] = branchCsp.solve(checkUnique);
+                // if we found multiple solution in that branch no need to continue checking
+                // similarly if we don't checkUnique at all
+                // finally if we found a solution, i.e. didn't throw, then we can confirm not unique
+                if (!proovedUnique || !checkUnique || alreadyFoundASolution) {
+                    // it could be that multiple guesses lead to the same solution:
+                    struct cellValueComparison {
+                        bool operator() (const Cell& A, const Cell& B) {
+                            return A.getVal() == B.getVal();
+                        }
+                    } comp;
+                    
+                    if (alreadyFoundASolution && std::equal(lastSol.begin(), lastSol.end(), oneSol.begin(), comp)) {
+                        continue;
+                    }
+                    return std::make_tuple(oneSol, false);
+                }
+                lastSol = oneSol; // to keep for later potentially
+                alreadyFoundASolution = true;
+            } catch (std::runtime_error) {} // branch didn't work, try the next
+        }
     }
+    // we made it all the way to the end and only one guess in one cell worked
+    if (alreadyFoundASolution) {
+        return std::make_tuple(lastSol, true);
+    }
+    // todo add the functionality here to check the other guesses
     throw std::runtime_error("none of the guesses worked, very bad");
     
 }
@@ -163,11 +217,11 @@ bool ConstraintSatisfactionProblem::isValid() const {
     return true;
 }
 
-std::vector<Cell> ConstraintSatisfactionProblem::solve() {
+std::tuple<std::vector<Cell>, bool> ConstraintSatisfactionProblem::solve(bool checkUnique) {
     //int numCells = m_cells.size();
     //int numIts = 0;
     
-     int numIts = 0;
+    int numIts = 0;
     while (!isSolved() && numIts < kMaxSolverIterations) {
         int numSolvedThisIt = 0;
         for (auto &cell : m_cells) {
@@ -187,10 +241,12 @@ std::vector<Cell> ConstraintSatisfactionProblem::solve() {
         }
         if (numSolvedThisIt == 0) {
             // std::cerr << "cannot solve without guessing " << std::endl;
-            m_cells = solveByGuessing();
-            return m_cells;
+            bool proovedUnique;
+            std::tie(m_cells, proovedUnique) = solveByGuessing(checkUnique);
+            return std::make_tuple(m_cells, proovedUnique);
         }
         ++numIts;
     }
-    return m_cells;
+    // solved without guessing, so unique solution
+    return std::make_tuple(m_cells, true);
 }

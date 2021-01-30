@@ -30,8 +30,8 @@
             filePath = "futoshiki-solver/ConstraintSatisfactionProblem.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
             landmarkName = "ConstraintSatisfactionProblem::isValid()"
             landmarkType = "7">
          </BreakpointContent>
@@ -64,7 +64,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "27"
             endingLineNumber = "27"
-            landmarkName = "main(argc, argv)"
+            landmarkName = "main2(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -80,7 +80,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
             endingLineNumber = "25"
-            landmarkName = "main(argc, argv)"
+            landmarkName = "main2(argc, argv)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -94,8 +94,8 @@
             filePath = "futoshiki-solver/FutoshikiGame.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
+            startingLineNumber = "288"
+            endingLineNumber = "288"
             landmarkName = "FutoshikiGame::addInequalityConstraints(serializedConstraints)"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,8 +110,8 @@
             filePath = "futoshiki-solver/FutoshikiGame.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "290"
-            endingLineNumber = "290"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
             landmarkName = "FutoshikiGame::addInequalityConstraints(serializedConstraints)"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "futoshiki-solver/FutoshikiGame.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "273"
-            endingLineNumber = "273"
+            startingLineNumber = "274"
+            endingLineNumber = "274"
             landmarkName = "FutoshikiGame::addInequalityConstraints(serializedConstraints)"
             landmarkType = "7">
          </BreakpointContent>
@@ -177,6 +177,67 @@
             startingLineNumber = "27"
             endingLineNumber = "27"
             landmarkName = "NotEqualConstraint::checkValid()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            uuid = "A5B5BF42-ED9A-4A8D-A9B9-F8F2004F1FB4"
+            shouldBeEnabled = "No"
+            nameForDebugger = "ExceptionBreakpoint"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            breakpointStackSelectionBehavior = "1"
+            scope = "2"
+            stopOnStyle = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "98AD1EBB-5368-47C6-B053-CC3A01567CBB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "futoshiki-solver/ConstraintSatisfactionProblem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
+            landmarkName = "ConstraintSatisfactionProblem::solveByGuessing(checkUnique)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "66B00618-87EE-4076-922A-7F41C4216EF7"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "futoshiki-solver/ConstraintSatisfactionProblem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "ConstraintSatisfactionProblem::solveByGuessing(checkUnique)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "996129F9-1423-4B75-9326-65104634366E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "futoshiki-solver/ConstraintSatisfactionProblem.cpp"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "ConstraintSatisfactionProblem::solveByGuessing(checkUnique)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

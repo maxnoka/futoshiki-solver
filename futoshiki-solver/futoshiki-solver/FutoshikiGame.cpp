@@ -80,11 +80,12 @@ FutoshikiGame::FutoshikiGame(std::string gridString, std::string constaintString
     }
 }
 
-void FutoshikiGame::solve() {
+bool FutoshikiGame::solve(bool checkUnique) {
     if (numCols > maxSolveSize || numRows > maxSolveSize) {
-        return;
+        return false;
     }
-    m_Csp.solve();
+    auto [sol, proovedUnique] = m_Csp.solve(checkUnique);
+    return proovedUnique;
 }
 
 bool FutoshikiGame::isValid() const {

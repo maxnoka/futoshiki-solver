@@ -30,7 +30,7 @@ public:
     
     void addInequalityConstraints(std::string serializedConstraints);
     
-    void solve();
+    bool solve(bool checkUnique);
     bool isValid() const;
 
     
