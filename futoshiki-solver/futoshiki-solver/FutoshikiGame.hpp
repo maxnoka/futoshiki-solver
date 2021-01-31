@@ -32,6 +32,8 @@ public:
     
     bool solve(bool checkUnique);
     bool isValid() const;
+    
+    void generate();
 
     
     void debugPrint();

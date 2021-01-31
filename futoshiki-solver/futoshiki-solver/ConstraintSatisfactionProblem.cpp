@@ -10,6 +10,7 @@
 #include "NotEqualConstraint.hpp"
 
 #include <algorithm>
+#include <random>
 
 namespace {
 const int kMaxSolverIterations = 2000;
@@ -170,7 +171,12 @@ std::tuple<std::vector<Cell>, bool> ConstraintSatisfactionProblem::solveByGuessi
     
     for (auto cellToGuessIdx : cellsToGuessIdxs) {
         // check all possible options in one guessable cell
-        for (auto guess : m_cells[cellToGuessIdx].getPossibleVals()) {
+        std::set<int> temp = m_cells[cellToGuessIdx].getPossibleVals();
+        std::vector<int> possible_guesses;
+        std::copy(temp.begin(), temp.end(), std::back_inserter(possible_guesses));
+        std::shuffle(possible_guesses.begin(), possible_guesses.end(),
+                            std::mt19937{std::random_device{}()});
+        for (auto guess : possible_guesses) {
             ConstraintSatisfactionProblem branchCsp(*this);
             try {
                 branchCsp.getCell(cellToGuessIdx).setVal(guess);
@@ -204,6 +210,25 @@ std::tuple<std::vector<Cell>, bool> ConstraintSatisfactionProblem::solveByGuessi
     // todo add the functionality here to check the other guesses
     throw std::runtime_error("none of the guesses worked, very bad");
     
+}
+
+void ConstraintSatisfactionProblem::generate() {
+    bool proovedUnique = false;
+    while(!proovedUnique) {
+        std::vector<Cell> result;
+        ConstraintSatisfactionProblem branchCsp(*this);
+        std::tie(result, proovedUnique) = branchCsp.solve(true);
+        
+        if (!proovedUnique) { // now change the starting point by adding a constraint
+            // get random remaining cell
+            auto cellsToGuessIdxs = getRemainingCellIdxs(); // sorted with the cells with fewest remaining options first
+            std::shuffle(cellsToGuessIdxs.begin(), cellsToGuessIdxs.end(),
+                                std::mt19937{std::random_device{}()});
+            auto cellToGuessIdx = cellsToGuessIdxs[0];
+            m_cells[cellToGuessIdx].setVal(result[cellToGuessIdx].getVal());
+            m_numUnsolved -= 1;
+        }
+    }
 }
 
 bool ConstraintSatisfactionProblem::isValid() const {

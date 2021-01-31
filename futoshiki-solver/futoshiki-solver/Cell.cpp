@@ -65,7 +65,10 @@ bool Cell::applyNotEqualConstraint(std::set<int> noLongerPossible) {
                             std::begin(noLongerPossible), std::end(noLongerPossible), // ...minus the second...
                             std::inserter(setDifference, setDifference.begin()));     // ...is stored into here
     possibleValues = setDifference;
-    if (possibleValues.size() == 0) { throw std::runtime_error("no more options left! impossible");}
+    if (possibleValues.size() == 0) {
+        throw std::runtime_error("no more options left! impossible");
+        
+    }
     return setIfPossible();
 }
 

@@ -37,6 +37,7 @@ int main2(int argc, const char * argv[]) {
 
 int main(int argc, const char * argv[]) {
     try {
+        /*
         std::vector<std::vector<int>> initialValues =
         {   {0, 0, 0, 0},
             {0, 0, 0, 2},
@@ -56,6 +57,7 @@ int main(int argc, const char * argv[]) {
                       std::make_tuple(2, 2), std::make_tuple(2, 3));
         game.addInequalityConstraint(ConstraintOperator::isGreaterThan_CO,
                       std::make_tuple(3, 0), std::make_tuple(3, 1));
+        */
         
         /*
         std::vector<std::vector<int>> initialValues =
@@ -65,10 +67,13 @@ int main(int argc, const char * argv[]) {
         
         FutoshikiGame game(initialValues);
         */
-         
+        
+        FutoshikiGame game(6);
+        
         std::cout << game.serializeGrid();
         std::cout << game.serializeConstraints();
         
+        game.generate();
         game.printBoard();
         std::cout << "solved unique: " << game.solve(true) << "\n";
         game.printBoard();

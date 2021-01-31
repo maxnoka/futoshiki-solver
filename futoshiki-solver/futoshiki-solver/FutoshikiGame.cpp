@@ -8,6 +8,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <sstream>
+#include <random>
 
 #include "utils.hpp"
 
@@ -90,6 +91,63 @@ bool FutoshikiGame::solve(bool checkUnique) {
 
 bool FutoshikiGame::isValid() const {
     return m_Csp.isValid();
+}
+
+void FutoshikiGame::generate() {
+    std::mt19937 gen{std::random_device{}()};
+    
+    std::vector<std::tuple<std::tuple<unsigned long, unsigned long>, std::tuple<unsigned long, unsigned long>>> possibleConstraintsToAdd;
+    
+    // the constraints between cells of the same row
+    for (int rowIdx=0; rowIdx < numRows; ++rowIdx) {
+        for (int colIdx=0; colIdx < numCols - 1; ++colIdx) {
+            possibleConstraintsToAdd.push_back(std::make_tuple(std::make_tuple(rowIdx, colIdx), std::make_tuple(rowIdx, colIdx+1)));
+        }
+    }
+    
+    for (int rowIdx=0; rowIdx < numRows - 1; ++rowIdx) {
+        for (int colIdx=0; colIdx < numCols; ++colIdx) {
+            possibleConstraintsToAdd.push_back(std::make_tuple(std::make_tuple(rowIdx, colIdx), std::make_tuple(rowIdx+1, colIdx)));
+        }
+    }
+    
+    std::shuffle(possibleConstraintsToAdd.begin(), possibleConstraintsToAdd.end(),
+                        std::mt19937{std::random_device{}()});
+    
+    bool proovedUnique = false;
+    while(!proovedUnique) {
+        std::vector<Cell> result;
+        ConstraintSatisfactionProblem branchCsp(m_Csp);
+        std::tie(result, proovedUnique) = branchCsp.solve(true);
+        
+        if (!proovedUnique) { // now change the starting point by adding a constraint
+            std::vector<double> weights{50,50};
+            std::discrete_distribution<int> dist(std::begin(weights), std::end(weights));
+        
+            if (dist(gen)) { // add a number to the starting board
+                // get random remaining cell
+                auto cellsToGuessIdxs = m_Csp.getRemainingCellIdxs(); // sorted with the cells with fewest remaining options first
+                std::shuffle(cellsToGuessIdxs.begin(), cellsToGuessIdxs.end(),
+                                    std::mt19937{std::random_device{}()});
+                auto cellToGuessIdx = cellsToGuessIdxs[0];
+                m_Csp.getCell(cellToGuessIdx).setVal(result[cellToGuessIdx].getVal());
+                m_Csp.m_numUnsolved -= 1;
+            }
+            else { // add a constraint to the starting point
+                auto constraintToAdd = possibleConstraintsToAdd.back();
+                possibleConstraintsToAdd.pop_back();
+                
+                auto sourceCellCoords = std::get<0>(constraintToAdd);
+                auto targetCellCoords = std::get<1>(constraintToAdd);
+                
+                unsigned long sourceCellIndex = std::get<0>(sourceCellCoords) * numCols + std::get<1>(sourceCellCoords);
+                unsigned long targetCellIndex = std::get<0>(targetCellCoords) * numCols + std::get<1>(targetCellCoords);
+                
+                ConstraintOperator co = result[targetCellIndex].getVal() < result[sourceCellIndex].getVal() ? ConstraintOperator::isGreaterThan_CO : ConstraintOperator::isLessThan_CO;
+                addInequalityConstraint(co, std::get<0>(constraintToAdd), std::get<1>(constraintToAdd));
+            }
+        }
+    }
 }
 
 // a single constraint results in to two constraints:

@@ -43,19 +43,21 @@ public:
     void debugPrint();
     bool isSolved() const;
     
+    void generate();
+    
     int getCellValue(unsigned long cellIdx) const;
     Cell& getCell(unsigned long cellIdx);
     
     std::vector<Cell> getCells() const;
     
     unsigned long m_numUnsolved;
+    std::vector<int> getRemainingCellIdxs();
     
 private:
     std::vector<Cell> m_cells;
     
     std::tuple<std::vector<Cell>, bool> solveByGuessing(bool checkUnique);
     int getCellWithFewestRemainingOptions();
-    std::vector<int> getRemainingCellIdxs();
     
     unsigned long m_numCells;
     
