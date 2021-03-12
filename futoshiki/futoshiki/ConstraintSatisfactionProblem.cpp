@@ -83,6 +83,19 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSat
     }
 }
 
+ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const ConstraintSatisfactionProblem& other) {
+    if (this == &other) {
+        return *this;
+    }
+    
+    auto tmp = ConstraintSatisfactionProblem(other);
+     
+    std::swap(m_cells, tmp.m_cells);
+    std::swap(m_constraints, tmp.m_constraints);
+    
+    return *this;
+}
+
 #ifdef DEBUG
 void ConstraintSatisfactionProblem::dPrint() const {
     std::cout << "Debug Print CSP Cells: \n";

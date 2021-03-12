@@ -9,22 +9,17 @@
 #include "InequalityConstraint.hpp"
 
 #include <iostream>
-
-Csp::ConstraintSatisfactionProblem foo() {
-    auto csp = Csp::ConstraintSatisfactionProblem({1, 2, 3});
-    
-    csp.AddInequalityConstraint(1, Csp::InequalityConstraint::InequalityOperator::LessThan, 2);
-
-    int a = 5;
-    std::cout << a;
-    
-    return csp;
-}
+#include <optional>
 
 int main(int argc, const char * argv[]) {
-    auto csp = foo();
+    std::optional<Csp::ConstraintSatisfactionProblem> csp2;
+    {
+        auto csp = Csp::ConstraintSatisfactionProblem({1, 2, 3});
+        csp.AddInequalityConstraint(1, Csp::InequalityConstraint::InequalityOperator::LessThan, 2);
+        csp2 = csp;
+    }
     
-    csp.dPrint();
+    // csp2.value().dPrint();
     
     return 0;
 }

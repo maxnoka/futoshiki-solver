@@ -10,6 +10,8 @@
 
 #include "Constraint.hpp"
 
+#include "utils/MacroUtils.h"
+
 #include <memory>
 #include <iostream>
 
@@ -55,6 +57,8 @@ public:
 #endif //DEBUG
     
 private:
+    DISALLOW_COPY_AND_ASSIGN(InequalityConstraint);
+    
     std::weak_ptr<Cell> m_lhsCell;
     std::weak_ptr<Cell> m_rhsCell;
     

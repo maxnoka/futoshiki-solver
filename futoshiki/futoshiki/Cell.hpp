@@ -21,6 +21,7 @@ public:
     Cell(int initVal, int id);
     Cell() = delete;
     Cell(const Cell& other) = default; // only shallow copy available, use UpdateConstraintPointers once the constraints are copied as well;
+    Cell& operator =(const Cell&) = default;
     
     void UpdateConstraintPointers(std::map< const Constraint*, std::shared_ptr<Constraint>* > newConstraintLookup);
     

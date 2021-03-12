@@ -40,6 +40,7 @@
 		22D8E96125F95AB300D95938 /* Constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Constraint.hpp; sourceTree = "<group>"; };
 		22D8E96425F961B300D95938 /* InequalityConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InequalityConstraint.cpp; sourceTree = "<group>"; };
 		22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = InequalityConstraint.hpp; sourceTree = "<group>"; };
+		22D8E96C25FC27E600D95938 /* MacroUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacroUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +90,7 @@
 		22D8E95B25F956F200D95938 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				22D8E96C25FC27E600D95938 /* MacroUtils.h */,
 				22D8E95C25F9570A00D95938 /* Utils.cpp */,
 				22D8E95D25F9570A00D95938 /* Utils.hpp */,
 			);

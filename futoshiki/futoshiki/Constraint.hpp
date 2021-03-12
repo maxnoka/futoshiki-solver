@@ -25,8 +25,7 @@ public:
     virtual ~Constraint() = default;
     
     // uses the lookup for deep copy:
-    // 1) updates the cell pointers in the constraints
-    // 2) also updates the constraint pointers in the new cells
+    // * updates the cell pointers in the constraints
     virtual Constraint* Clone(
         std::map< const Cell*, std::shared_ptr<Cell>* > newCellLookup
     ) = 0;
