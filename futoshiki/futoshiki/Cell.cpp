@@ -8,6 +8,7 @@
 #include "Cell.hpp"
 
 #include "Constraint.hpp"
+#include "ConstraintSatisfactionProblem.hpp"
 
 #include "utils/Utils.hpp"
 
@@ -16,20 +17,30 @@
 
 namespace Csp {
 
-Cell::Cell(int initVal, int id, const std::set<int>& possibleValues)
-    : m_val(initVal)
+Cell::Cell(int initVal, int id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp)
+    : m_val(kUnsolvedSymbol) // set using SetIfPossible bellow
     , m_id(id)
     , m_possibleValues() // set below depending on if the cell is set
     , m_appliedConstraints()
+    , m_csp(csp)
 {
-    if (m_val != kUnsolvedSymbol) {
-        assertm(possibleValues.count(m_val) != 0, "input values must be possible values");
-        m_possibleValues = { m_val };
+    if (initVal != kUnsolvedSymbol) {
+        assertm(possibleValues.count(initVal) != 0, "input values must be possible values");
+        m_possibleValues = { initVal };
+        SetIfPossible();
     }
     else {
         m_possibleValues = possibleValues;
     }
 }
+
+Cell::Cell(const Cell& other, ConstraintSatisfactionProblem* newCsp)
+    : m_val(other.m_val)
+    , m_id(other.m_id)
+    , m_possibleValues(other.m_possibleValues)
+    , m_appliedConstraints(other.m_appliedConstraints)
+    , m_csp(newCsp)
+{ }
 
 void Cell::UpdateConstraintPointers(const std::map< const Constraint*, std::shared_ptr<Constraint>* >& newConstraintLookup) {
     auto oldConstraints = m_appliedConstraints;
@@ -117,6 +128,7 @@ bool Cell::SetIfPossible() {
     
     if (m_possibleValues.size() == 1) {
         m_val = *m_possibleValues.begin();
+        m_csp->ReportIfNewlySolved();
         return true;
     }
     

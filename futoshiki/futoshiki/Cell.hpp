@@ -16,16 +16,19 @@
 namespace Csp {
 
 class Constraint;
+class ConstraintSatisfactionProblem;
 
 class Cell {
 public:
     static constexpr auto kUnsolvedSymbol = 0;
     
     // assumes the possible values vector is sorted
-    Cell(int initVal, int id, const std::set<int>& possibleValues);
+    Cell(int initVal, int id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp);
     Cell() = delete;
-    Cell(const Cell& other) = default; // only shallow copy available, use UpdateConstraintPointers once the constraints are copied as well;
-    Cell& operator =(const Cell&) = default;
+    Cell(const Cell& other) = delete;
+    Cell& operator =(const Cell&) = delete;
+    // only shallow copy available, use UpdateConstraintPointers once the constraints are copied as well;
+    Cell(const Cell& other, ConstraintSatisfactionProblem*);
     
     void UpdateConstraintPointers(const std::map< const Constraint*, std::shared_ptr<Constraint>* >& newConstraintLookup);
     
@@ -48,6 +51,7 @@ public:
 #endif //DEBUG
     
 private:
+    // also reports if newly solved to the parent csp
     bool SetIfPossible();
     void ReportChangeToConstraints();
     
@@ -55,6 +59,7 @@ private:
     int m_id;
     std::set<int> m_possibleValues;
     std::vector<std::weak_ptr<Constraint>> m_appliedConstraints;
+    ConstraintSatisfactionProblem* m_csp;
     
 }; // Cell
 

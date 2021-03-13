@@ -21,23 +21,27 @@
 namespace Csp {
 
 ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues)
-    : m_defaultPossibleValues(defaultPossibleValues)
+    : m_numSolved(0) // reported back to us when we construct the cells
+    , m_numCells(initValues.size())
+    , m_defaultPossibleValues(defaultPossibleValues)
     , m_cells()
     , m_constraints()
 {
     for (auto [cellIdx, initValue] : Utils::enumerate(initValues)) {
-        m_cells.emplace( std::make_pair(cellIdx, std::make_shared<Cell>(initValue, cellIdx, m_defaultPossibleValues)) );
+        m_cells.emplace( std::make_pair(cellIdx, std::make_shared<Cell>(initValue, cellIdx, m_defaultPossibleValues, this)) );
     }
 }
 
 ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other)
-    : m_defaultPossibleValues(other.m_defaultPossibleValues)
+    : m_numSolved(other.m_numSolved)
+    , m_numCells(other.m_numCells)
+    , m_defaultPossibleValues(other.m_defaultPossibleValues)
     , m_cells()
     , m_constraints()
 {
     // shallow copy all the cells to begin with
     for (auto& cell : other.m_cells) {
-        m_cells.emplace( std::make_pair(cell.first, std::make_shared<Cell>(*cell.second.get())) );
+        m_cells.emplace( std::make_pair(cell.first, std::make_shared<Cell>(*cell.second.get(), this)) );
     }
     
     // Create the old to new cell lookup vectors
@@ -96,6 +100,8 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
     std::swap(m_defaultPossibleValues, tmp.m_defaultPossibleValues);
     std::swap(m_cells, tmp.m_cells);
     std::swap(m_constraints, tmp.m_constraints);
+    std::swap(m_numSolved, tmp.m_numSolved);
+    std::swap(m_numCells, tmp.m_numCells);
     
     return *this;
 }
@@ -152,6 +158,16 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     rhsCell->AddConstraint(m_constraints.back());
     
     return true;
+}
+
+void ConstraintSatisfactionProblem::ReportIfNewlySolved() {
+    ++m_numSolved;
+    
+    assertm(m_numSolved <= m_numCells, "number of solved cells should be less than the number cells");
+    
+    if (m_numSolved == m_numCells) {
+        std::cout << "SOLVED\n";
+    }
 }
 
 bool ConstraintSatisfactionProblem::Solve(bool checkSolutionUnique) {

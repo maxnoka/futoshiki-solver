@@ -34,12 +34,16 @@ public:
         unsigned long rhsCellidx
     );
     
+    void ReportIfNewlySolved();
+    
     bool Solve(bool checkSolutionUnique);
     
 #ifdef DEBUG
     virtual void dPrint() const;
 #endif
 private:
+    unsigned long m_numSolved;
+    unsigned long m_numCells;
     std::set<int> m_defaultPossibleValues;
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
     std::vector<std::shared_ptr<Constraint>> m_constraints;
