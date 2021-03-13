@@ -19,7 +19,9 @@ class Constraint {
 public:
     Constraint() = delete;
     Constraint(int id)
-        : m_id(id)
+    : m_solved(false) // up to the derived class to check this
+    , m_id(id)
+
     { }
     
     virtual ~Constraint() = default;
@@ -31,14 +33,22 @@ public:
         std::map< const Cell*, std::shared_ptr<Cell>* > newCellLookup
     ) = 0;
     
+    // returns the number of cells solved by applying the constraint
     virtual bool Apply() = 0;
     virtual bool Valid() const = 0;
     
     int Id() const {return m_id; }
+    // true if all related cells are alread solved, so there's no more progress made in
+    // applying it
+    bool IsSolved() const { return m_solved; }
     
 #ifdef DEBUG
-    virtual void dPrint() = 0;
+    virtual void dPrint() const = 0;
 #endif //DEBUG
+    
+protected:
+    bool m_solved;
+    
 private:
     int m_id;
 };

@@ -49,15 +49,18 @@ public:
     
     ~InequalityConstraint() override = default;
     
-    bool Apply() final { return false; }
+    // return false if the constraint turned out not to be valid
+    bool Apply() final;
     bool Valid() const final;
     
 #ifdef DEBUG
-    void dPrint() final;
+    void dPrint() const final;
 #endif //DEBUG
     
 private:
     DISALLOW_COPY_AND_ASSIGN(InequalityConstraint);
+    
+    bool SetSolvedIfPossible();
     
     std::weak_ptr<Cell> m_lhsCell;
     std::weak_ptr<Cell> m_rhsCell;

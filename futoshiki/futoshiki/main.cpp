@@ -13,12 +13,14 @@
 
 int main(int argc, const char * argv[]) {
     std::optional<Csp::ConstraintSatisfactionProblem> csp2;
-    auto csp = Csp::ConstraintSatisfactionProblem({1, 2, 3}, {1, 2, 3, 4}) ;
-    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
-    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::GreaterThan, 1);
-    csp2 = csp;
+    auto csp = Csp::ConstraintSatisfactionProblem({2, 3, Csp::Cell::kUnsolvedSymbol}, {1, 2, 3}) ;
+    csp.AddInequalityConstraint(2, Csp::InequalityConstraint::InequalityOperator::LessThan, 0);
+    csp.dPrint();
     
-    csp2.value().dPrint();
+    csp.Solve(false);
+    csp.Solve(false);
+    std::cout << "After Solve\n";
+    csp.dPrint();
     
     return 0;
 }

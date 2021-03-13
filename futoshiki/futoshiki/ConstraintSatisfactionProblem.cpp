@@ -16,10 +16,11 @@
 #include <algorithm>
 #include <utility>
 #include <map>
+#include <cassert>
 
 namespace Csp {
 
-ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::vector<int>& defaultPossibleValues)
+ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues)
     : m_defaultPossibleValues(defaultPossibleValues)
     , m_cells()
     , m_constraints()
@@ -103,7 +104,7 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
 void ConstraintSatisfactionProblem::dPrint() const {
     std::cout << "Debug Print CSP Cells: \n";
     for (auto [cellIdx, cell] : m_cells) {
-        std::cout << "cell_" <<  cell->Id() << ": " << cell->Value() << "\n";
+        cell->dPrint(true);
     }
     
     std::cout << "Debug Print CSP Constraints: \n";
@@ -153,6 +154,12 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     return true;
 }
 
+bool ConstraintSatisfactionProblem::Solve(bool checkSolutionUnique) {
+    for (auto& constraint : m_constraints) {
+        constraint->Apply();
+    }
+    return false;
+}
 
 
 } // ::Csp

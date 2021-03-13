@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <set>
 
 namespace Csp {
 
@@ -21,8 +22,7 @@ class Cell;
 class ConstraintSatisfactionProblem {
 public:
     ConstraintSatisfactionProblem() = default;
-    // possible values vector should be sorted
-    ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::vector<int>& defaultPossibleValues);
+    ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues);
     
     ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other);
     ConstraintSatisfactionProblem& operator =(const ConstraintSatisfactionProblem& other);
@@ -40,7 +40,7 @@ public:
     virtual void dPrint() const;
 #endif
 private:
-    std::vector<int> m_defaultPossibleValues;
+    std::set<int> m_defaultPossibleValues;
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
     std::vector<std::shared_ptr<Constraint>> m_constraints;
 }; // ConstraintSatisfactionProblem
