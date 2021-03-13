@@ -7,6 +7,8 @@
 
 #include "Cell.hpp"
 
+#include "Constraint.hpp"
+
 #include "utils/Utils.hpp"
 
 #include <iostream>
@@ -58,6 +60,10 @@ bool Cell::EnforceLessThan(int lessThanThis) {
         rit++;
     }
     
+    if (rit != m_possibleValues.rbegin()) {
+        ReportChangeToConstraints();
+    }
+    
     m_possibleValues.erase(rit.base(), m_possibleValues.end());
     if (m_possibleValues.size() == 0) {
         std::cerr << "WARN: Cannot enforce less than " << lessThanThis << "\n";
@@ -85,7 +91,12 @@ bool Cell::EnforceGreaterThan(int greaterThanThis) {
         it++;
     }
     
+    if (it != m_possibleValues.begin()) {
+        ReportChangeToConstraints();
+    }
+    
     m_possibleValues.erase(m_possibleValues.begin(), it);
+    
     if (m_possibleValues.size() == 0) {
         std::cerr << "WARN: Cannot enforce greater than " << greaterThanThis << "\n";
         return false;
@@ -110,6 +121,12 @@ bool Cell::SetIfPossible() {
     }
     
     return false;
+}
+
+void Cell::ReportChangeToConstraints() {
+    for (auto& constraint : m_appliedConstraints) {
+        constraint.lock()->ReportChanged();
+    }
 }
 
 #ifdef DEBUG

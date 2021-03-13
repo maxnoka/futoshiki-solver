@@ -49,6 +49,7 @@ public:
     
 private:
     bool SetIfPossible();
+    void ReportChangeToConstraints();
     
     int m_val;
     int m_id;

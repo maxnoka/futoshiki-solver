@@ -59,7 +59,7 @@ void InequalityConstraint::dPrint() const {
 #endif //DEBUG
 
 bool InequalityConstraint::Apply() {
-    if (m_solved) {
+    if (m_solved || !m_relatedCellsChanged) {
         return true;
     }
     
@@ -85,6 +85,8 @@ bool InequalityConstraint::Apply() {
     if (!constraintWasValid) {
         std::cerr << "WARN: Could not apply constraint, it was not valid";
     }
+    
+    m_relatedCellsChanged = false;
     
     return constraintWasValid;
 }

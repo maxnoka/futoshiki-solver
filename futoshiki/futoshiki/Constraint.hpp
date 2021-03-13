@@ -20,6 +20,7 @@ public:
     Constraint() = delete;
     Constraint(int id)
     : m_solved(false) // up to the derived class to check this
+    , m_relatedCellsChanged(true)
     , m_id(id)
 
     { }
@@ -37,6 +38,8 @@ public:
     virtual bool Apply() = 0;
     virtual bool Valid() const = 0;
     
+    void ReportChanged() { m_relatedCellsChanged = true; }
+    
     int Id() const {return m_id; }
     // true if all related cells are alread solved, so there's no more progress made in
     // applying it
@@ -48,6 +51,9 @@ public:
     
 protected:
     bool m_solved;
+    // false if none of the cells to which the constraint pertains
+    // have reported through ReportChanged() since the last time we did Apply()
+    bool m_relatedCellsChanged;
     
 private:
     int m_id;

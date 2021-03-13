@@ -14,10 +14,8 @@
 int main(int argc, const char * argv[]) {
     std::optional<Csp::ConstraintSatisfactionProblem> csp2;
     auto csp = Csp::ConstraintSatisfactionProblem({2, 3, Csp::Cell::kUnsolvedSymbol}, {1, 2, 3}) ;
-    csp.AddInequalityConstraint(2, Csp::InequalityConstraint::InequalityOperator::LessThan, 0);
+    csp.AddInequalityConstraint(2, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
     csp.dPrint();
-    
-    csp.Solve(false);
     csp.Solve(false);
     std::cout << "After Solve\n";
     csp.dPrint();
