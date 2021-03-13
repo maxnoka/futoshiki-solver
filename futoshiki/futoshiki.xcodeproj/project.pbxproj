@@ -73,16 +73,13 @@
 		22D8E94825F94CEE00D95938 /* futoshiki */ = {
 			isa = PBXGroup;
 			children = (
+				22D8E97025FC2E4F00D95938 /* Constraints */,
 				22D8E95B25F956F200D95938 /* utils */,
 				22D8E94925F94CEE00D95938 /* main.cpp */,
 				22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */,
 				22D8E95325F94DE700D95938 /* ConstraintSatisfactionProblem.hpp */,
 				22D8E95725F94EEB00D95938 /* Cell.cpp */,
 				22D8E95825F94EEB00D95938 /* Cell.hpp */,
-				22D8E96025F95AB300D95938 /* Constraint.cpp */,
-				22D8E96125F95AB300D95938 /* Constraint.hpp */,
-				22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */,
-				22D8E96425F961B300D95938 /* InequalityConstraint.cpp */,
 			);
 			path = futoshiki;
 			sourceTree = "<group>";
@@ -95,6 +92,17 @@
 				22D8E95D25F9570A00D95938 /* Utils.hpp */,
 			);
 			path = utils;
+			sourceTree = "<group>";
+		};
+		22D8E97025FC2E4F00D95938 /* Constraints */ = {
+			isa = PBXGroup;
+			children = (
+				22D8E96025F95AB300D95938 /* Constraint.cpp */,
+				22D8E96125F95AB300D95938 /* Constraint.hpp */,
+				22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */,
+				22D8E96425F961B300D95938 /* InequalityConstraint.cpp */,
+			);
+			name = Constraints;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

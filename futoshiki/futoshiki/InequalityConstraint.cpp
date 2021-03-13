@@ -8,6 +8,8 @@
 #include "InequalityConstraint.hpp"
 #include "Cell.hpp"
 
+#include "utils/Utils.hpp"
+
 namespace Csp {
 
 InequalityConstraint::InequalityConstraint(
@@ -49,5 +51,17 @@ void InequalityConstraint::dPrint() {
         << "\n";
 }
 #endif //DEBUG
+
+bool InequalityConstraint::Valid() const {
+    switch (m_operator) {
+        case InequalityOperator::LessThan:
+            return m_lhsCell.lock()->MinPossible() < m_rhsCell.lock()->MaxPossible();
+        case InequalityOperator::GreaterThan:
+            return m_lhsCell.lock()->MaxPossible() > m_rhsCell.lock()->MinPossible();
+        default:
+            assertm(false, "invalid constraint operator for inequality constraint");
+            return false;
+    }
+}
 
 } // ::Csp

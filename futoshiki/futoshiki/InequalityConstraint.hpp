@@ -50,7 +50,7 @@ public:
     ~InequalityConstraint() override = default;
     
     bool Apply() final { return false; }
-    bool Valid() final { return true; }
+    bool Valid() const final;
     
 #ifdef DEBUG
     void dPrint() final;

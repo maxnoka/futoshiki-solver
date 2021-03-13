@@ -9,11 +9,19 @@
 
 namespace Csp {
 
-Cell::Cell(int initVal, int id)
+Cell::Cell(int initVal, int id, const std::vector<int>& possibleValues)
     : m_val(initVal)
     , m_id(id)
+    , m_possibleValues() // set below depending on if the cell is set
     , m_appliedConstraints()
-{ }
+{
+    if (m_val != kUnsolvedSymbol) {
+        m_possibleValues = { m_id };
+    }
+    else {
+        m_possibleValues = possibleValues;
+    }
+}
 
 void Cell::UpdateConstraintPointers(std::map< const Constraint*, std::shared_ptr<Constraint>* > newConstraintLookup) {
     auto oldConstraints = m_appliedConstraints;

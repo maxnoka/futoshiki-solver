@@ -26,12 +26,13 @@ public:
     
     // uses the lookup for deep copy:
     // * updates the cell pointers in the constraints
+    // * allocated with new
     virtual Constraint* Clone(
         std::map< const Cell*, std::shared_ptr<Cell>* > newCellLookup
     ) = 0;
     
     virtual bool Apply() = 0;
-    virtual bool Valid() = 0;
+    virtual bool Valid() const = 0;
     
     int Id() const {return m_id; }
     

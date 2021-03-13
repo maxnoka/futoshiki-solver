@@ -21,16 +21,17 @@ class Cell;
 class ConstraintSatisfactionProblem {
 public:
     ConstraintSatisfactionProblem() = default;
-    ConstraintSatisfactionProblem(std::vector<int> initValues);
+    // possible values vector should be sorted
+    ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::vector<int>& defaultPossibleValues);
     
     ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other);
     ConstraintSatisfactionProblem& operator =(const ConstraintSatisfactionProblem& other);
     
     //return false if invalid constraint
     bool AddInequalityConstraint(
-        int lhsCellIdx,
+        unsigned long lhsCellIdx,
         InequalityConstraint::InequalityOperator op,
-        int rhsCellidx
+        unsigned long rhsCellidx
     );
     
     bool Solve(bool checkSolutionUnique);
@@ -39,7 +40,8 @@ public:
     virtual void dPrint() const;
 #endif
 private:
-    std::map< int, std::shared_ptr<Cell> > m_cells;
+    std::vector<int> m_defaultPossibleValues;
+    std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
     std::vector<std::shared_ptr<Constraint>> m_constraints;
 }; // ConstraintSatisfactionProblem
 
