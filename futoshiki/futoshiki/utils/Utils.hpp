@@ -55,6 +55,44 @@ std::map<K, V> ZipVectorsToMap(const std::vector<K>& keys, const std::vector<V>&
     return out;
 }
 
+template <class T>
+bool isUnique(std::vector<T> v) {
+  std::sort(v.begin(), v.end());
+  return std::unique(v.begin(), v.end()) == v.end();
+}
+
+template<typename SetReferenceType>
+struct SetReferenceMember {
+    SetReferenceMember(SetReferenceType& setRef)
+        : m_ref(setRef)
+    {}
+    
+    std::reference_wrapper< SetReferenceType > m_ref;
+    
+    friend bool operator<(
+        const SetReferenceMember& lhs,
+        const SetReferenceMember& rhs
+    ) {
+        return lhs.m_ref.get() < rhs.m_ref.get();
+    };
+};
+
+template<typename ContainerType>
+struct ReferenceContainer {
+    ReferenceContainer()
+        : m_container()
+    { }
+    
+    // have had issues with multiset, where the container does not update
+    // itself with when the references in the container changed.
+    void Update() {
+        ContainerType tmp = m_container;
+        m_container = tmp;
+    }
+    
+    ContainerType m_container;
+};
+
 } // ::Utils
 
 #endif /* Utils_hpp */

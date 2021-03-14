@@ -72,16 +72,17 @@ bool Cell::EnforceLessThan(int lessThanThis) {
     }
     
     if (rit != m_possibleValues.rbegin()) {
+        m_possibleValues.erase(rit.base(), m_possibleValues.end());
+        
+        if (m_possibleValues.size() == 0) {
+            std::cerr << "WARN: Cannot enforce less than " << lessThanThis << "\n";
+            return false;
+        }
+        
+        SetIfPossible();
+        
         ReportChangeToConstraints();
     }
-    
-    m_possibleValues.erase(rit.base(), m_possibleValues.end());
-    if (m_possibleValues.size() == 0) {
-        std::cerr << "WARN: Cannot enforce less than " << lessThanThis << "\n";
-        return false;
-    }
-    
-    SetIfPossible();
     
     return true;
 }
@@ -103,19 +104,37 @@ bool Cell::EnforceGreaterThan(int greaterThanThis) {
     }
     
     if (it != m_possibleValues.begin()) {
+        m_possibleValues.erase(m_possibleValues.begin(), it);
+        
+        if (m_possibleValues.size() == 0) {
+            std::cerr << "WARN: Cannot enforce greater than " << greaterThanThis << "\n";
+            return false;
+        }
+        
+        SetIfPossible();
+        
         ReportChangeToConstraints();
     }
     
-    m_possibleValues.erase(m_possibleValues.begin(), it);
-    
-    if (m_possibleValues.size() == 0) {
-        std::cerr << "WARN: Cannot enforce greater than " << greaterThanThis << "\n";
-        return false;
+    return true;
+}
+
+std::pair<bool, bool> Cell::EliminateVals(const std::set<int>& toRemove) {
+    bool removedAny = false;
+    for (auto val : toRemove) {
+        removedAny |= m_possibleValues.erase(val) > 0;
     }
     
-    SetIfPossible();
+    if (m_possibleValues.empty()) {
+        std::cerr << "no more possible values left for this cell";
+        return std::make_pair(false, removedAny);
+    }
     
-    return true;
+    if (removedAny) {
+        SetIfPossible();
+        ReportChangeToConstraints();
+    }
+    return std::make_pair(true, removedAny);
 }
 
 bool Cell::SetIfPossible() {
@@ -128,7 +147,12 @@ bool Cell::SetIfPossible() {
     
     if (m_possibleValues.size() == 1) {
         m_val = *m_possibleValues.begin();
-        m_csp->ReportIfNewlySolved();
+        m_csp->ReportIfCellNewlySolved();
+        /* NOTE
+        for (auto& constraint : m_appliedConstraints) {
+            constraint.lock()->SetSolvedIfPossible();
+        }
+        */
         return true;
     }
     

@@ -7,20 +7,32 @@
 
 #include "ConstraintSatisfactionProblem.hpp"
 #include "InequalityConstraint.hpp"
+#include "EqualityConstraint.hpp"
+#include "Cell.hpp"
 
 #include <iostream>
 #include <optional>
 
 int main(int argc, const char * argv[]) {
+    /*
     auto csp = Csp::ConstraintSatisfactionProblem({2, 3, Csp::Cell::kUnsolvedSymbol}, {1, 2, 3, 4}) ;
-    csp.AddInequalityConstraint(2, Csp::InequalityConstraint::InequalityOperator::LessThan, 0);
+    csp.AddEqualityConstraint({0, 1}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
     csp.dPrint();
-    csp.Solve(false);
-    std::cout << "After Solve\n";
-    csp.dPrint();
+    */
     
-    auto csp2 = csp;
-    csp2.dPrint();
+    auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 1, 2, 3, Csp::Cell::kUnsolvedSymbol}, {1, 2, 3});
+    csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
+    std::cout << "  FIRST SOLVE\n";
+    csp.Solve(false);
+    csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
+    std::cout << "  SECOND SOLVE\n";
+    csp.Solve(false);
+    std::cout << "==================\n";
+    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
+    csp.dPrint(false);
+    std::cout << "  THIRD SOLVE\n";
+    csp.Solve(false);
+    csp.dPrint(false);
     
     return 0;
 }

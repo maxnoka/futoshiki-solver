@@ -21,7 +21,9 @@
 namespace Csp {
 
 ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues)
-    : m_numSolved(0) // reported back to us when we construct the cells
+    : m_numSolvedCells(0) // reported back to us when we construct the cells
+    , m_numSolvedConstraints(0)
+    , m_numActiveConstraints(0)
     , m_numCells(initValues.size())
     , m_defaultPossibleValues(defaultPossibleValues)
     , m_cells()
@@ -33,7 +35,9 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<i
 }
 
 ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other)
-    : m_numSolved(other.m_numSolved)
+    : m_numSolvedCells(other.m_numSolvedCells)
+    , m_numSolvedConstraints(other.m_numSolvedConstraints)
+    , m_numActiveConstraints(other.m_numActiveConstraints)
     , m_numCells(other.m_numCells)
     , m_defaultPossibleValues(other.m_defaultPossibleValues)
     , m_cells()
@@ -65,7 +69,7 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSat
     
     // Deep copy the constraints: updates the cell pointers to the new cells with the lookup map
     for (const auto& otherConstraint : other.m_constraints) {
-        m_constraints.emplace_back(otherConstraint->Clone(newCellLookup));
+        m_constraints.emplace_back(otherConstraint->Clone(newCellLookup, this));
     }
     
     // Create the old to new constraint lookup vectors
@@ -100,23 +104,29 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
     std::swap(m_defaultPossibleValues, tmp.m_defaultPossibleValues);
     std::swap(m_cells, tmp.m_cells);
     std::swap(m_constraints, tmp.m_constraints);
-    std::swap(m_numSolved, tmp.m_numSolved);
+    std::swap(m_numSolvedCells, tmp.m_numSolvedCells);
+    std::swap(m_numSolvedConstraints, tmp.m_numSolvedConstraints);
+    std::swap(m_numActiveConstraints, tmp.m_numActiveConstraints);
     std::swap(m_numCells, tmp.m_numCells);
     
     return *this;
 }
 
 #ifdef DEBUG
-void ConstraintSatisfactionProblem::dPrint() const {
-    std::cout << "Debug Print CSP Cells: \n";
-    for (auto [cellIdx, cell] : m_cells) {
-        cell->dPrint(true);
+void ConstraintSatisfactionProblem::dPrint(bool printCells) const {
+    std::cout << "---- CSP ----\n";
+    if (printCells) {
+        std::cout << "Debug Print CSP Cells: \n";
+        for (auto [cellIdx, cell] : m_cells) {
+            cell->dPrint(true);
+        }
     }
     
     std::cout << "Debug Print CSP Constraints: \n";
     for (auto constraint : m_constraints) {
         constraint->dPrint();
     }
+    std::cout << "---- END ----\n";
 }
 #endif
 
@@ -141,7 +151,7 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     auto& lhsCell = m_cells.at(lhsCellIdx);
     auto& rhsCell = m_cells.at(rhsCellIdx);
     
-    auto constraint = std::make_shared<InequalityConstraint>(m_constraints.size(), lhsCell, op, rhsCell);
+    auto constraint = std::make_shared<InequalityConstraint>(m_constraints.size(), lhsCell, op, rhsCell, this);
     
     if (!constraint->Valid()) {
         std::cout << "ERR: Tried to add invalid constraint. Cannot add inequality constraint.\n";
@@ -160,20 +170,94 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     return true;
 }
 
-void ConstraintSatisfactionProblem::ReportIfNewlySolved() {
-    ++m_numSolved;
+bool ConstraintSatisfactionProblem::AddEqualityConstraint(
+    const std::vector<unsigned long>& cellIndeces,
+    EqualityConstraint::EqualityOperator op
+) {
+    for (auto cellIndex : cellIndeces) {
+        if ( cellIndex >= m_cells.size() ) {
+            std::cerr << "ERR: Invalid cell indeces (out of range). Cannot add equality constraint.\n";
+            return false;
+        }
+    }
     
-    assertm(m_numSolved <= m_numCells, "number of solved cells should be less than the number cells");
+    if (!Utils::isUnique(cellIndeces)) {
+        std::cerr << "ERR: Invalid cell indeces (equal). Cannot add equality constraint.\n";
+        return false;
+    }
     
-    if (m_numSolved == m_numCells) {
+    std::vector< std::weak_ptr<Cell> > cellPointers;
+    std::transform(cellIndeces.cbegin(), cellIndeces.cend(), std::back_inserter(cellPointers),
+        [this](unsigned long cellIndex) {
+            return m_cells.at(cellIndex);
+        }
+    );
+    
+    auto constraint = std::make_shared<EqualityConstraint>(m_constraints.size(), cellPointers, op, this);
+    
+    if (!constraint->Valid()) {
+        std::cout << "ERR: Tried to add invalid constraint. Cannot add inequality constraint.\n";
+        return false;
+    }
+    
+    m_constraints.push_back(
+        std::static_pointer_cast<Constraint>(
+            std::move(constraint)
+        )
+    );
+    
+    for (auto& pCell : cellPointers) {
+        pCell.lock()->AddConstraint(m_constraints.back());
+    }
+
+    return true;
+}
+
+void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
+    ++m_numSolvedCells;
+    
+    assertm(m_numSolvedCells <= m_numCells, "number of solved cells should be less than the number cells");
+    
+    if (m_numSolvedCells == m_numCells) {
         std::cout << "SOLVED\n";
     }
 }
 
+void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
+    ++m_numSolvedConstraints;
+    
+    assertm(m_numSolvedConstraints <= m_constraints.size(), "number of solved constraints should be less than the number of constraints");
+    
+    if (m_numSolvedConstraints == m_constraints.size()) {
+        std::cout << "All constraints solved\n";
+    }
+}
+
+void ConstraintSatisfactionProblem::ReportIfConstraintBecomesActive() {
+    // TODO: there must be a better way here: the +1 is necessary, as the when adding a constraint we call this before it is added to the vector
+    assertm(m_numActiveConstraints < m_constraints.size() + 1, "can only have as many active constraints as there are constraints");
+    ++m_numActiveConstraints;
+}
+
+void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
+    assertm(m_numActiveConstraints > 0, "cannot have fewer than zero active constraints");
+    --m_numActiveConstraints;
+    
+    if (m_numActiveConstraints == 0) {
+        std::cout << "no more active constraints. Nothing more to be done.\n";
+    }
+    
+}
+
 bool ConstraintSatisfactionProblem::Solve(bool checkSolutionUnique) {
     for (auto& constraint : m_constraints) {
-        constraint->Apply();
+        if (constraint->IsActive()) {
+            if(!constraint->Apply()) {
+                std::cerr << "ERR: constraint turned out to be invalid";
+            };
+        }
     }
+    std::cout << "WARN: Nothing more to do\n";
     return false;
 }
 

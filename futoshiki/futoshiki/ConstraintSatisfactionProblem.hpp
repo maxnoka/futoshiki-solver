@@ -9,6 +9,7 @@
 #define ConstraintSatisfactionProblem_hpp
 
 #include "InequalityConstraint.hpp"
+#include "EqualityConstraint.hpp"
 
 #include <vector>
 #include <map>
@@ -33,16 +34,27 @@ public:
         InequalityConstraint::InequalityOperator op,
         unsigned long rhsCellidx
     );
+    bool AddEqualityConstraint(
+        const std::vector<unsigned long>& cellIndeces,
+        EqualityConstraint::EqualityOperator op
+    );
     
-    void ReportIfNewlySolved();
+    void ReportIfCellNewlySolved();
+    void ReportIfConstraintNewlySolved();
+    
+    void ReportIfConstraintBecomesActive();
+    void ReportIfConstraintBecomesInactive();
     
     bool Solve(bool checkSolutionUnique);
     
 #ifdef DEBUG
-    virtual void dPrint() const;
+    virtual void dPrint(bool printCells) const;
 #endif
 private:
-    unsigned long m_numSolved;
+    unsigned long m_numSolvedCells;
+    unsigned long m_numSolvedConstraints;
+    unsigned long m_numActiveConstraints;
+    
     unsigned long m_numCells;
     std::set<int> m_defaultPossibleValues;
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;

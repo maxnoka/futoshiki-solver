@@ -13,6 +13,7 @@
 		22D8E95E25F9570A00D95938 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95C25F9570A00D95938 /* Utils.cpp */; };
 		22D8E96225F95AB300D95938 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E96025F95AB300D95938 /* Constraint.cpp */; };
 		22D8E96625F961B300D95938 /* InequalityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E96425F961B300D95938 /* InequalityConstraint.cpp */; };
+		22E524D825FCCE4D00785EE8 /* EqualityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +42,8 @@
 		22D8E96425F961B300D95938 /* InequalityConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InequalityConstraint.cpp; sourceTree = "<group>"; };
 		22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = InequalityConstraint.hpp; sourceTree = "<group>"; };
 		22D8E96C25FC27E600D95938 /* MacroUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacroUtils.h; sourceTree = "<group>"; };
+		22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EqualityConstraint.cpp; sourceTree = "<group>"; };
+		22E524D725FCCE4D00785EE8 /* EqualityConstraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EqualityConstraint.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,8 @@
 				22D8E96125F95AB300D95938 /* Constraint.hpp */,
 				22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */,
 				22D8E96425F961B300D95938 /* InequalityConstraint.cpp */,
+				22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */,
+				22E524D725FCCE4D00785EE8 /* EqualityConstraint.hpp */,
 			);
 			name = Constraints;
 			sourceTree = "<group>";
@@ -167,6 +172,7 @@
 				22D8E94A25F94CEE00D95938 /* main.cpp in Sources */,
 				22D8E95E25F9570A00D95938 /* Utils.cpp in Sources */,
 				22D8E96225F95AB300D95938 /* Constraint.cpp in Sources */,
+				22E524D825FCCE4D00785EE8 /* EqualityConstraint.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

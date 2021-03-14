@@ -12,6 +12,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <utility>
 
 namespace Csp {
 
@@ -38,6 +39,9 @@ public:
     // true otherwise
     bool EnforceLessThan(int lessThanThis);
     bool EnforceGreaterThan(int greaterThanThis);
+    // 1. true iff constraint was valid
+    // 2. true iff a value was removed
+    std::pair<bool, bool> EliminateVals(const std::set<int>& toRemove);
     
     int MinPossible() const { return *m_possibleValues.begin(); }
     int MaxPossible() const { return *m_possibleValues.rbegin(); }
@@ -45,6 +49,10 @@ public:
     bool IsSolved() const { return m_val != kUnsolvedSymbol; }
     int Value() const { return m_val; }
     int Id() const {return m_id; }
+    // for constraint classes (EqualityConstaint need access to this reference)
+    // should be ok, as the lifetime of the constraints and the cells are the same
+    // TODO: this maybe requires some more thinking
+    const std::set<int>& GetPossibleValuesRef() { return m_possibleValues; }
     
 #ifdef DEBUG
     std::string dPrint(bool toCout) const;

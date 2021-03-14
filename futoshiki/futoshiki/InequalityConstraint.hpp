@@ -36,7 +36,8 @@ public:
         int id,
         const std::weak_ptr<Cell>& lhsCell,
         InequalityOperator op,
-        const std::weak_ptr<Cell>& rhsCell
+        const std::weak_ptr<Cell>& rhsCell,
+        ConstraintSatisfactionProblem* csp
     );
     InequalityConstraint() = delete;
     
@@ -44,7 +45,8 @@ public:
     // 1) updates the cell pointers in the constraints
     // 2) also updates the constraint pointers in the new cells
     InequalityConstraint* Clone(
-        std::map< const Cell*, std::shared_ptr<Cell>* > newCellLookup
+        std::map< const Cell*, std::shared_ptr<Cell>* >& newCellLookup
+        , ConstraintSatisfactionProblem* newCsp
     ) final;
     
     ~InequalityConstraint() override = default;
@@ -53,14 +55,15 @@ public:
     bool Apply() final;
     bool Valid() const final;
     
+    bool SetSolvedIfPossible() override;
+
+    
 #ifdef DEBUG
     void dPrint() const final;
 #endif //DEBUG
     
 private:
     DISALLOW_COPY_AND_ASSIGN(InequalityConstraint);
-    
-    bool SetSolvedIfPossible();
     
     std::weak_ptr<Cell> m_lhsCell;
     std::weak_ptr<Cell> m_rhsCell;
