@@ -16,6 +16,11 @@
 #include <memory>
 #include <set>
 
+#ifndef DEBUG_CSP
+#define DEBUG_CSP 0
+#endif
+
+
 namespace Csp {
 
 class Cell;

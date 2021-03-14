@@ -46,6 +46,7 @@ public:
     void ReportChanged() {
         assertm(!m_solved, "cells changed, but constraint was already marked as solved\n");
         const bool previouslyActive = IsActive();
+        m_relatedCellsChanged = true;
         if (SetSolvedIfPossible()) {
             if (previouslyActive) {
                 ReportBecameInactive();
@@ -56,7 +57,6 @@ public:
                 ReportBecameActive();
             }
         }
-        m_relatedCellsChanged = true;
     }
     
     int Id() const {return m_id; }

@@ -11,12 +11,18 @@
 namespace Csp {
 
 void Constraint::ReportBecameInactive() const {
-    std::cout << "reporting became inactive\n";
+    assertm(!IsActive(), "reporting became inactive, but still active\n");
+#if DEBUG_CSP
+    std::cout << "con_" << m_id << " reporting became inactive\n";
+#endif // DEBUG_CSP
     m_csp->ReportIfConstraintBecomesInactive();
 }
 
 void Constraint::ReportBecameActive() const {
-    std::cout << "reporting became active\n";
+    assertm(IsActive(), "reporting became active, but still inactive\n");
+#if DEBUG_CSP
+    std::cout << "con_" << m_id << " reporting became active\n";
+#endif // DEBUG_CSP
     m_csp->ReportIfConstraintBecomesActive();
 }
 

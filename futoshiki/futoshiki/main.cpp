@@ -22,15 +22,11 @@ int main(int argc, const char * argv[]) {
     
     auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 1, 2, 3}, {1, 2, 3});
     csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
-    std::cout << "  FIRST SOLVE\n";
     csp.DeterministicSolve();
     csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
-    std::cout << "  SECOND SOLVE\n";
     auto res = csp.DeterministicSolve();
-    std::cout << "==================\n";
     csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
     csp.dPrint(false);
-    std::cout << "  THIRD SOLVE\n";
     res = csp.DeterministicSolve();
     csp.dPrint(true);
     

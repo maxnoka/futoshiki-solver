@@ -226,7 +226,9 @@ void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
     
     if (m_numSolvedCells == m_numCells) {
         m_completelySolved = true;
-        std::cout << "SOLVED\n";
+#if DEBUG_CSP
+        std::cout << "All cells solved\n";
+#endif // DEBUG_CSP
     }
 }
 
@@ -236,7 +238,9 @@ void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
     assertm(m_numSolvedConstraints <= m_constraints.size(), "number of solved constraints should be less than the number of constraints");
     
     if (m_numSolvedConstraints == m_constraints.size()) {
+#if DEBUG_CSP
         std::cout << "All constraints solved\n";
+#endif // DEBUG_CSP
     }
 }
 
@@ -249,25 +253,31 @@ void ConstraintSatisfactionProblem::ReportIfConstraintBecomesActive() {
 void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
     assertm(m_numActiveConstraints > 0, "cannot have fewer than zero active constraints");
     --m_numActiveConstraints;
-    
+
+#if DEBUG_CSP
     if (m_numActiveConstraints == 0) {
-        std::cout << "no more active constraints. Nothing more to be done.\n";
+        std::cout << "No more active constraints.\n";
     }
-    
+#endif // DEBUG_CSP
 }
 
 ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::DeterministicSolve() {
+#if DEBUG_CSP
+    std::cout << "\t--- Starting deterministic solve --- \n";
+#endif // DEBUG_CSP
     while(m_numActiveConstraints > 0) {
         for (auto& constraint : m_constraints) {
             if (constraint->IsActive()) {
                 if(!constraint->Apply()) {
                     std::cerr << "ERR: constraint turned out to be invalid";
                     return {false, false}; // invalid
-                };
+                }
             }
         }
     }
-    std::cout << "WARN: Nothing more to do\n";
+#if DEBUG_CSP
+    std::cout << "\t--- Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ") ---\n\n";
+#endif // DEBUG_CSP
     m_provenValid = true;
     return {m_completelySolved, m_provenValid}; // valid
 }
