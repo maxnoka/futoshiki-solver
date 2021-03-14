@@ -188,7 +188,11 @@ bool EqualityConstraint::Apply() {
     }
     
     m_relatedCellsChanged = false;
-    ReportBecameInactive();
+    
+    if(!m_solved) { // transition to inactive not yet reported when the cell reported back to the constraint
+        ReportBecameInactive();
+    }
+    
     return constraintWasValid;
 }
 

@@ -22,12 +22,10 @@ int main(int argc, const char * argv[]) {
     
     auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 1, 2, 3}, {1, 2, 3});
     csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
-    csp.DeterministicSolve();
-    csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
-    auto res = csp.DeterministicSolve();
     csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
-    csp.dPrint(false);
-    res = csp.DeterministicSolve();
+    csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
+    
+    auto res = csp.DeterministicSolve();
     csp.dPrint(true);
     
     return 0;
