@@ -50,8 +50,9 @@ public:
     int Value() const { return m_val; }
     int Id() const {return m_id; }
     // for constraint classes (EqualityConstaint need access to this reference)
-    // should be ok, as the lifetime of the constraints and the cells are the same
-    // TODO: this maybe requires some more thinking
+    // should be ok, as the lifetime of the constraints and the cells are the same (CSP lifetime)
+    // TODO: this maybe requires some more thinking (what's the point of all the weak and shared
+    // pointers if i'm just going to end up doing this
     const std::set<int>& GetPossibleValuesRef() { return m_possibleValues; }
     
 #ifdef DEBUG

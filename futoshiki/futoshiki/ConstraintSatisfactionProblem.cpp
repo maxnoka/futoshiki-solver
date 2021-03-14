@@ -246,6 +246,7 @@ void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
 
 void ConstraintSatisfactionProblem::ReportIfConstraintBecomesActive() {
     // TODO: there must be a better way here: the +1 is necessary, as the when adding a constraint we call this before it is added to the vector
+    // clearly the assertm can be made stricter after when not adding constraints for the first time
     assertm(m_numActiveConstraints < m_constraints.size() + 1, "can only have as many active constraints as there are constraints");
     ++m_numActiveConstraints;
 }

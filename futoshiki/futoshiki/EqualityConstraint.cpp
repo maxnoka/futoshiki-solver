@@ -153,7 +153,7 @@ EqualityConstraint* EqualityConstraint::Clone(
 #ifdef DEBUG
 void EqualityConstraint::dPrint() const {
     std::cout << (m_solved ? "SOLVED" : "NOT SOLVED");
-    std::cout << (m_relatedCellsChanged ? "* " : " ");
+    std::cout << (m_relatedCellsChanged ? "* " : "  ");
     
     for (auto it = m_cells.cbegin(); it != m_cells.end() - 1; ++it) {
         std::cout << it->lock()->dPrint(false) << " " << m_operator << " ";
@@ -170,12 +170,11 @@ bool EqualityConstraint::Apply() {
     bool constraintWasValid = true;
     switch (m_operator) {
         case EqualityOperator::NotEqualTo: {
-            // TODO: make this a callback from the cells to the constraints!
             constraintWasValid = EvalMutuallyExclusiveNotEqualConditions();
             break;
         }
         case EqualityOperator::EqualTo: {
-            assertm(false, "equal to constraint not yet implemented");
+            assertm(false, "equal-to constraint not yet implemented");
             return false;
         }
         default:
@@ -199,10 +198,10 @@ bool EqualityConstraint::Apply() {
 bool EqualityConstraint::Valid() const {
     switch (m_operator) {
         case EqualityOperator::NotEqualTo:
-            // TODO
-            return true; //m_lhsCell.lock()->MinPossible() < m_rhsCell.lock()->MaxPossible();
+            // TODO: probably a simple valid check will (it will be hard to keep track of eliminated values and all that without removing them from the cells)
+            return true;
         case EqualityOperator::EqualTo:
-            assertm(false, "equal to constraint not yet implemented");
+            assertm(false, "equal-to constraint not yet implemented");
             return false;
         default:
             assertm(false, "invalid constraint operator for equality constraint");

@@ -57,7 +57,7 @@ InequalityConstraint* InequalityConstraint::Clone(
 #ifdef DEBUG
 void InequalityConstraint::dPrint() const {
     std::cout << (m_solved ? "SOLVED" : "NOT SOLVED");
-    std::cout << (m_relatedCellsChanged ? "* " : " ");
+    std::cout << (m_relatedCellsChanged ? "* " : "  ");
     
     auto lhs = m_lhsCell.lock();
     auto rhs = m_rhsCell.lock();

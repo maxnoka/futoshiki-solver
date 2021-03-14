@@ -22,7 +22,7 @@ int main(int argc, const char * argv[]) {
     
     auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 1, 2, 3}, {1, 2, 3});
     csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
-    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::LessThan, 1);
+    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::GreaterThan, 1);
     csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
     
     auto res = csp.DeterministicSolve();
