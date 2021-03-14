@@ -45,12 +45,22 @@ public:
     void ReportIfConstraintBecomesActive();
     void ReportIfConstraintBecomesInactive();
     
-    bool Solve(bool checkSolutionUnique);
+    struct SolveSolution {
+        bool completeSolve;
+        bool valid; // if invalid, then completeSolve is not defined
+    };
+    
+    SolveSolution DeterministicSolve();
+    
+    bool IsCompletelySolved() { return m_completelySolved; }
+    bool ProvenInValid() { return m_provenValid;}
     
 #ifdef DEBUG
     virtual void dPrint(bool printCells) const;
 #endif
 private:
+    bool m_completelySolved;
+    bool m_provenValid;
     unsigned long m_numSolvedCells;
     unsigned long m_numSolvedConstraints;
     unsigned long m_numActiveConstraints;

@@ -24,6 +24,8 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<i
     : m_numSolvedCells(0) // reported back to us when we construct the cells
     , m_numSolvedConstraints(0)
     , m_numActiveConstraints(0)
+    , m_provenValid(false)
+    , m_completelySolved(false)
     , m_numCells(initValues.size())
     , m_defaultPossibleValues(defaultPossibleValues)
     , m_cells()
@@ -38,6 +40,8 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSat
     : m_numSolvedCells(other.m_numSolvedCells)
     , m_numSolvedConstraints(other.m_numSolvedConstraints)
     , m_numActiveConstraints(other.m_numActiveConstraints)
+    , m_provenValid(other.m_provenValid)
+    , m_completelySolved(other.m_completelySolved)
     , m_numCells(other.m_numCells)
     , m_defaultPossibleValues(other.m_defaultPossibleValues)
     , m_cells()
@@ -107,6 +111,8 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
     std::swap(m_numSolvedCells, tmp.m_numSolvedCells);
     std::swap(m_numSolvedConstraints, tmp.m_numSolvedConstraints);
     std::swap(m_numActiveConstraints, tmp.m_numActiveConstraints);
+    std::swap(m_provenValid, tmp.m_provenValid);
+    std::swap(m_completelySolved, tmp.m_completelySolved);
     std::swap(m_numCells, tmp.m_numCells);
     
     return *this;
@@ -219,6 +225,7 @@ void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
     assertm(m_numSolvedCells <= m_numCells, "number of solved cells should be less than the number cells");
     
     if (m_numSolvedCells == m_numCells) {
+        m_completelySolved = true;
         std::cout << "SOLVED\n";
     }
 }
@@ -249,16 +256,20 @@ void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
     
 }
 
-bool ConstraintSatisfactionProblem::Solve(bool checkSolutionUnique) {
-    for (auto& constraint : m_constraints) {
-        if (constraint->IsActive()) {
-            if(!constraint->Apply()) {
-                std::cerr << "ERR: constraint turned out to be invalid";
-            };
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::DeterministicSolve() {
+    while(m_numActiveConstraints > 0) {
+        for (auto& constraint : m_constraints) {
+            if (constraint->IsActive()) {
+                if(!constraint->Apply()) {
+                    std::cerr << "ERR: constraint turned out to be invalid";
+                    return {false, false}; // invalid
+                };
+            }
         }
     }
     std::cout << "WARN: Nothing more to do\n";
-    return false;
+    m_provenValid = true;
+    return {m_completelySolved, m_provenValid}; // valid
 }
 
 
