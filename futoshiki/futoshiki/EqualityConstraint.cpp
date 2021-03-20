@@ -209,4 +209,31 @@ bool EqualityConstraint::Valid() const {
     }
 }
 
+crow::json::wvalue EqualityConstraint::Serialize() const {
+    auto out = crow::json::wvalue();   
+    
+    std::vector<int> outCellsIndeces(m_cells.size());
+    std::transform(
+        m_cells.begin(),
+        m_cells.end(),
+        outCellsIndeces.begin(),
+        [](const std::weak_ptr<Cell>& pCell){
+            return pCell.lock()->Id();
+        }
+    );
+    
+    out["cells"] = outCellsIndeces;
+    
+    out["constraint_id"] = m_id;
+    
+    std::stringstream ss;
+    ss << m_operator;
+    out["operator"] = ss.str();
+    
+    out["type"] = "equality";
+
+    return out;
+}
+
+
 } // ::Csp

@@ -114,4 +114,21 @@ bool InequalityConstraint::Valid() const {
     }
 }
 
+crow::json::wvalue InequalityConstraint::Serialize() const {
+    auto out = crow::json::wvalue();
+    
+    std::vector<int> outCellsIndeces({m_lhsCell.lock()->Id(), m_rhsCell.lock()->Id()});
+    out["cells"] = outCellsIndeces;
+    
+    out["constraint_id"] = m_id;
+    
+    std::stringstream ss;
+    ss << m_operator;
+    out["operator"] = ss.str();
+    
+    out["type"] = "inequality";
+    
+    return out;
+}
+
 } // ::Csp

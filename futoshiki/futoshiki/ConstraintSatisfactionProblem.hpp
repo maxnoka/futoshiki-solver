@@ -11,6 +11,13 @@
 #include "InequalityConstraint.hpp"
 #include "EqualityConstraint.hpp"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wcomma"
+#include <crow/json.h>
+#pragma clang diagnostic pop
+
 #include <vector>
 #include <map>
 #include <memory>
@@ -59,6 +66,8 @@ public:
     
     bool IsCompletelySolved() { return m_completelySolved; }
     bool ProvenInValid() { return m_provenValid;}
+    
+    crow::json::wvalue Serialize() const;
     
 #ifdef DEBUG
     virtual void dPrint(bool printCells) const;

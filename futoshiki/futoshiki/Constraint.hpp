@@ -12,6 +12,13 @@
 
 #include "utils/Utils.hpp"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wcomma"
+#include <crow/json.h>
+#pragma clang diagnostic pop
+
 #include <memory>
 #include <map>
 #include <iostream>
@@ -71,10 +78,14 @@ public:
     virtual void dPrint() const = 0;
 #endif //DEBUG
     
+    virtual crow::json::wvalue Serialize() const = 0;
+    
 protected:
     bool m_solved;
     
     ConstraintSatisfactionProblem* m_csp;
+    
+    int m_id;
     
     // false if none of the cells to which the constraint pertains
     // have reported through ReportChanged() since the last time we did Apply()
@@ -86,9 +97,7 @@ protected:
     //   become active: was inactive, but then relatedCellsChanged
     void ReportBecameInactive() const;
     void ReportBecameActive() const;
-    
-private:
-    int m_id;
+
 };
 
 } // ::Csp

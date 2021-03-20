@@ -17,6 +17,7 @@
 #include <utility>
 #include <map>
 #include <cassert>
+#include <sstream>
 
 namespace Csp {
 
@@ -283,6 +284,35 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Dete
     return {m_completelySolved, m_provenValid}; // valid
 }
 
+crow::json::wvalue ConstraintSatisfactionProblem::Serialize() const {
+    auto out = crow::json::wvalue();
+    
+    out["num_cells"] = m_cells.size();
+    
+    std::vector<crow::json::wvalue> cellsArray;
+    std::transform(
+        m_cells.cbegin(),
+        m_cells.cend(),
+        back_inserter(cellsArray),
+        [](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) {
+            return pair.second->Serialize();
+        }
+    );
+    out["cells"] = std::move(cellsArray);
+    
+    std::vector<crow::json::wvalue> constraintsArray;
+    std::transform(
+        m_constraints.cbegin(),
+        m_constraints.cend(),
+        back_inserter(constraintsArray),
+        [](const std::shared_ptr<Constraint>& pConstraints) {
+            return pConstraints->Serialize();
+        }
+    );
+    out["constraints"] = std::move(constraintsArray);
+    
+    return out;
+}
 
 } // ::Csp
 

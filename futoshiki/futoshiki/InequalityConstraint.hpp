@@ -62,6 +62,8 @@ public:
     void dPrint() const final;
 #endif //DEBUG
     
+    crow::json::wvalue Serialize() const final;
+
 private:
     DISALLOW_COPY_AND_ASSIGN(InequalityConstraint);
     

@@ -8,6 +8,13 @@
 #ifndef Cell_hpp
 #define Cell_hpp
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wcomma"
+#include <crow/json.h>
+#pragma clang diagnostic pop
+
 #include <memory>
 #include <vector>
 #include <set>
@@ -54,6 +61,8 @@ public:
     // TODO: this maybe requires some more thinking (what's the point of all the weak and shared
     // pointers if i'm just going to end up doing this
     const std::set<int>& GetPossibleValuesRef() { return m_possibleValues; }
+    
+    crow::json::wvalue Serialize() const;
     
 #ifdef DEBUG
     std::string dPrint(bool toCout) const;

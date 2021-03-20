@@ -189,6 +189,18 @@ std::string Cell::dPrint(bool toCout) const {
 }
 #endif
 
+crow::json::wvalue Cell::Serialize() const {
+    auto out = crow::json::wvalue();
+    
+    out["cell_id"] = m_id;
+    out["val"] = m_val;
+    
+    std::vector<int> outPossibleVals(m_possibleValues.size());
+    std::copy(m_possibleValues.begin(), m_possibleValues.end(), outPossibleVals.begin());
+    out["possible-vals"] = outPossibleVals;
+    
+    return out;
+}
 
 } // ::Csp
 
