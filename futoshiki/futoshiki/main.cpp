@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
     // would also like to get the "this is the reason why its invalid"
     // heuristic function for guesses...
     
-    auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 3}, {1, 2, 3});
+    auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 3}, {1, 2, 3, 4, 5, 6, 7, 8, 9});
     csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
     csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::GreaterThan, 1);
     csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);

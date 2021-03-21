@@ -197,7 +197,7 @@ crow::json::wvalue Cell::Serialize() const {
     
     std::vector<int> outPossibleVals(m_possibleValues.size());
     std::copy(m_possibleValues.begin(), m_possibleValues.end(), outPossibleVals.begin());
-    out["possible-vals"] = outPossibleVals;
+    out["possible_vals"] = outPossibleVals;
     
     return out;
 }

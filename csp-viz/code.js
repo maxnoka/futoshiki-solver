@@ -1,3 +1,25 @@
+function GenPossibleOptionsTable(possibleOptionsArray) {
+    var html = '<table class="possible-vals-table">';
+    for (var i = 1; i <= 9; i++) {
+        if ( (i - 1) % 3 == 0) {
+            html += "<tr>";
+        }
+
+        html += '<td><div class="possible-val-cell">'
+        if (possibleOptionsArray.includes(i)) {
+            html += i;
+        }
+       html += "</div></td>";
+
+        if ( i % 3 == 0) {
+            html += "</tr>";
+        }
+    }
+    html += "</table>";
+    return html;
+}
+
+
 fetch('http://localhost:18080')
     .then(response => response.json())
     .then(inData => {
@@ -10,7 +32,8 @@ fetch('http://localhost:18080')
             outdata.nodes.push( { 
                 data: { 
                     id: 'cell_' + inData.cells[i].cell_id ,
-                    val: inData.cells[i].val
+                    val: inData.cells[i].val,
+                    possible_vals: inData.cells[i].possible_vals
                 },
                 classes: 'cell' 
             } );
@@ -19,7 +42,7 @@ fetch('http://localhost:18080')
         for ( var i = 0; i < inData.constraints.length; i+=1 ) {
             outdata.nodes.push( { 
                 data: { 
-                    id: 'constraint_' + inData.constraints[i].constraint_id,
+                    id: 'cnst' + inData.constraints[i].constraint_id,
                     operator: inData.constraints[i].operator
                 },
                 classes: 'constraint'
@@ -32,7 +55,7 @@ fetch('http://localhost:18080')
                         id: 'link_' + inData.constraints[i].constraint_id + '_' + inData.constraints[i].cells[0],
                         operator: inData.constraints[i].operator,
                         source: 'cell_' + inData.constraints[i].cells[0],
-                        target: 'constraint_' + inData.constraints[i].constraint_id
+                        target: 'cnst' + inData.constraints[i].constraint_id
                     } 
                 });
 
@@ -41,7 +64,7 @@ fetch('http://localhost:18080')
                     data: { 
                         id: 'link_' + inData.constraints[i].constraint_id + '_' + inData.constraints[i].cells[1],
                         operator: inData.constraints[i].operator,
-                        source: 'constraint_' + inData.constraints[i].constraint_id,
+                        source: 'cnst' + inData.constraints[i].constraint_id,
                         target: 'cell_' + inData.constraints[i].cells[1]
                     } 
                 });
@@ -53,7 +76,7 @@ fetch('http://localhost:18080')
                         data: { 
                             id: 'link_' + inData.constraints[i].constraint_id + '_' + inData.constraints[i].cells[j],
                             operator: inData.constraints[i].operator,
-                            source: 'constraint_' + inData.constraints[i].constraint_id,
+                            source: 'cnst' + inData.constraints[i].constraint_id,
                             target: 'cell_' + inData.constraints[i].cells[j]
                         } 
                     });
@@ -80,7 +103,10 @@ fetch('http://localhost:18080')
             {
               selector: '.cell',
               css: {
-                'background-color': 'cornflowerblue'
+                'shape': 'square',
+                'background-color': 'cornflowerblue',
+                'width': 40,
+                'height': 40
               }
             },
             {
@@ -113,8 +139,9 @@ fetch('http://localhost:18080')
         {
             query: '.cell',
             valign: 'bottom',
+            valignBox: 'bottom',
             tpl: function(data) {
-                return '<p class="cy-title__p1"> ' + data.id + '</p>';
+                return '<div class="cy-title__p1"> ' + data.id + '</div>';
             }
         }
         ]);
@@ -123,7 +150,7 @@ fetch('http://localhost:18080')
             query: '.cell',
             valign: 'center',
             tpl: function(data) {
-                return '<p class="cy-title__p2">' + data.val + '</p>';
+                return '<div class="cy-title__p2">' + GenPossibleOptionsTable(data.possible_vals) + '</div>';
             }
         }
         ]);

@@ -9,3 +9,14 @@ body {
   left: 0;
   top: 0;
 }
+
+.possible-val-cell {
+    height: 10px;
+    width: 10px;
+    text-align: center;
+    line-height: 10px;
+}
+
+.possible-vals-table {
+    border-collapse: collapse;
+}
