@@ -31,7 +31,7 @@ public:
     static constexpr auto kUnsolvedSymbol = 0;
     
     // assumes the possible values vector is sorted
-    Cell(int initVal, int id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp);
+    Cell(int initVal, const std::string& id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp);
     Cell() = delete;
     Cell(const Cell& other) = delete;
     Cell& operator =(const Cell&) = delete;
@@ -55,7 +55,7 @@ public:
     
     bool IsSolved() const { return m_val != kUnsolvedSymbol; }
     int Value() const { return m_val; }
-    int Id() const {return m_id; }
+    std::string Id() const {return m_id; }
     // for constraint classes (EqualityConstaint need access to this reference)
     // should be ok, as the lifetime of the constraints and the cells are the same (CSP lifetime)
     // TODO: this maybe requires some more thinking (what's the point of all the weak and shared
@@ -74,7 +74,7 @@ private:
     void ReportChangeToConstraints();
     
     int m_val;
-    int m_id;
+    std::string m_id;
     std::set<int> m_possibleValues;
     std::vector<std::weak_ptr<Constraint>> m_appliedConstraints;
     ConstraintSatisfactionProblem* m_csp;

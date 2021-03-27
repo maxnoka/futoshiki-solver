@@ -95,13 +95,12 @@ bool EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions() {
 EqualityConstraint::EqualityConstraint(
     int id,
     const std::vector< std::weak_ptr<Cell> >& cells,
-    EqualityOperator op,
+    Operator op,
     ConstraintSatisfactionProblem* csp
 )
-    : Constraint(id, csp)
+    : Constraint(id, op, csp)
     , m_cells(cells)
     , m_availableValues()
-    , m_operator(op)
 {
     for (auto& pCell : m_cells) {
         m_availableValues.m_container.emplace( pCell.lock()->GetPossibleValuesRef() );
@@ -169,11 +168,11 @@ bool EqualityConstraint::Apply() {
     
     bool constraintWasValid = true;
     switch (m_operator) {
-        case EqualityOperator::NotEqualTo: {
+        case Operator::NotEqualTo: {
             constraintWasValid = EvalMutuallyExclusiveNotEqualConditions();
             break;
         }
-        case EqualityOperator::EqualTo: {
+        case Operator::EqualTo: {
             assertm(false, "equal-to constraint not yet implemented");
             return false;
         }
@@ -197,10 +196,10 @@ bool EqualityConstraint::Apply() {
 
 bool EqualityConstraint::Valid() const {
     switch (m_operator) {
-        case EqualityOperator::NotEqualTo:
+        case Operator::NotEqualTo:
             // TODO: probably a simple valid check will (it will be hard to keep track of eliminated values and all that without removing them from the cells)
             return true;
-        case EqualityOperator::EqualTo:
+        case Operator::EqualTo:
             assertm(false, "equal-to constraint not yet implemented");
             return false;
         default:
@@ -209,20 +208,25 @@ bool EqualityConstraint::Valid() const {
     }
 }
 
-crow::json::wvalue EqualityConstraint::Serialize() const {
-    auto out = crow::json::wvalue();   
-    
-    std::vector<int> outCellsIndeces(m_cells.size());
+std::vector<std::string> EqualityConstraint::GetCellIds() const {
+    std::vector<std::string> outCellsIds(m_cells.size());
     std::transform(
         m_cells.begin(),
         m_cells.end(),
-        outCellsIndeces.begin(),
+        outCellsIds.begin(),
         [](const std::weak_ptr<Cell>& pCell){
             return pCell.lock()->Id();
         }
     );
+    return outCellsIds;
+}
+
+crow::json::wvalue EqualityConstraint::Serialize() const {
+    auto out = crow::json::wvalue();   
     
-    out["cells"] = outCellsIndeces;
+    auto outCellsIds = GetCellIds();
+    
+    out["cells"] = outCellsIds;
     
     out["constraint_id"] = m_id;
     

@@ -27,7 +27,6 @@
 #define DEBUG_CSP 0
 #endif
 
-
 namespace Csp {
 
 class Cell;
@@ -35,7 +34,16 @@ class Cell;
 class ConstraintSatisfactionProblem {
 public:
     ConstraintSatisfactionProblem() = default;
-    ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues);
+    ConstraintSatisfactionProblem(
+        const std::vector<int>& initValues,
+        const std::set<int>& defaultPossibleValues
+    );
+    
+    // if you want to define the cell ids
+    ConstraintSatisfactionProblem(
+        const std::vector< std::pair<std::string, int> >& initValues,
+        const std::set<int>& defaultPossibleValues
+    );
     
     ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other);
     ConstraintSatisfactionProblem& operator =(const ConstraintSatisfactionProblem& other);
@@ -43,12 +51,12 @@ public:
     //return false if invalid constraint
     bool AddInequalityConstraint(
         unsigned long lhsCellIdx,
-        InequalityConstraint::InequalityOperator op,
+        Constraint::Operator op,
         unsigned long rhsCellidx
     );
     bool AddEqualityConstraint(
         const std::vector<unsigned long>& cellIndeces,
-        EqualityConstraint::EqualityOperator op
+        Constraint::Operator op
     );
     
     void ReportIfCellNewlySolved();
@@ -72,6 +80,16 @@ public:
 #ifdef DEBUG
     virtual void dPrint(bool printCells) const;
 #endif
+    
+protected:
+    std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
+    std::vector< std::shared_ptr<Constraint> > m_constraints;
+    
+    bool AddEqualityConstraint(
+        const std::vector< std::weak_ptr<Cell> >& cellPointers,
+        Constraint::Operator op
+    );
+    
 private:
     bool m_completelySolved;
     bool m_provenValid;
@@ -81,8 +99,6 @@ private:
     
     unsigned long m_numCells;
     std::set<int> m_defaultPossibleValues;
-    std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
-    std::vector<std::shared_ptr<Constraint>> m_constraints;
 }; // ConstraintSatisfactionProblem
 
 } // ::Csp

@@ -21,21 +21,10 @@ class Cell;
 
 class InequalityConstraint : public Constraint {
 public:
-    
-    enum class InequalityOperator {
-        LessThan = 0,
-        GreaterThan,
-    };
-    
-    friend std::ostream& operator<<(std::ostream& os, const InequalityOperator& op) {
-        os << (op == InequalityOperator::LessThan ? "<" : ">");
-        return os;
-    }
-
     InequalityConstraint(
         int id,
         const std::weak_ptr<Cell>& lhsCell,
-        InequalityOperator op,
+        Operator op,
         const std::weak_ptr<Cell>& rhsCell,
         ConstraintSatisfactionProblem* csp
     );
@@ -62,6 +51,7 @@ public:
     void dPrint() const final;
 #endif //DEBUG
     
+    std::vector<std::string> GetCellIds() const final;
     crow::json::wvalue Serialize() const final;
 
 private:
@@ -69,9 +59,6 @@ private:
     
     std::weak_ptr<Cell> m_lhsCell;
     std::weak_ptr<Cell> m_rhsCell;
-    
-    InequalityOperator m_operator;
-    
 }; // InequalityConstraint
 
 } // ::Csp

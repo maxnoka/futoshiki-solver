@@ -25,21 +25,10 @@ class Cell;
 
 class EqualityConstraint : public Constraint {
 public:
-    
-    enum class EqualityOperator {
-        EqualTo = 0,
-        NotEqualTo,
-    };
-    
-    friend std::ostream& operator<<(std::ostream& os, const EqualityOperator& op) {
-        os << (op == EqualityOperator::EqualTo ? "=" : "!=");
-        return os;
-    }
-
     EqualityConstraint(
         int id,
         const std::vector< std::weak_ptr<Cell> >& cells,
-        EqualityOperator op,
+        Operator op,
         ConstraintSatisfactionProblem* csp
     );
     EqualityConstraint() = delete;
@@ -65,6 +54,7 @@ public:
     void dPrint() const final;
 #endif //DEBUG
 
+    std::vector<std::string> GetCellIds() const final;
     crow::json::wvalue Serialize() const final;
     
 private:
@@ -76,8 +66,6 @@ private:
     // multiset of references to the available values set of all the cells
     // need to call .Update() before accessing the multiset
     Utils::ReferenceContainer< std::multiset< Utils::SetReferenceMember<const std::set<int>> > > m_availableValues;
-    
-    EqualityOperator m_operator;
     
 }; // InequalityConstraint
 

@@ -16,14 +16,13 @@ namespace Csp {
 InequalityConstraint::InequalityConstraint(
     int id,
     const std::weak_ptr<Cell>& lhsCell,
-    InequalityOperator op,
+    Operator op,
     const std::weak_ptr<Cell>& rhsCell,
     ConstraintSatisfactionProblem* csp
 )
-    : Constraint(id, csp)
+    : Constraint(id, op, csp)
     , m_lhsCell(lhsCell)
     , m_rhsCell(rhsCell)
-    , m_operator(op)
 {
     if(!SetSolvedIfPossible()) {
         m_csp->ReportIfConstraintBecomesActive();
@@ -74,12 +73,12 @@ bool InequalityConstraint::Apply() {
     
     bool constraintWasValid = true;
     switch (m_operator) {
-        case InequalityOperator::LessThan: {
+        case Operator::LessThan: {
             constraintWasValid = m_lhsCell.lock()->EnforceLessThan( m_rhsCell.lock()->MaxPossible() );
             constraintWasValid &= m_rhsCell.lock()->EnforceGreaterThan( m_lhsCell.lock()->MinPossible() );
             break;
         }
-        case InequalityOperator::GreaterThan: {
+        case Operator::GreaterThan: {
             constraintWasValid = m_lhsCell.lock()->EnforceGreaterThan( m_rhsCell.lock()->MinPossible() );
             constraintWasValid &= m_rhsCell.lock()->EnforceLessThan( m_lhsCell.lock()->MaxPossible() );
             break;
@@ -104,9 +103,9 @@ bool InequalityConstraint::Apply() {
 
 bool InequalityConstraint::Valid() const {
     switch (m_operator) {
-        case InequalityOperator::LessThan:
+        case Operator::LessThan:
             return m_lhsCell.lock()->MinPossible() < m_rhsCell.lock()->MaxPossible();
-        case InequalityOperator::GreaterThan:
+        case Operator::GreaterThan:
             return m_lhsCell.lock()->MaxPossible() > m_rhsCell.lock()->MinPossible();
         default:
             assertm(false, "invalid constraint operator for inequality constraint");
@@ -114,11 +113,15 @@ bool InequalityConstraint::Valid() const {
     }
 }
 
+std::vector<std::string> InequalityConstraint::GetCellIds() const {
+    return { m_lhsCell.lock()->Id(), m_rhsCell.lock()->Id()};
+}
+
 crow::json::wvalue InequalityConstraint::Serialize() const {
     auto out = crow::json::wvalue();
     
-    std::vector<int> outCellsIndeces({m_lhsCell.lock()->Id(), m_rhsCell.lock()->Id()});
-    out["cells"] = outCellsIndeces;
+    std::vector<std::string> outCellsIds = GetCellIds();
+    out["cells"] = outCellsIds;
     
     out["constraint_id"] = m_id;
     

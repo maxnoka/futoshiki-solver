@@ -27,9 +27,50 @@ namespace Csp {
 
 class Constraint {
 public:
+    enum class Operator {
+        EqualTo = 0,
+        NotEqualTo,
+        LessThan,
+        GreaterThan,
+    };
+    
+    friend std::ostream& operator<<(std::ostream& os, const Operator& op) {
+        switch (op) {
+            case Operator::EqualTo:
+                os << "=";
+                break;
+            case Operator::NotEqualTo:
+                os << "!=";
+                break;
+            case Operator::LessThan:
+                os << "<";
+                break;
+            case Operator::GreaterThan:
+                os << ">";
+                break;
+        }
+        return os;
+    }
+    
+    static Operator ReverseOperator(const Operator& op) {
+        switch (op) {
+            case Operator::EqualTo:
+                return Operator::NotEqualTo;
+            case Operator::NotEqualTo:
+                return Operator::EqualTo;
+            case Operator::LessThan:
+                return Operator::GreaterThan;
+            case Operator::GreaterThan:
+                return Operator::LessThan;
+        }
+    }
+    
+
+    
     Constraint() = delete;
-    Constraint(int id, ConstraintSatisfactionProblem* csp)
+    Constraint(int id, Operator op, ConstraintSatisfactionProblem* csp)
     : m_solved(false) // up to the derived class to check this
+    , m_operator(op)
     , m_relatedCellsChanged(true)
     , m_id(id)
     , m_csp(csp)
@@ -71,6 +112,7 @@ public:
     // applying it
     bool IsSolved() const { return m_solved; }
     bool IsActive() const { return !m_solved && m_relatedCellsChanged; }
+    Operator GetOperator() const { return m_operator; }
     
     virtual bool SetSolvedIfPossible() = 0;
     
@@ -78,10 +120,12 @@ public:
     virtual void dPrint() const = 0;
 #endif //DEBUG
     
+    virtual std::vector<std::string> GetCellIds() const = 0;
     virtual crow::json::wvalue Serialize() const = 0;
     
 protected:
     bool m_solved;
+    Operator m_operator;
     
     ConstraintSatisfactionProblem* m_csp;
     

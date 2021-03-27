@@ -3,16 +3,7 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "Csp::Cell::EliminateVals(std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;):Cell.cpp">
-      </ContextState>
-      <ContextState
          contextName = "Csp::EqualityConstraint::Apply():EqualityConstraint.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "Csp::ConstraintSatisfactionProblem::Solve(bool):ConstraintSatisfactionProblem.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "Csp::Cell::SetIfPossible():Cell.cpp">
       </ContextState>
       <ContextState
          contextName = "Csp::EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions():EqualityConstraint.cpp">
@@ -23,6 +14,38 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "Csp::Cell::EliminateVals(std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;):Cell.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "CustomCompare::operator()(SetReference const&amp;, SetReference const&amp;) const:main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "main:main.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::(anonymous namespace)::GenIdValuePairs(std::__1::vector&lt;std::__1::vector&lt;int, std::__1::allocator&lt;int&gt; &gt;, std::__1::allocator&lt;std::__1::vector&lt;int, std::__1::allocator&lt;int&gt; &gt; &gt; &gt; const&amp;):TwoDimCsp.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::(anonymous namespace)::EliminateSelectivelyFromCells(std::__1::vector&lt;std::__1::weak_ptr&lt;Csp::Cell&gt;, std::__1::allocator&lt;std::__1::weak_ptr&lt;Csp::Cell&gt; &gt; &gt; const&amp;, std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;, std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;):EqualityConstraint.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::Cell::SetIfPossible():Cell.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::TwoDimCsp::IdToCoords(std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; const&amp;) const:TwoDimCsp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "id.substr(0, 1)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "Csp::ConstraintSatisfactionProblem::Solve(bool):ConstraintSatisfactionProblem.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::TwoDimCsp::GetRow(unsigned long) const:TwoDimCsp.cpp">
+      </ContextState>
+      <ContextState
          contextName = "Csp::Cell::EnforceLessThan(int):Cell.cpp">
          <PersistentStrings>
             <PersistentString
@@ -31,16 +54,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "main:main.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "Csp::(anonymous namespace)::EliminateSelectivelyFromCells(std::__1::vector&lt;std::__1::weak_ptr&lt;Csp::Cell&gt;, std::__1::allocator&lt;std::__1::weak_ptr&lt;Csp::Cell&gt; &gt; &gt; const&amp;, std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;, std::__1::set&lt;int, std::__1::less&lt;int&gt;, std::__1::allocator&lt;int&gt; &gt; const&amp;):EqualityConstraint.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "CustomCompare::operator()(SetReference const&amp;, SetReference const&amp;) const:main.cpp">
-      </ContextState>
-      <ContextState
          contextName = "Csp::ConstraintSatisfactionProblem::AddEqualityConstraint(std::__1::vector&lt;unsigned long, std::__1::allocator&lt;unsigned long&gt; &gt; const&amp;, Csp::EqualityConstraint::EqualityOperator):ConstraintSatisfactionProblem.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::TwoDimCsp::dPrintGrid() const:TwoDimCsp.cpp">
       </ContextState>
    </ContextStates>
 </VariablesViewState>

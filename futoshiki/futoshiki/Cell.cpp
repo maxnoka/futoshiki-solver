@@ -17,7 +17,7 @@
 
 namespace Csp {
 
-Cell::Cell(int initVal, int id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp)
+Cell::Cell(int initVal, const std::string& id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp)
     : m_val(kUnsolvedSymbol) // set using SetIfPossible bellow
     , m_id(id)
     , m_possibleValues() // set below depending on if the cell is set

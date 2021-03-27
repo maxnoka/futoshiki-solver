@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		225C6570260E7FBD0051BD0E /* TwoDimCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */; };
+		225C6574260F999C0051BD0E /* SquareCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C6572260F999C0051BD0E /* SquareCsp.cpp */; };
+		225C6578260F9BB00051BD0E /* LatinSquare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C6576260F9BB00051BD0E /* LatinSquare.cpp */; };
 		22D8E94A25F94CEE00D95938 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E94925F94CEE00D95938 /* main.cpp */; };
 		22D8E95425F94DE700D95938 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */; };
 		22D8E95925F94EEB00D95938 /* Cell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95725F94EEB00D95938 /* Cell.cpp */; };
@@ -29,6 +32,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TwoDimCsp.cpp; sourceTree = "<group>"; };
+		225C656F260E7FBD0051BD0E /* TwoDimCsp.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TwoDimCsp.hpp; sourceTree = "<group>"; };
+		225C6572260F999C0051BD0E /* SquareCsp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SquareCsp.cpp; sourceTree = "<group>"; };
+		225C6573260F999C0051BD0E /* SquareCsp.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SquareCsp.hpp; sourceTree = "<group>"; };
+		225C6576260F9BB00051BD0E /* LatinSquare.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LatinSquare.cpp; sourceTree = "<group>"; };
+		225C6577260F9BB00051BD0E /* LatinSquare.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LatinSquare.hpp; sourceTree = "<group>"; };
 		22D8E94625F94CEE00D95938 /* futoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = futoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
 		22D8E94925F94CEE00D95938 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
@@ -83,6 +92,12 @@
 				22D8E95325F94DE700D95938 /* ConstraintSatisfactionProblem.hpp */,
 				22D8E95725F94EEB00D95938 /* Cell.cpp */,
 				22D8E95825F94EEB00D95938 /* Cell.hpp */,
+				225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */,
+				225C656F260E7FBD0051BD0E /* TwoDimCsp.hpp */,
+				225C6572260F999C0051BD0E /* SquareCsp.cpp */,
+				225C6573260F999C0051BD0E /* SquareCsp.hpp */,
+				225C6576260F9BB00051BD0E /* LatinSquare.cpp */,
+				225C6577260F9BB00051BD0E /* LatinSquare.hpp */,
 			);
 			path = futoshiki;
 			sourceTree = "<group>";
@@ -166,11 +181,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				225C6570260E7FBD0051BD0E /* TwoDimCsp.cpp in Sources */,
+				225C6578260F9BB00051BD0E /* LatinSquare.cpp in Sources */,
 				22D8E95925F94EEB00D95938 /* Cell.cpp in Sources */,
 				22D8E96625F961B300D95938 /* InequalityConstraint.cpp in Sources */,
 				22D8E95425F94DE700D95938 /* ConstraintSatisfactionProblem.cpp in Sources */,
 				22D8E94A25F94CEE00D95938 /* main.cpp in Sources */,
 				22D8E95E25F9570A00D95938 /* Utils.cpp in Sources */,
+				225C6574260F999C0051BD0E /* SquareCsp.cpp in Sources */,
 				22D8E96225F95AB300D95938 /* Constraint.cpp in Sources */,
 				22E524D825FCCE4D00785EE8 /* EqualityConstraint.cpp in Sources */,
 			);

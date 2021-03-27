@@ -21,7 +21,10 @@
 
 namespace Csp {
 
-ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<int>& initValues, const std::set<int>& defaultPossibleValues)
+ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(
+    const std::vector<int>& initValues,
+    const std::set<int>& defaultPossibleValues
+)
     : m_numSolvedCells(0) // reported back to us when we construct the cells
     , m_numSolvedConstraints(0)
     , m_numActiveConstraints(0)
@@ -33,7 +36,46 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const std::vector<i
     , m_constraints()
 {
     for (auto [cellIdx, initValue] : Utils::enumerate(initValues)) {
-        m_cells.emplace( std::make_pair(cellIdx, std::make_shared<Cell>(initValue, cellIdx, m_defaultPossibleValues, this)) );
+        m_cells.emplace(
+            std::make_pair(
+                cellIdx,
+                std::make_shared<Cell>(
+                    initValue,
+                    std::to_string(cellIdx),
+                    m_defaultPossibleValues,
+                    this
+                )
+            )
+        );
+    }
+}
+
+ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(
+    const std::vector< std::pair<std::string, int> >& initValues,
+    const std::set<int>& defaultPossibleValues
+)
+    : m_numSolvedCells(0) // reported back to us when we construct the cells
+    , m_numSolvedConstraints(0)
+    , m_numActiveConstraints(0)
+    , m_provenValid(false)
+    , m_completelySolved(false)
+    , m_numCells(initValues.size())
+    , m_defaultPossibleValues(defaultPossibleValues)
+    , m_cells()
+    , m_constraints()
+{
+    for (auto [cellIdx, initValue] : Utils::enumerate(initValues)) {
+        m_cells.emplace(
+            std::make_pair(
+                cellIdx,
+                std::make_shared<Cell>(
+                    initValue.second,
+                    initValue.first,
+                    m_defaultPossibleValues,
+                    this
+                )
+            )
+        );
     }
 }
 
@@ -58,7 +100,10 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSat
     std::transform(
         other.m_cells.cbegin(),
         other.m_cells.cend(),
-            oldCellKeys.begin(),[](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) -> const Cell* { return pair.second.get(); }
+        oldCellKeys.begin(),
+        [](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) -> const Cell* {
+            return pair.second.get();
+        }
     );
     std::vector< std::shared_ptr<Cell>* > newCellValues(m_cells.size());
     std::transform(
@@ -139,7 +184,7 @@ void ConstraintSatisfactionProblem::dPrint(bool printCells) const {
 
 bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     unsigned long lhsCellIdx,
-    InequalityConstraint::InequalityOperator op,
+    Constraint::Operator op,
     unsigned long rhsCellIdx
 ) {
     bool lhsValid = lhsCellIdx < m_cells.size();
@@ -179,7 +224,7 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
 
 bool ConstraintSatisfactionProblem::AddEqualityConstraint(
     const std::vector<unsigned long>& cellIndeces,
-    EqualityConstraint::EqualityOperator op
+    Constraint::Operator op
 ) {
     for (auto cellIndex : cellIndeces) {
         if ( cellIndex >= m_cells.size() ) {
@@ -200,6 +245,13 @@ bool ConstraintSatisfactionProblem::AddEqualityConstraint(
         }
     );
     
+    return AddEqualityConstraint(cellPointers, op);
+}
+
+bool ConstraintSatisfactionProblem::AddEqualityConstraint(
+    const std::vector< std::weak_ptr<Cell> >& cellPointers,
+    Constraint::Operator op
+) {
     auto constraint = std::make_shared<EqualityConstraint>(m_constraints.size(), cellPointers, op, this);
     
     if (!constraint->Valid()) {

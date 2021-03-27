@@ -11,6 +11,7 @@
 #include <tuple>
 #include <map>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <cassert>
 
@@ -92,6 +93,36 @@ struct ReferenceContainer {
     
     ContainerType m_container;
 };
+
+template <typename T>
+bool Vector2dIsRectangular(const std::vector<std::vector<T>>& vector2D) {
+    unsigned long dim2(vector2D[0].size());
+    for ( auto row : vector2D) {
+        if (row.size() != dim2) { return false; }
+    }
+    return true;
+}
+
+template <typename T>
+bool Vector2dIsSquare(const std::vector<std::vector<T>>& vector2D) {
+    return Vector2dIsRectangular(vector2D)
+        && vector2D.size() == vector2D.front().size();
+}
+
+template <typename T>
+std::vector<T> FlattenVector2d(const std::vector<std::vector<T>>& v) {
+    std::size_t total_size = 0;
+    for (const auto& sub : v)
+        total_size += sub.size(); // I wish there was a transform_accumulate
+    std::vector<T> result;
+    result.reserve(total_size);
+    for (const auto& sub : v)
+        result.insert(result.end(), sub.begin(), sub.end());
+    return result;
+}
+
+// generate set sequence like 1, 2, 3, ..., size
+std::set<int> GenSetSequence(unsigned long size);
 
 } // ::Utils
 

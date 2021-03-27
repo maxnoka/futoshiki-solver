@@ -5,7 +5,7 @@
 //  Created by Maximilian Noka on 10/03/2021.
 //
 
-#include "ConstraintSatisfactionProblem.hpp"
+#include "LatinSquare.hpp"
 #include "InequalityConstraint.hpp"
 #include "EqualityConstraint.hpp"
 #include "Cell.hpp"
@@ -20,9 +20,10 @@
 #include <iostream>
 #include <optional>
 
+#define WEBSERVER
+
 int main(int argc, const char * argv[]) {
     // TODO: next step is futoshiki I think!
-    // should probably start with "square csp" then "latin square" as the first derived classes
     // also need to do the guessing and exhaustive search methods
     // and generator...
     // and some nice visualizations
@@ -33,16 +34,23 @@ int main(int argc, const char * argv[]) {
     // would also like to get the "this is the reason why its invalid"
     // heuristic function for guesses...
     
-    auto csp = Csp::ConstraintSatisfactionProblem({Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, Csp::Cell::kUnsolvedSymbol, 3}, {1, 2, 3, 4, 5, 6, 7, 8, 9});
-    csp.AddEqualityConstraint({0, 1, 5}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo); // 0, 1, are not equal to 3 => (1, 2)
-    csp.AddInequalityConstraint(0, Csp::InequalityConstraint::InequalityOperator::GreaterThan, 1);
-    csp.AddEqualityConstraint({0, 1, 2}, Csp::EqualityConstraint::EqualityOperator::NotEqualTo);
-    csp.AddInequalityConstraint(3, Csp::InequalityConstraint::InequalityOperator::GreaterThan, 4);
-    
+    auto csp = Csp::LatinSquare(
+    {
+        {
+            Csp::Cell::kUnsolvedSymbol,
+            Csp::Cell::kUnsolvedSymbol
+        },
+        {
+            Csp::Cell::kUnsolvedSymbol,
+            Csp::Cell::kUnsolvedSymbol
+        }
+    }
+    );
     
     csp.DeterministicSolve();
     csp.dPrint(true);
     
+#ifdef WEBSERVER
     crow::SimpleApp app;
     CROW_ROUTE(app, "/")
         .name("hello")
@@ -74,6 +82,7 @@ int main(int argc, const char * argv[]) {
     app.port(18080)
     .multithreaded()
     .run();
+#endif // WEBSERVER
     
     return 0;
 }
