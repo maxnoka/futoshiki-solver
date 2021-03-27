@@ -10,6 +10,7 @@
 #include "ConstraintSatisfactionProblem.hpp"
 
 #include "utils/Utils.hpp"
+#include "utils/easylogging++.h"
 
 namespace Csp {
 
@@ -53,23 +54,29 @@ InequalityConstraint* InequalityConstraint::Clone(
     return clonedConstraint;
 }
 
-#ifdef DEBUG
-void InequalityConstraint::dPrint() const {
-    std::cout << (m_solved ? "SOLVED" : "NOT SOLVED");
-    std::cout << (m_relatedCellsChanged ? "* " : "  ");
+std::string InequalityConstraint::dPrint(bool log) const {
+    std::stringstream ss;
+    
+    ss << (m_solved ? "SOLVED" : "NOT SOLVED")
+        << (m_relatedCellsChanged ? "* " : "  ") << "\n";
     
     auto lhs = m_lhsCell.lock();
     auto rhs = m_rhsCell.lock();
     if (!lhs || !rhs) {
-        std::cout << "WARN: not all cells that this constraint operates on are set.\n";
+        LOG(ERROR) << "Not all cells that this constraint operates on are set.";
+        return "";
     }
     
-    std::cout << lhs->dPrint(false) << " " << m_operator << " " << rhs->dPrint(false) << "\n";
+    ss << lhs->dPrint(false) << " " << m_operator << " " << rhs->dPrint(false) << "\n";
+    
+    if (log) {
+        VLOG(1) << ss.str();
+    }
+    return ss.str();
 }
-#endif //DEBUG
 
 bool InequalityConstraint::Apply() {
-    assertm(IsActive(), "ERR: should only apply active constraints\n;");
+    assertm(IsActive(), "ERR: should only apply active constraints.");
     
     bool constraintWasValid = true;
     switch (m_operator) {
@@ -89,7 +96,7 @@ bool InequalityConstraint::Apply() {
     }
     
     if (!constraintWasValid) {
-        std::cerr << "WARN: Could not apply constraint, it was not valid";
+        LOG(WARNING) << "Could not apply constraint, it was not valid";
     }
     
     m_relatedCellsChanged = false;

@@ -11,6 +11,7 @@
 #include "Cell.hpp"
 
 #include "utils/Utils.hpp"
+#include "utils/easylogging++.h"
 
 #include <iostream>
 #include <algorithm>
@@ -164,23 +165,21 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
     return *this;
 }
 
-#ifdef DEBUG
 void ConstraintSatisfactionProblem::dPrint(bool printCells) const {
-    std::cout << "---- CSP ----\n";
+    std::stringstream ss;
+    ss << "CSP\n";
+
     if (printCells) {
-        std::cout << "Debug Print CSP Cells: \n";
         for (auto [cellIdx, cell] : m_cells) {
-            cell->dPrint(true);
+            ss << cell->dPrint(false) << "\n";
         }
     }
     
-    std::cout << "Debug Print CSP Constraints: \n";
     for (auto constraint : m_constraints) {
-        constraint->dPrint();
+        ss << constraint->dPrint(false) << "\n";
     }
-    std::cout << "---- END ----\n";
+    VLOG(1) << ss.str();
 }
-#endif
 
 bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     unsigned long lhsCellIdx,
@@ -191,12 +190,12 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     bool rhsValid = rhsCellIdx < m_cells.size();
     
     if (!lhsValid || !rhsValid) {
-        std::cerr << "ERR: Invalid cell indeces (out of range). Cannot add inequality constraint.\n";
+        LOG(ERROR) << "Invalid cell indeces (out of range). Cannot add inequality constraint.";
         return false;
     }
     
     if (lhsCellIdx == rhsCellIdx) {
-        std::cerr << "ERR: Invalid cell indeces (equal). Cannot add inequality constraint.\n";
+        LOG(ERROR) << "Invalid cell indeces (equal). Cannot add inequality constraint.";
         return false;
     }
     
@@ -206,7 +205,7 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     auto constraint = std::make_shared<InequalityConstraint>(m_constraints.size(), lhsCell, op, rhsCell, this);
     
     if (!constraint->Valid()) {
-        std::cout << "ERR: Tried to add invalid constraint. Cannot add inequality constraint.\n";
+        LOG(ERROR) << "Tried to add invalid constraint. Cannot add inequality constraint.";
         return false;
     }
     
@@ -228,13 +227,13 @@ bool ConstraintSatisfactionProblem::AddEqualityConstraint(
 ) {
     for (auto cellIndex : cellIndeces) {
         if ( cellIndex >= m_cells.size() ) {
-            std::cerr << "ERR: Invalid cell indeces (out of range). Cannot add equality constraint.\n";
+            LOG(ERROR) << "Invalid cell indeces (out of range). Cannot add equality constraint.";
             return false;
         }
     }
     
     if (!Utils::isUnique(cellIndeces)) {
-        std::cerr << "ERR: Invalid cell indeces (equal). Cannot add equality constraint.\n";
+        LOG(ERROR) << "Invalid cell indeces (equal). Cannot add equality constraint.";
         return false;
     }
     
@@ -255,7 +254,7 @@ bool ConstraintSatisfactionProblem::AddEqualityConstraint(
     auto constraint = std::make_shared<EqualityConstraint>(m_constraints.size(), cellPointers, op, this);
     
     if (!constraint->Valid()) {
-        std::cout << "ERR: Tried to add invalid constraint. Cannot add inequality constraint.\n";
+        LOG(ERROR) << "Tried to add invalid constraint. Cannot add inequality constraint.";
         return false;
     }
     
@@ -279,9 +278,7 @@ void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
     
     if (m_numSolvedCells == m_numCells) {
         m_completelySolved = true;
-#if DEBUG_CSP
-        std::cout << "All cells solved\n";
-#endif // DEBUG_CSP
+        VLOG(2) << "All cells solved";
     }
 }
 
@@ -294,9 +291,7 @@ void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
     // assertm(m_numSolvedConstraints <= m_constraints.size() + 1, "number of solved constraints should be less than the number of constraints");
     
     if (m_numSolvedConstraints == m_constraints.size()) {
-#if DEBUG_CSP
-        std::cout << "All constraints solved\n";
-#endif // DEBUG_CSP
+        VLOG(2) << "All constraints solved";
     }
 }
 
@@ -311,30 +306,24 @@ void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
     assertm(m_numActiveConstraints > 0, "cannot have fewer than zero active constraints");
     --m_numActiveConstraints;
 
-#if DEBUG_CSP
     if (m_numActiveConstraints == 0) {
-        std::cout << "No more active constraints.\n";
+        VLOG(2) << "No more active constraints.";
     }
-#endif // DEBUG_CSP
 }
 
 ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::DeterministicSolve() {
-#if DEBUG_CSP
-    std::cout << "\t--- Starting deterministic solve --- \n";
-#endif // DEBUG_CSP
+    VLOG(1) << "Starting deterministic solve ";
     while(m_numActiveConstraints > 0) {
         for (auto& constraint : m_constraints) {
             if (constraint->IsActive()) {
                 if(!constraint->Apply()) {
-                    std::cerr << "ERR: constraint turned out to be invalid";
+                    LOG(WARNING) << "Constraint turned out to be invalid";
                     return {false, false}; // invalid
                 }
             }
         }
     }
-#if DEBUG_CSP
-    std::cout << "\t--- Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ") ---\n\n";
-#endif // DEBUG_CSP
+    VLOG(1) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
     m_provenValid = true;
     return {m_completelySolved, m_provenValid}; // valid
 }
@@ -379,18 +368,23 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
         branchCsp.MakeGuess(guess);
         auto res = branchCsp.Solve();
         if (res.completeSolve) {
+            LOG(INFO) << "Guess produced solution";
             if (alreadyHaveAValidSolution) {
+                LOG(INFO) << "Found two solutions. Not unique";
                 return {false, false};
             }
             lastValidSolution = branchCsp;
+            alreadyHaveAValidSolution = true;
         }
     }
     
     if (alreadyHaveAValidSolution) {
         *this = lastValidSolution;
+        LOG(INFO) << "Found only one solution. Proven unique";
         return { true, true};
     }
     
+    LOG(INFO) << "No quesses worked. Proven invalid.";
     return {false, false};  // if none of the branches can solve it, it must be invalid
 }
 

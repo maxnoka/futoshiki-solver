@@ -8,6 +8,7 @@
 #include "TwoDimCsp.hpp"
 
 #include "utils/Utils.hpp"
+#include "utils/easylogging++.h"
 
 #include <sstream>
 #include <iterator>
@@ -143,7 +144,6 @@ bool TwoDimCsp::AddEqualityConstraint(
     return ConstraintSatisfactionProblem::AddEqualityConstraint(cellIndeces, op);
 }
 
-#ifdef DEBUG
 void TwoDimCsp::dPrint(bool printCells) const {
     dPrintGrid();
     ConstraintSatisfactionProblem::dPrint(printCells);
@@ -222,15 +222,13 @@ void TwoDimCsp::dPrintGrid() const {
         outStringGrid[rowIdx].replace(colIdx, 1, ss.str());
     }
     
-    std::cout << "---- Board ----" << std::endl;
-    
+    std::stringstream ss;
+    ss <<  "Board\n";
     for (std::string row : outStringGrid) {
-        std::cout << row << "\n";
+        ss << row << "\n";
     }
-    
-    std::cout << "---------------" << std::endl;
+    LOG(INFO) << ss.str();
 }
-#endif
 
 bool TwoDimCsp::ValidCoords(const CellCoords& cords) {
     if (cords.first >= m_numCols) {

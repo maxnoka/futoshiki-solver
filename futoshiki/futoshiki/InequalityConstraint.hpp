@@ -46,10 +46,7 @@ public:
     
     bool SetSolvedIfPossible() override;
 
-    
-#ifdef DEBUG
-    void dPrint() const final;
-#endif //DEBUG
+    std::string dPrint(bool log) const final;
     
     std::vector<std::string> GetCellIds() const final;
     crow::json::wvalue Serialize() const final;

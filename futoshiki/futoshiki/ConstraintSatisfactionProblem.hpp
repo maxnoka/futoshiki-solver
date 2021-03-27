@@ -23,10 +23,6 @@
 #include <memory>
 #include <set>
 
-#ifndef DEBUG_CSP
-#define DEBUG_CSP 0
-#endif
-
 namespace Csp {
 
 class Cell;
@@ -85,9 +81,7 @@ public:
     
     crow::json::wvalue Serialize() const;
     
-#ifdef DEBUG
     virtual void dPrint(bool printCells) const;
-#endif
     
 protected:
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;

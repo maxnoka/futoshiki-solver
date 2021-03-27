@@ -117,7 +117,7 @@ public:
     virtual bool SetSolvedIfPossible() = 0;
     
 #ifdef DEBUG
-    virtual void dPrint() const = 0;
+    virtual std::string dPrint(bool log) const = 0;
 #endif //DEBUG
     
     virtual std::vector<std::string> GetCellIds() const = 0;

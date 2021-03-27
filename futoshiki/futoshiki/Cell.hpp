@@ -65,9 +65,7 @@ public:
     
     crow::json::wvalue Serialize() const;
     
-#ifdef DEBUG
-    std::string dPrint(bool toCout) const;
-#endif //DEBUG
+    std::string dPrint(bool log) const;
     
 private:
     // also reports if newly solved to the parent csp

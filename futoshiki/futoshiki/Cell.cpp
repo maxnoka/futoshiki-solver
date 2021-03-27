@@ -11,6 +11,7 @@
 #include "ConstraintSatisfactionProblem.hpp"
 
 #include "utils/Utils.hpp"
+#include "utils/easylogging++.h"
 
 #include <iostream>
 #include <sstream>
@@ -58,7 +59,7 @@ void Cell::AddConstraint(const std::shared_ptr<Constraint>& constraintToAdd) {
 bool Cell::EnforceLessThan(int lessThanThis) {
     if (IsSolved()) {
         if (m_val > lessThanThis) {
-            std::cerr << "WARN: Cannot enforce less than " << lessThanThis << "(val " << m_val << ")\n";
+            LOG(WARNING) << "Cannot enforce less than " << lessThanThis << "(val " << m_val << ")";
             return false;
         }
         return true;
@@ -75,7 +76,7 @@ bool Cell::EnforceLessThan(int lessThanThis) {
         m_possibleValues.erase(rit.base(), m_possibleValues.end());
         
         if (m_possibleValues.size() == 0) {
-            std::cerr << "WARN: Cannot enforce less than " << lessThanThis << "\n";
+            LOG(WARNING) << "Cannot enforce less than " << lessThanThis;
             return false;
         }
         
@@ -90,7 +91,7 @@ bool Cell::EnforceLessThan(int lessThanThis) {
 bool Cell::EnforceGreaterThan(int greaterThanThis) {
     if (IsSolved()) {
         if (m_val < greaterThanThis) {
-            std::cerr << "WARN: Cannot enforce greater than " << greaterThanThis << "(val " << m_val << ")\n";
+            LOG(WARNING) << "WARN: Cannot enforce greater than " << greaterThanThis << "(val " << m_val << ")";
             return false;
         }
         return true;
@@ -107,7 +108,7 @@ bool Cell::EnforceGreaterThan(int greaterThanThis) {
         m_possibleValues.erase(m_possibleValues.begin(), it);
         
         if (m_possibleValues.size() == 0) {
-            std::cerr << "WARN: Cannot enforce greater than " << greaterThanThis << "\n";
+            LOG(WARNING) << "WARN: Cannot enforce greater than " << greaterThanThis;
             return false;
         }
         
@@ -126,7 +127,7 @@ std::pair<bool, bool> Cell::EliminateVals(const std::set<int>& toRemove) {
     }
     
     if (m_possibleValues.empty()) {
-        std::cerr << "no more possible values left for this cell";
+        LOG(ERROR) << "no more possible values left for this cell";
         return std::make_pair(false, removedAny);
     }
     
@@ -152,7 +153,7 @@ bool Cell::SetIfPossible() {
     assertm(m_possibleValues.size() != 0, "no possible values left for this cell");
     
     if (m_val != kUnsolvedSymbol) {
-        std::cerr << "WARN: tried to set cell that was already solved\n";
+        LOG(WARNING) << "Tried to set cell that was already solved";
         return false;
     }
     
@@ -176,8 +177,7 @@ void Cell::ReportChangeToConstraints() {
     }
 }
 
-#ifdef DEBUG
-std::string Cell::dPrint(bool toCout) const {
+std::string Cell::dPrint(bool log) const {
     std::stringstream ss;
     
     ss << "cell_" << m_id << " (";
@@ -192,13 +192,12 @@ std::string Cell::dPrint(bool toCout) const {
     }
     ss << ")";
     
-    if (toCout) {
-        std::cout << ss.str() << "\n";
+    if (log) {
+        VLOG(1) << ss.str();
     }
     
     return ss.str();
 }
-#endif
 
 crow::json::wvalue Cell::Serialize() const {
     auto out = crow::json::wvalue();

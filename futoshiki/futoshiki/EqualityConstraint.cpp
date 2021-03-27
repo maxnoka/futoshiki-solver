@@ -11,6 +11,7 @@
 #include "ConstraintSatisfactionProblem.hpp"
 
 #include "utils/Utils.hpp"
+#include "utils/easylogging++.h"
 
 #include <set>
 #include <iterator>
@@ -113,7 +114,7 @@ EqualityConstraint::EqualityConstraint(
 
 bool EqualityConstraint::SetSolvedIfPossible() {
     if (m_solved) {
-        std::cerr << "WARN: trying to set constraint to solved that was already solved\n";
+        LOG(WARNING) << "Trying to set constraint to solved that was already solved";
     }
     
     for (auto& pCell : m_cells) {
@@ -149,19 +150,23 @@ EqualityConstraint* EqualityConstraint::Clone(
     return clonedConstraint;
 }
 
-#ifdef DEBUG
-void EqualityConstraint::dPrint() const {
-    std::cout << (m_solved ? "SOLVED" : "NOT SOLVED");
-    std::cout << (m_relatedCellsChanged ? "* " : "  ");
+std::string EqualityConstraint::dPrint(bool log) const {
+    std::stringstream ss;
+    ss << (m_solved ? "SOLVED" : "NOT SOLVED")
+        << (m_relatedCellsChanged ? "* " : "  ");
     
+
     for (auto it = m_cells.cbegin(); it != m_cells.end() - 1; ++it) {
-        std::cout << it->lock()->dPrint(false) << " " << m_operator << " ";
+        ss << it->lock()->dPrint(false) << " " << m_operator << " ";
     }
-    std::cout << m_cells.back().lock()->dPrint(false);
+    ss << m_cells.back().lock()->dPrint(false);
     
-    std::cout << "\n";
+    if (log) {
+        VLOG(1) << ss.str();
+    }
+    
+    return ss.str();
 }
-#endif //DEBUG
 
 bool EqualityConstraint::Apply() {
     assertm(IsActive(), "should not be applying inactive constraint\n");
@@ -182,7 +187,7 @@ bool EqualityConstraint::Apply() {
     }
     
     if (!constraintWasValid) {
-        std::cerr << "WARN: Could not apply constraint, it was not valid";
+        LOG(WARNING) << "Could not apply constraint, it was not valid";
     }
     
     m_relatedCellsChanged = false;

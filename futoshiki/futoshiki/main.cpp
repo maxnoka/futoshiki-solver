@@ -10,6 +10,8 @@
 #include "EqualityConstraint.hpp"
 #include "Cell.hpp"
 
+#include "utils/easylogging++.h"
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wdocumentation"
@@ -20,9 +22,18 @@
 #include <iostream>
 #include <optional>
 
+INITIALIZE_EASYLOGGINGPP
+
 // #define WEBSERVER
 
 int main(int argc, const char * argv[]) {
+    START_EASYLOGGINGPP(argc, argv);
+    // Load configuration from file
+    el::Configurations conf("/Users/MaxNoka/OneDrive/Projects/futoshiki/futoshiki/futoshiki/conf/logging.conf");
+    // Reconfigure single logger
+    el::Loggers::reconfigureLogger("default", conf);
+    el::Loggers::setVerboseLevel(1);
+    
     // TODO: next step is futoshiki I think!
     // also need to do the guessing and exhaustive search methods
     // and generator...

@@ -52,13 +52,9 @@ public:
         Constraint::Operator op
     );
     
-    
-#ifdef DEBUG
     virtual void dPrint(bool printCells) const;
-    
     void dPrintGrid() const;
-#endif
-    
+
     unsigned long m_numRows;
     unsigned long m_numCols;
     
