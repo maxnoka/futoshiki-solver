@@ -20,7 +20,7 @@
 #include <iostream>
 #include <optional>
 
-#define WEBSERVER
+// #define WEBSERVER
 
 int main(int argc, const char * argv[]) {
     // TODO: next step is futoshiki I think!
@@ -47,7 +47,7 @@ int main(int argc, const char * argv[]) {
     }
     );
     
-    csp.DeterministicSolve();
+    csp.SolveUnique();
     csp.dPrint(true);
     
 #ifdef WEBSERVER

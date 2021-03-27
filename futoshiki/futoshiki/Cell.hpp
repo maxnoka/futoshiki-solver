@@ -49,6 +49,7 @@ public:
     // 1. true iff constraint was valid
     // 2. true iff a value was removed
     std::pair<bool, bool> EliminateVals(const std::set<int>& toRemove);
+    void SetVal(const int val);
     
     int MinPossible() const { return *m_possibleValues.begin(); }
     int MaxPossible() const { return *m_possibleValues.rbegin(); }

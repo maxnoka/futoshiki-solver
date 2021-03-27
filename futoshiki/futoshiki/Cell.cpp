@@ -137,6 +137,17 @@ std::pair<bool, bool> Cell::EliminateVals(const std::set<int>& toRemove) {
     return std::make_pair(true, removedAny);
 }
 
+void Cell::SetVal(const int val) {
+    assertm(m_possibleValues.find(val) != m_possibleValues.end(),
+            "should only set to a value which is possible");
+    
+    m_possibleValues.clear();
+    m_possibleValues.insert(val);
+    
+    SetIfPossible();
+    ReportChangeToConstraints();
+}
+
 bool Cell::SetIfPossible() {
     assertm(m_possibleValues.size() != 0, "no possible values left for this cell");
     

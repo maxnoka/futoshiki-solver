@@ -288,7 +288,10 @@ void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
 void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
     ++m_numSolvedConstraints;
     
-    assertm(m_numSolvedConstraints <= m_constraints.size(), "number of solved constraints should be less than the number of constraints");
+    // TODO: figure out a way to make this work
+    // similar to ReportIfConstraintBecomesActive, we have to account for the
+    // adding of already solved constraints upon construction
+    // assertm(m_numSolvedConstraints <= m_constraints.size() + 1, "number of solved constraints should be less than the number of constraints");
     
     if (m_numSolvedConstraints == m_constraints.size()) {
 #if DEBUG_CSP
@@ -334,6 +337,109 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Dete
 #endif // DEBUG_CSP
     m_provenValid = true;
     return {m_completelySolved, m_provenValid}; // valid
+}
+
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve() {
+    auto res = DeterministicSolve();
+    if (!res.valid) {
+        return res;
+    }
+    if (res.completeSolve) {
+        return res;
+    }
+    
+    auto guesses = GetGuesses();
+    for (auto guess : guesses) {
+        auto branchCsp(*this);
+        branchCsp.MakeGuess(guess);
+        auto res = branchCsp.Solve();
+        if (res.completeSolve) {
+            *this = branchCsp;
+            return res;
+        }
+    }
+    return {false, false};  // if none of the branches can solve it, it must be invalid
+}
+
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveUnique() {
+    auto res = DeterministicSolve();
+    if (!res.valid) {
+        return res;
+    }
+    if (res.completeSolve) {
+        return res;
+    }
+    
+    ConstraintSatisfactionProblem lastValidSolution;
+    bool alreadyHaveAValidSolution = false;
+    
+    auto guesses = GetGuesses();
+    for (auto guess : guesses) {
+        auto branchCsp(*this);
+        branchCsp.MakeGuess(guess);
+        auto res = branchCsp.Solve();
+        if (res.completeSolve) {
+            if (alreadyHaveAValidSolution) {
+                return {false, false};
+            }
+            lastValidSolution = branchCsp;
+        }
+    }
+    
+    if (alreadyHaveAValidSolution) {
+        *this = lastValidSolution;
+        return { true, true};
+    }
+    
+    return {false, false};  // if none of the branches can solve it, it must be invalid
+}
+
+void ConstraintSatisfactionProblem::MakeGuess(const Guess& guess) {
+    m_cells.at(guess.cellKey)->SetVal(guess.val);
+}
+
+// our heuristic here is to just chose all of the possible values
+// for the cell with the lowest number of possible values
+std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem::GetGuesses() const {
+    
+    auto remainingCellKeys = RemainingCellKeys();
+    
+    std::sort(
+        remainingCellKeys.begin(),
+        remainingCellKeys.end(),
+        [&](unsigned int i, unsigned int j){
+            return m_cells.at(i)->GetPossibleValuesRef().size() > m_cells.at(j)->GetPossibleValuesRef().size();
+        }
+    );
+    
+    auto chosenCellKey = remainingCellKeys.front();
+    auto& possibleVals =m_cells.at(chosenCellKey)->GetPossibleValuesRef();
+    
+    std::vector<Guess> outGuesses(possibleVals.size());
+    std::transform(
+        possibleVals.begin(),
+        possibleVals.end(),
+        outGuesses.begin(),
+        [chosenCellKey](const int possibleVal) -> Guess {
+            return {chosenCellKey, possibleVal};
+        }
+    );
+    
+    return outGuesses;
+}
+
+std::vector<unsigned long> ConstraintSatisfactionProblem::RemainingCellKeys() const {
+    std::vector<unsigned long> remainingCellKeys;
+    std::for_each(
+        m_cells.begin(),
+        m_cells.end(),
+        [&remainingCellKeys](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair){
+            if(!pair.second->IsSolved()) {
+                remainingCellKeys.push_back(pair.first);
+        }
+    });
+    
+    return remainingCellKeys;
 }
 
 crow::json::wvalue ConstraintSatisfactionProblem::Serialize() const {

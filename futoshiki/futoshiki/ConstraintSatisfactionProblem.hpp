@@ -71,6 +71,14 @@ public:
     };
     
     SolveSolution DeterministicSolve();
+    // also does guessing
+    SolveSolution Solve();
+    SolveSolution SolveUnique();
+    
+    struct Guess {
+        unsigned long cellKey;
+        int val;
+    };
     
     bool IsCompletelySolved() { return m_completelySolved; }
     bool ProvenInValid() { return m_provenValid;}
@@ -91,6 +99,16 @@ protected:
     );
     
 private:
+    // returns a set of guess which are mutually exclusive
+    // and exhaustive:
+    // - no two guesses can result in the same completeSolve
+    // - if none of the guesses resultr in a completeSolve,
+    //   then such a thing does not exist
+    void MakeGuess(const Guess& guess);
+    std::vector<Guess> GetGuesses() const;
+    
+    std::vector<unsigned long> RemainingCellKeys() const;
+    
     bool m_completelySolved;
     bool m_provenValid;
     unsigned long m_numSolvedCells;
