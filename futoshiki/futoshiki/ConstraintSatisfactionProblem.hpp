@@ -48,11 +48,13 @@ public:
     bool AddInequalityConstraint(
         unsigned long lhsCellIdx,
         Constraint::Operator op,
-        unsigned long rhsCellidx
+        unsigned long rhsCellidx,
+        const std::string& idPrefix = "cnst"
     );
     bool AddEqualityConstraint(
         const std::vector<unsigned long>& cellIndeces,
-        Constraint::Operator op
+        Constraint::Operator op,
+        const std::string& idPrefix = "cnst"
     );
     
     void ReportIfCellNewlySolved();
@@ -64,22 +66,77 @@ public:
     struct SolveSolution {
         bool completeSolve;
         bool valid; // if invalid, then completeSolve is not defined
+        
+        enum class ReasonType {
+            ManagedToSolve = 0,
+            ConstraintCannotBeSatisfied,
+            NoGuessesWorked,
+            NotUnique
+        };
+        
+        struct Reason {
+            ReasonType reasonType;
+            crow::json::wvalue details;
+        };
+        
+        Reason reason;
     };
+    
+    friend std::ostream& operator<< (std::ostream& os, const SolveSolution& sol) {
+        if (sol.completeSolve) {
+            os << "Solved.";
+        }
+        else {
+            os << "Could not solve. ";
+        }
+        
+        if (!sol.valid) {
+            os << "Not valid. Reason: ";
+        }
+        
+        switch (sol.reason.reasonType) {
+            case SolveSolution::ReasonType::ManagedToSolve:
+                os << "Solved.";
+                break;
+            case SolveSolution::ReasonType::ConstraintCannotBeSatisfied:
+                os << "Constraint could not be satisfied.";
+                break;
+            case SolveSolution::ReasonType::NoGuessesWorked:
+                os << "No options for a cell lead to valid solutions.";
+                break;
+            case SolveSolution::ReasonType::NotUnique:
+                os << "Not uniquely solvable.";
+                break;
+        }
+        
+        return os;
+    }
     
     SolveSolution DeterministicSolve();
     // also does guessing
-    SolveSolution Solve();
-    SolveSolution SolveUnique();
+    SolveSolution Solve(int depthGuess = 0);
+    SolveSolution SolveUnique(int depthGuess = 0);
     
     struct Guess {
         unsigned long cellKey;
         int val;
+        
+        crow::json::wvalue Serialize() const {
+            auto out = crow::json::wvalue();
+            out["cell"] = cellKey;
+            out["val"] = val;
+            return out;
+        }
     };
+    
     
     bool IsCompletelySolved() { return m_completelySolved; }
     bool ProvenInValid() { return m_provenValid;}
     
-    crow::json::wvalue Serialize() const;
+    virtual crow::json::wvalue Serialize() const;
+    crow::json::wvalue SerializeCsp() const;
+    std::vector<crow::json::wvalue> SerializeCells() const;
+    std::vector<crow::json::wvalue> SerializeConstraints() const;
     
     virtual void dPrint(bool printCells) const;
     
@@ -89,16 +146,18 @@ protected:
     
     bool AddEqualityConstraint(
         const std::vector< std::weak_ptr<Cell> >& cellPointers,
-        Constraint::Operator op
+        Constraint::Operator op,
+        const std::string& idPrefix = "cnst"
     );
     
 private:
+    void MakeGuess(const Guess& guess);
+    
     // returns a set of guess which are mutually exclusive
     // and exhaustive:
     // - no two guesses can result in the same completeSolve
     // - if none of the guesses resultr in a completeSolve,
     //   then such a thing does not exist
-    void MakeGuess(const Guess& guess);
     std::vector<Guess> GetGuesses() const;
     
     std::vector<unsigned long> RemainingCellKeys() const;

@@ -15,7 +15,7 @@
 namespace Csp {
 
 InequalityConstraint::InequalityConstraint(
-    int id,
+    const std::string& id,
     const std::weak_ptr<Cell>& lhsCell,
     Operator op,
     const std::weak_ptr<Cell>& rhsCell,
@@ -58,7 +58,9 @@ std::string InequalityConstraint::dPrint(bool log) const {
     std::stringstream ss;
     
     ss << (m_solved ? "SOLVED" : "NOT SOLVED")
-        << (m_relatedCellsChanged ? "* " : "  ") << "\n";
+        << (m_relatedCellsChanged ? "* " : "  ");
+    
+    ss << m_id << ": ";
     
     auto lhs = m_lhsCell.lock();
     auto rhs = m_rhsCell.lock();
@@ -67,7 +69,7 @@ std::string InequalityConstraint::dPrint(bool log) const {
         return "";
     }
     
-    ss << lhs->dPrint(false) << " " << m_operator << " " << rhs->dPrint(false) << "\n";
+    ss << lhs->dPrint(false) << " " << m_operator << " " << rhs->dPrint(false);
     
     if (log) {
         VLOG(1) << ss.str();

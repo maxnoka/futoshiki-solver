@@ -52,8 +52,11 @@ public:
         Constraint::Operator op
     );
     
-    virtual void dPrint(bool printCells) const;
+    virtual void dPrint(bool printCells) const override;
     void dPrintGrid() const;
+    
+    virtual crow::json::wvalue Serialize() const override;
+    crow::json::wvalue SerializeGrid() const;
 
     unsigned long m_numRows;
     unsigned long m_numCols;

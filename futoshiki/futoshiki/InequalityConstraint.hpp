@@ -22,7 +22,7 @@ class Cell;
 class InequalityConstraint : public Constraint {
 public:
     InequalityConstraint(
-        int id,
+        const std::string& id,
         const std::weak_ptr<Cell>& lhsCell,
         Operator op,
         const std::weak_ptr<Cell>& rhsCell,

@@ -16,16 +16,18 @@
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wcomma"
- #include <crow.h>
+// #include <crow.h>
 #pragma clang diagnostic pop
+
+#include <crow/json.h>
+
 
 #include <iostream>
 #include <optional>
 
-INITIALIZE_EASYLOGGINGPP
-
 // #define WEBSERVER
 
+INITIALIZE_EASYLOGGINGPP
 int main(int argc, const char * argv[]) {
     START_EASYLOGGINGPP(argc, argv);
     // Load configuration from file
@@ -45,43 +47,46 @@ int main(int argc, const char * argv[]) {
     // would also like to get the "this is the reason why its invalid"
     // heuristic function for guesses...
     
+    
     auto csp = Csp::LatinSquare(
-    {
         {
-            Csp::Cell::kUnsolvedSymbol,
-            Csp::Cell::kUnsolvedSymbol
-        },
-        {
-            Csp::Cell::kUnsolvedSymbol,
-            Csp::Cell::kUnsolvedSymbol
+            {
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol
+            },
+            {
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol
+            },
+            {
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol,
+                Csp::Cell::kUnsolvedSymbol
+            }
         }
-    }
     );
     
-    csp.SolveUnique();
-    csp.dPrint(true);
+    csp.AddInequalityConstraint({0, 0}, Csp::Constraint::Operator::LessThan, {1, 0});
+    auto res = csp.SolveUnique();
+    LOG(INFO) << res;
+    LOG(INFO) << res.reason.details.dump();
     
 #ifdef WEBSERVER
     crow::SimpleApp app;
     CROW_ROUTE(app, "/")
         .name("hello")
     ([&csp](){
-        auto response = crow::response{csp.Serialize()};
+        auto response = crow::response{csp.SerializeCsp()};
         response.add_header("Access-Control-Allow-Origin", "*");
         return response;
     });
     
-    CROW_ROUTE(app, "/add_json")
-        .methods("POST"_method)
-    ([](const crow::request& req){
-        auto x = crow::json::load(req.body);
-        if (!x)
-            return crow::response(400);
-        long long sum = x["a"].i()+x["b"].i();
-        std::ostringstream os;
-        os << sum;
-        
-        auto response = crow::response{os.str()};
+    CROW_ROUTE(app, "/grid")
+        .name("hello")
+    ([&csp](){
+        auto response = crow::response{csp.Serialize()};
         response.add_header("Access-Control-Allow-Origin", "*");
         return response;
     });

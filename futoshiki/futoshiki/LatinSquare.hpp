@@ -17,6 +17,9 @@ public:
     LatinSquare(
         const std::vector< std::vector<int> >& initValues
     );
+    
+    virtual crow::json::wvalue Serialize() const override;
+    
 }; // LatinSquare
 
 } // ::Csp

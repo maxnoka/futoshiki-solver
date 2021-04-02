@@ -43,6 +43,18 @@
          contextName = "Csp::ConstraintSatisfactionProblem::Solve(bool):ConstraintSatisfactionProblem.cpp">
       </ContextState>
       <ContextState
+         contextName = "Csp::Constraint::GetOperator() const:Constraint.hpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::ConstraintSatisfactionProblem::Solve():ConstraintSatisfactionProblem.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved():ConstraintSatisfactionProblem.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Csp::ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(Csp::ConstraintSatisfactionProblem const&amp;):ConstraintSatisfactionProblem.cpp">
+      </ContextState>
+      <ContextState
          contextName = "Csp::TwoDimCsp::GetRow(unsigned long) const:TwoDimCsp.cpp">
       </ContextState>
       <ContextState

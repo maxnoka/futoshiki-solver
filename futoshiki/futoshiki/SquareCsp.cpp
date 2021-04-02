@@ -21,4 +21,15 @@ SquareCsp::SquareCsp(
     }
 }
 
+crow::json::wvalue SquareCsp::Serialize() const {
+    auto out = crow::json::wvalue();
+    
+    out["num_cells"] = m_cells.size();
+    out["grid_size"] = m_size;
+    out["cells"] = SerializeGrid(); // different compared to CSP
+    out["constraints"] = SerializeConstraints();
+    
+    return out;
+}
+
 }  // ::Csp

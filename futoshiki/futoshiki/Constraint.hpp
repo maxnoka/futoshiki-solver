@@ -68,7 +68,7 @@ public:
 
     
     Constraint() = delete;
-    Constraint(int id, Operator op, ConstraintSatisfactionProblem* csp)
+    Constraint(const std::string& id, Operator op, ConstraintSatisfactionProblem* csp)
     : m_solved(false) // up to the derived class to check this
     , m_operator(op)
     , m_relatedCellsChanged(true)
@@ -107,7 +107,7 @@ public:
         }
     }
     
-    int Id() const {return m_id; }
+    std::string Id() const {return m_id; }
     // true if all related cells are alread solved, so there's no more progress made in
     // applying it
     bool IsSolved() const { return m_solved; }
@@ -129,7 +129,7 @@ protected:
     
     ConstraintSatisfactionProblem* m_csp;
     
-    int m_id;
+    std::string m_id;
     
     // false if none of the cells to which the constraint pertains
     // have reported through ReportChanged() since the last time we did Apply()

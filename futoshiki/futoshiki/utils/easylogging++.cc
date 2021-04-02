@@ -1901,12 +1901,16 @@ Logger* RegisteredLoggers::get(const std::string& id, bool forceCreation) {
     logger_->m_logBuilder = m_defaultLogBuilder;
     registerNew(id, logger_);
     LoggerRegistrationCallback* callback = nullptr;
+      
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wrange-loop-analysis"
     for (const std::pair<std::string, base::type::LoggerRegistrationCallbackPtr>& h
          : m_loggerRegistrationCallbacks) {
       callback = h.second.get();
       if (callback != nullptr && callback->enabled()) {
         callback->handle(logger_);
       }
+#pragma clang diagnostic pop
     }
   }
   return logger_;
@@ -2493,6 +2497,8 @@ void LogDispatcher::dispatch(void) {
   }
   LogDispatchCallback* callback = nullptr;
   LogDispatchData data;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wrange-loop-analysis"
   for (const std::pair<std::string, base::type::LogDispatchCallbackPtr>& h
        : ELPP->m_logDispatchCallbacks) {
     callback = h.second.get();
@@ -2502,6 +2508,7 @@ void LogDispatcher::dispatch(void) {
       callback->handle(&data);
     }
   }
+#pragma clang diagnostic pop
 }
 
 // MessageBuilder

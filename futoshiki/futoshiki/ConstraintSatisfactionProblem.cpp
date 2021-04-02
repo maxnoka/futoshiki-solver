@@ -184,7 +184,8 @@ void ConstraintSatisfactionProblem::dPrint(bool printCells) const {
 bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     unsigned long lhsCellIdx,
     Constraint::Operator op,
-    unsigned long rhsCellIdx
+    unsigned long rhsCellIdx,
+    const std::string& idPrefix
 ) {
     bool lhsValid = lhsCellIdx < m_cells.size();
     bool rhsValid = rhsCellIdx < m_cells.size();
@@ -202,7 +203,10 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
     auto& lhsCell = m_cells.at(lhsCellIdx);
     auto& rhsCell = m_cells.at(rhsCellIdx);
     
-    auto constraint = std::make_shared<InequalityConstraint>(m_constraints.size(), lhsCell, op, rhsCell, this);
+    std::stringstream ss;
+    ss << idPrefix << "_" << m_constraints.size();
+    
+    auto constraint = std::make_shared<InequalityConstraint>(ss.str(), lhsCell, op, rhsCell, this);
     
     if (!constraint->Valid()) {
         LOG(ERROR) << "Tried to add invalid constraint. Cannot add inequality constraint.";
@@ -223,7 +227,8 @@ bool ConstraintSatisfactionProblem::AddInequalityConstraint(
 
 bool ConstraintSatisfactionProblem::AddEqualityConstraint(
     const std::vector<unsigned long>& cellIndeces,
-    Constraint::Operator op
+    Constraint::Operator op,
+    const std::string& idPrefix
 ) {
     for (auto cellIndex : cellIndeces) {
         if ( cellIndex >= m_cells.size() ) {
@@ -244,14 +249,18 @@ bool ConstraintSatisfactionProblem::AddEqualityConstraint(
         }
     );
     
-    return AddEqualityConstraint(cellPointers, op);
+    return AddEqualityConstraint(cellPointers, op, idPrefix);
 }
 
 bool ConstraintSatisfactionProblem::AddEqualityConstraint(
     const std::vector< std::weak_ptr<Cell> >& cellPointers,
-    Constraint::Operator op
+    Constraint::Operator op,
+    const std::string& idPrefix
 ) {
-    auto constraint = std::make_shared<EqualityConstraint>(m_constraints.size(), cellPointers, op, this);
+    std::stringstream ss;
+    ss << idPrefix << "_" << m_constraints.size();
+    
+    auto constraint = std::make_shared<EqualityConstraint>(ss.str(), cellPointers, op, this);
     
     if (!constraint->Valid()) {
         LOG(ERROR) << "Tried to add invalid constraint. Cannot add inequality constraint.";
@@ -318,17 +327,26 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Dete
             if (constraint->IsActive()) {
                 if(!constraint->Apply()) {
                     LOG(WARNING) << "Constraint turned out to be invalid";
-                    return {false, false}; // invalid
+                    return {
+                        false,
+                        false,
+                        {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
+                    }; // invalid
                 }
             }
         }
     }
     VLOG(1) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
     m_provenValid = true;
-    return {m_completelySolved, m_provenValid}; // valid
+    return {m_completelySolved, m_provenValid, {SolveSolution::ReasonType::ManagedToSolve} }; // valid
 }
 
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve() {
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve(int depthGuess) {
+    
+    if (depthGuess == 0) {
+        LOG(INFO) << "Solving...";
+    }
+    
     auto res = DeterministicSolve();
     if (!res.valid) {
         return res;
@@ -336,21 +354,38 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     if (res.completeSolve) {
         return res;
     }
-    
+
+    LOG(INFO) << "Require guess. Depth to " << depthGuess + 1;
     auto guesses = GetGuesses();
     for (auto guess : guesses) {
         auto branchCsp(*this);
         branchCsp.MakeGuess(guess);
-        auto res = branchCsp.Solve();
+        auto res = branchCsp.Solve(depthGuess + 1);
         if (res.completeSolve) {
             *this = branchCsp;
             return res;
         }
     }
-    return {false, false};  // if none of the branches can solve it, it must be invalid
+    
+    crow::json::wvalue reasonJson;
+    size_t numGuesses = guesses.size();
+    for (unsigned int i = 0; i < numGuesses; ++i) {
+        reasonJson[i] = guesses[i].Serialize();
+    }
+    
+    return {
+        false,
+        false,
+        {SolveSolution::ReasonType::NoGuessesWorked, std::move(reasonJson) }
+    };
 }
 
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveUnique() {
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveUnique(int depthGuess) {
+    
+    if (depthGuess == 0) {
+        LOG(INFO) << "Solving uniquely...";
+    }
+    
     auto res = DeterministicSolve();
     if (!res.valid) {
         return res;
@@ -363,15 +398,27 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     bool alreadyHaveAValidSolution = false;
     
     auto guesses = GetGuesses();
+    
+    LOG(INFO) << "Require guess. Depth to " << depthGuess + 1;
     for (auto guess : guesses) {
         auto branchCsp(*this);
         branchCsp.MakeGuess(guess);
-        auto res = branchCsp.Solve();
+        auto res = branchCsp.SolveUnique(depthGuess + 1);
+        if (!res.valid) { // the CSP with the guess does not have unique solution
+            return res;
+        }
         if (res.completeSolve) {
             LOG(INFO) << "Guess produced solution";
             if (alreadyHaveAValidSolution) {
                 LOG(INFO) << "Found two solutions. Not unique";
-                return {false, false};
+                crow::json::wvalue reasonJson;
+                reasonJson[0] = Serialize();
+                reasonJson[1] = lastValidSolution.Serialize();
+                return {
+                    false,
+                    false,
+                    {SolveSolution::ReasonType::NotUnique, std::move(reasonJson) }
+                };
             }
             lastValidSolution = branchCsp;
             alreadyHaveAValidSolution = true;
@@ -381,11 +428,20 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     if (alreadyHaveAValidSolution) {
         *this = lastValidSolution;
         LOG(INFO) << "Found only one solution. Proven unique";
-        return { true, true};
+        return { true, true, {SolveSolution::ReasonType::ManagedToSolve} };
     }
     
     LOG(INFO) << "No quesses worked. Proven invalid.";
-    return {false, false};  // if none of the branches can solve it, it must be invalid
+    crow::json::wvalue reasonJson;
+    size_t numGuesses = guesses.size();
+    for (unsigned int i = 0; i < numGuesses; ++i) {
+        reasonJson[i] = guesses[i].Serialize();
+    }
+    return {
+        false,
+        false,
+        {SolveSolution::ReasonType::NoGuessesWorked, std::move(reasonJson) }
+    };
 }
 
 void ConstraintSatisfactionProblem::MakeGuess(const Guess& guess) {
@@ -437,10 +493,20 @@ std::vector<unsigned long> ConstraintSatisfactionProblem::RemainingCellKeys() co
 }
 
 crow::json::wvalue ConstraintSatisfactionProblem::Serialize() const {
+    return SerializeCsp();
+}
+
+crow::json::wvalue ConstraintSatisfactionProblem::SerializeCsp() const {
     auto out = crow::json::wvalue();
     
     out["num_cells"] = m_cells.size();
+    out["cells"] = SerializeCells();
+    out["constraints"] = SerializeConstraints();
     
+    return out;
+}
+
+std::vector<crow::json::wvalue> ConstraintSatisfactionProblem::SerializeCells() const {
     std::vector<crow::json::wvalue> cellsArray;
     std::transform(
         m_cells.cbegin(),
@@ -450,8 +516,10 @@ crow::json::wvalue ConstraintSatisfactionProblem::Serialize() const {
             return pair.second->Serialize();
         }
     );
-    out["cells"] = std::move(cellsArray);
-    
+    return cellsArray;
+}
+
+std::vector<crow::json::wvalue> ConstraintSatisfactionProblem::SerializeConstraints() const {
     std::vector<crow::json::wvalue> constraintsArray;
     std::transform(
         m_constraints.cbegin(),
@@ -461,9 +529,7 @@ crow::json::wvalue ConstraintSatisfactionProblem::Serialize() const {
             return pConstraints->Serialize();
         }
     );
-    out["constraints"] = std::move(constraintsArray);
-    
-    return out;
+    return constraintsArray;
 }
 
 } // ::Csp

@@ -24,8 +24,9 @@ namespace {
 // 1. false if invalid (ended up removing all possible options from the cell)
 // 2. the number of cells that we removed any values from
 std::pair<bool, unsigned int> EliminateSelectivelyFromCells(const std::vector< std::weak_ptr<Cell> >& cellVec,
-                                           const std::set<int>& toRemove,
-                                           const std::set<int>& possibleValSetToIgnore) {
+    const std::set<int>& toRemove,
+    const std::set<int>& possibleValSetToIgnore) {
+    
     unsigned int numCellRemovedFrom = 0;
     for (auto& p_Cell : cellVec) {
         if (p_Cell.lock()->GetPossibleValuesRef() != possibleValSetToIgnore) {
@@ -94,7 +95,7 @@ bool EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions() {
 }
 
 EqualityConstraint::EqualityConstraint(
-    int id,
+    const std::string& id,
     const std::vector< std::weak_ptr<Cell> >& cells,
     Operator op,
     ConstraintSatisfactionProblem* csp
@@ -130,7 +131,8 @@ bool EqualityConstraint::SetSolvedIfPossible() {
 
 
 EqualityConstraint* EqualityConstraint::Clone(
-    std::map< const Cell*, std::shared_ptr<Cell>* >& newCellLookup,
+    std::map< const Cell*,
+    std::shared_ptr<Cell>* >& newCellLookup,
     ConstraintSatisfactionProblem* newCsp
 ) {
     std::vector< std::weak_ptr<Cell> > newCells;
@@ -155,6 +157,7 @@ std::string EqualityConstraint::dPrint(bool log) const {
     ss << (m_solved ? "SOLVED" : "NOT SOLVED")
         << (m_relatedCellsChanged ? "* " : "  ");
     
+    ss << m_id << ": ";
 
     for (auto it = m_cells.cbegin(); it != m_cells.end() - 1; ++it) {
         ss << it->lock()->dPrint(false) << " " << m_operator << " ";

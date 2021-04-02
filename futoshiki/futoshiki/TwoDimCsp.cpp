@@ -32,11 +32,15 @@ std::vector< std::pair<std::string, int> > GenIdValuePairs(const std::vector< st
     return out;
 }
 
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
 std::string CoordsToId(const TwoDimCsp::CellCoords& cords) {
     std::stringstream ss;
     ss <<  cords.first << "_" << cords.second;
     return ss.str();
 }
+#pragma clang diagnostic pop
 
 TwoDimCsp::CellCoords IdToCoords(const std::string& id) {
     std::size_t underScore = id.find_first_of("_");
@@ -264,16 +268,22 @@ bool TwoDimCsp::AddEqualityConstraintToRow(
 ) {
     auto row = GetRow(rowIdx);
     
-    return ConstraintSatisfactionProblem::AddEqualityConstraint(row, op);
+    std::stringstream ss;
+    ss << "row" << rowIdx;
+    
+    return ConstraintSatisfactionProblem::AddEqualityConstraint( row, op, ss.str() );
 }
 
 bool TwoDimCsp::AddEqualityConstraintToCol(
     unsigned long colIdx,
     Constraint::Operator op
 ) {
-    auto row = GetCol(colIdx);
+    auto col = GetCol(colIdx);
+
+    std::stringstream ss;
+    ss << "col" << colIdx;
     
-    return ConstraintSatisfactionProblem::AddEqualityConstraint(row, op);
+    return ConstraintSatisfactionProblem::AddEqualityConstraint( col, op, ss.str() );
 }
 
 bool TwoDimCsp::AddEqualityConstraintToAllRows(
@@ -330,6 +340,47 @@ std::vector< std::weak_ptr<Cell> > TwoDimCsp::GetCol(unsigned long colIdx) const
     }
     
     return out;
+}
+
+crow::json::wvalue TwoDimCsp::Serialize() const {
+    auto out = crow::json::wvalue();
+    
+    out["num_cells"] = m_cells.size();
+    
+    crow::json::wvalue gridSize;
+    gridSize["num_rows"] = m_numRows;
+    gridSize["num_cols"] = m_numCols;
+    
+    out["grid_size"] = std::move(gridSize);
+    
+    out["cells"] = SerializeGrid(); // different compared to CSP
+    out["constraints"] = SerializeConstraints();
+    
+    return out;
+}
+
+crow::json::wvalue TwoDimCsp::SerializeGrid() const {
+    auto grid = GetGrid();
+    crow::json::wvalue outGrid;
+    ;
+    auto serializeCellVector = [](const std::vector< std::weak_ptr<Cell> >& vec){
+        std::vector<crow::json::wvalue> rowOut( vec.size() );
+        std::transform(
+            vec.cbegin(),
+            vec.cend(),
+            rowOut.begin(),
+            [](const std::weak_ptr<Cell>& cell) {
+                return cell.lock()->Serialize();
+            }
+        );
+        return rowOut;
+    };
+    
+    for (unsigned int i = 0; i < grid.size(); ++i) {
+        outGrid[i] = serializeCellVector(grid[i]);
+    }
+    
+    return outGrid;
 }
 
 } // ::Csp

@@ -26,7 +26,7 @@ class Cell;
 class EqualityConstraint : public Constraint {
 public:
     EqualityConstraint(
-        int id,
+        const std::string& id,
         const std::vector< std::weak_ptr<Cell> >& cells,
         Operator op,
         ConstraintSatisfactionProblem* csp
