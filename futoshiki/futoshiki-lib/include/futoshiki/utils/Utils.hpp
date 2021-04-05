@@ -18,7 +18,6 @@
 // Use (void) to silent unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
 
-
 namespace Utils {
 
 // from https://www.reedbeta.com/blog/python-like-enumerate-in-cpp17/

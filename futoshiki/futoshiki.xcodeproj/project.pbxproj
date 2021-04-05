@@ -7,21 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		225C6570260E7FBD0051BD0E /* TwoDimCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */; };
-		225C6574260F999C0051BD0E /* SquareCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C6572260F999C0051BD0E /* SquareCsp.cpp */; };
-		225C6578260F9BB00051BD0E /* LatinSquare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C6576260F9BB00051BD0E /* LatinSquare.cpp */; };
-		225C657D260FC3AA0051BD0E /* easylogging++.cc in Sources */ = {isa = PBXBuildFile; fileRef = 225C657C260FC3AA0051BD0E /* easylogging++.cc */; };
-		22D8E94A25F94CEE00D95938 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E94925F94CEE00D95938 /* main.cpp */; };
-		22D8E95425F94DE700D95938 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */; };
-		22D8E95925F94EEB00D95938 /* Cell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95725F94EEB00D95938 /* Cell.cpp */; };
-		22D8E95E25F9570A00D95938 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E95C25F9570A00D95938 /* Utils.cpp */; };
-		22D8E96225F95AB300D95938 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E96025F95AB300D95938 /* Constraint.cpp */; };
-		22D8E96625F961B300D95938 /* InequalityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22D8E96425F961B300D95938 /* InequalityConstraint.cpp */; };
-		22E524D825FCCE4D00785EE8 /* EqualityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */; };
+		225C658E2617B71D0051BD0E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C658D2617B71D0051BD0E /* main.cpp */; };
+		22DAC59F2617CCF70099C441 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
+		22DAC5AB2617CE7B0099C441 /* SquareCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */; };
+		22DAC5AC2617CE7B0099C441 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */; };
+		22DAC5AD2617CE7B0099C441 /* TwoDimCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A52617CE7A0099C441 /* TwoDimCsp.cpp */; };
+		22DAC5AF2617CE7B0099C441 /* LatinSquare.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A72617CE7A0099C441 /* LatinSquare.cpp */; };
+		22DAC5B02617CE7B0099C441 /* EqualityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A82617CE7A0099C441 /* EqualityConstraint.cpp */; };
+		22DAC5B12617CE7B0099C441 /* InequalityConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A92617CE7A0099C441 /* InequalityConstraint.cpp */; };
+		22DAC5B22617CE7B0099C441 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5AA2617CE7A0099C441 /* Constraint.cpp */; };
+		22DAC5D82617D3BB0099C441 /* easylogging++.cc in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5D72617D3BB0099C441 /* easylogging++.cc */; };
+		22DAC5DC2617D3EA0099C441 /* Cell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5DB2617D3EA0099C441 /* Cell.cpp */; };
+		22DAC5F52617D8890099C441 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5F42617D8890099C441 /* utils.cpp */; };
+		22DAC606261885CF0099C441 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC605261885CF0099C441 /* main.cpp */; };
+		22DAC60F2618860A0099C441 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		22DAC59D2617CCF30099C441 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22D8E93E25F94CEE00D95938 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22DAC5872617CC970099C441;
+			remoteInfo = "futoshiki-lib";
+		};
+		22DAC60D261886040099C441 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22D8E93E25F94CEE00D95938 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22DAC5872617CC970099C441;
+			remoteInfo = futoshiki;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
-		22D8E94425F94CEE00D95938 /* CopyFiles */ = {
+		225C65892617B71D0051BD0E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		22DAC601261885CF0099C441 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -33,131 +62,185 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TwoDimCsp.cpp; sourceTree = "<group>"; };
-		225C656F260E7FBD0051BD0E /* TwoDimCsp.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TwoDimCsp.hpp; sourceTree = "<group>"; };
-		225C6572260F999C0051BD0E /* SquareCsp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SquareCsp.cpp; sourceTree = "<group>"; };
-		225C6573260F999C0051BD0E /* SquareCsp.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SquareCsp.hpp; sourceTree = "<group>"; };
-		225C6576260F9BB00051BD0E /* LatinSquare.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LatinSquare.cpp; sourceTree = "<group>"; };
-		225C6577260F9BB00051BD0E /* LatinSquare.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LatinSquare.hpp; sourceTree = "<group>"; };
-		225C657A260FC2DB0051BD0E /* easylogging++.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "easylogging++.h"; sourceTree = "<group>"; };
-		225C657C260FC3AA0051BD0E /* easylogging++.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "easylogging++.cc"; sourceTree = "<group>"; };
-		225C657F260FC4B10051BD0E /* logging.conf */ = {isa = PBXFileReference; lastKnownFileType = text; name = logging.conf; path = conf/logging.conf; sourceTree = "<group>"; };
-		22D8E94625F94CEE00D95938 /* futoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = futoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
-		22D8E94925F94CEE00D95938 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
-		22D8E95325F94DE700D95938 /* ConstraintSatisfactionProblem.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ConstraintSatisfactionProblem.hpp; sourceTree = "<group>"; };
-		22D8E95725F94EEB00D95938 /* Cell.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Cell.cpp; sourceTree = "<group>"; };
-		22D8E95825F94EEB00D95938 /* Cell.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Cell.hpp; sourceTree = "<group>"; };
-		22D8E95C25F9570A00D95938 /* Utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
-		22D8E95D25F9570A00D95938 /* Utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
-		22D8E96025F95AB300D95938 /* Constraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Constraint.cpp; sourceTree = "<group>"; };
-		22D8E96125F95AB300D95938 /* Constraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Constraint.hpp; sourceTree = "<group>"; };
-		22D8E96425F961B300D95938 /* InequalityConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InequalityConstraint.cpp; sourceTree = "<group>"; };
-		22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = InequalityConstraint.hpp; sourceTree = "<group>"; };
-		22D8E96C25FC27E600D95938 /* MacroUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacroUtils.h; sourceTree = "<group>"; };
-		22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EqualityConstraint.cpp; sourceTree = "<group>"; };
-		22E524D725FCCE4D00785EE8 /* EqualityConstraint.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EqualityConstraint.hpp; sourceTree = "<group>"; };
+		225C658B2617B71D0051BD0E /* TestFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
+		225C658D2617B71D0051BD0E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22DAC5882617CC970099C441 /* libfutoshiki.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfutoshiki.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SquareCsp.cpp; path = src/SquareCsp.cpp; sourceTree = "<group>"; };
+		22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConstraintSatisfactionProblem.cpp; path = src/ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
+		22DAC5A52617CE7A0099C441 /* TwoDimCsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TwoDimCsp.cpp; path = src/TwoDimCsp.cpp; sourceTree = "<group>"; };
+		22DAC5A72617CE7A0099C441 /* LatinSquare.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LatinSquare.cpp; path = src/LatinSquare.cpp; sourceTree = "<group>"; };
+		22DAC5A82617CE7A0099C441 /* EqualityConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EqualityConstraint.cpp; path = src/EqualityConstraint.cpp; sourceTree = "<group>"; };
+		22DAC5A92617CE7A0099C441 /* InequalityConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InequalityConstraint.cpp; path = src/InequalityConstraint.cpp; sourceTree = "<group>"; };
+		22DAC5AA2617CE7A0099C441 /* Constraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Constraint.cpp; path = src/Constraint.cpp; sourceTree = "<group>"; };
+		22DAC5B62617CE950099C441 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		22DAC5D72617D3BB0099C441 /* easylogging++.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "easylogging++.cc"; path = "src/easylogging++.cc"; sourceTree = "<group>"; };
+		22DAC5DB2617D3EA0099C441 /* Cell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cell.cpp; path = src/Cell.cpp; sourceTree = "<group>"; };
+		22DAC5F42617D8890099C441 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		22DAC603261885CF0099C441 /* MainFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MainFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
+		22DAC605261885CF0099C441 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		22D8E94325F94CEE00D95938 /* Frameworks */ = {
+		225C65882617B71D0051BD0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DAC59F2617CCF70099C441 /* libfutoshiki.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22DAC5862617CC970099C441 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		22DAC600261885CF0099C441 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DAC60F2618860A0099C441 /* libfutoshiki.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		225C6582260FCDED0051BD0E /* CSPs */ = {
+		225C658C2617B71D0051BD0E /* TestFutoshiki */ = {
 			isa = PBXGroup;
 			children = (
-				22D8E95225F94DE700D95938 /* ConstraintSatisfactionProblem.cpp */,
-				22D8E95325F94DE700D95938 /* ConstraintSatisfactionProblem.hpp */,
-				225C656E260E7FBD0051BD0E /* TwoDimCsp.cpp */,
-				225C656F260E7FBD0051BD0E /* TwoDimCsp.hpp */,
-				225C6572260F999C0051BD0E /* SquareCsp.cpp */,
-				225C6573260F999C0051BD0E /* SquareCsp.hpp */,
-				225C6576260F9BB00051BD0E /* LatinSquare.cpp */,
-				225C6577260F9BB00051BD0E /* LatinSquare.hpp */,
+				225C658D2617B71D0051BD0E /* main.cpp */,
 			);
-			name = CSPs;
+			path = TestFutoshiki;
 			sourceTree = "<group>";
 		};
 		22D8E93D25F94CEE00D95938 = {
 			isa = PBXGroup;
 			children = (
-				22D8E94825F94CEE00D95938 /* futoshiki */,
+				225C658C2617B71D0051BD0E /* TestFutoshiki */,
+				22DAC5892617CC970099C441 /* futoshiki-lib */,
+				22DAC604261885CF0099C441 /* MainFutoshiki */,
 				22D8E94725F94CEE00D95938 /* Products */,
+				22DAC4F62617C0550099C441 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		22D8E94725F94CEE00D95938 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				22D8E94625F94CEE00D95938 /* futoshiki */,
+				225C658B2617B71D0051BD0E /* TestFutoshiki */,
+				22DAC5882617CC970099C441 /* libfutoshiki.a */,
+				22DAC603261885CF0099C441 /* MainFutoshiki */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		22D8E94825F94CEE00D95938 /* futoshiki */ = {
+		22DAC4F62617C0550099C441 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				225C6582260FCDED0051BD0E /* CSPs */,
-				22D8E97025FC2E4F00D95938 /* Constraints */,
-				22D8E95B25F956F200D95938 /* utils */,
-				22D8E94925F94CEE00D95938 /* main.cpp */,
-				22D8E95725F94EEB00D95938 /* Cell.cpp */,
-				22D8E95825F94EEB00D95938 /* Cell.hpp */,
-				225C657F260FC4B10051BD0E /* logging.conf */,
 			);
-			path = futoshiki;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		22D8E95B25F956F200D95938 /* utils */ = {
+		22DAC5892617CC970099C441 /* futoshiki-lib */ = {
 			isa = PBXGroup;
 			children = (
-				225C657C260FC3AA0051BD0E /* easylogging++.cc */,
-				225C657A260FC2DB0051BD0E /* easylogging++.h */,
-				22D8E96C25FC27E600D95938 /* MacroUtils.h */,
-				22D8E95C25F9570A00D95938 /* Utils.cpp */,
-				22D8E95D25F9570A00D95938 /* Utils.hpp */,
+				22DAC5FA2617D8950099C441 /* utils */,
+				22DAC5B62617CE950099C441 /* include */,
+				22DAC5DB2617D3EA0099C441 /* Cell.cpp */,
+				22DAC5D72617D3BB0099C441 /* easylogging++.cc */,
+				22DAC5AA2617CE7A0099C441 /* Constraint.cpp */,
+				22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */,
+				22DAC5A82617CE7A0099C441 /* EqualityConstraint.cpp */,
+				22DAC5A92617CE7A0099C441 /* InequalityConstraint.cpp */,
+				22DAC5A72617CE7A0099C441 /* LatinSquare.cpp */,
+				22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */,
+				22DAC5A52617CE7A0099C441 /* TwoDimCsp.cpp */,
+			);
+			path = "futoshiki-lib";
+			sourceTree = "<group>";
+		};
+		22DAC5FA2617D8950099C441 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				22DAC5F42617D8890099C441 /* utils.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
 		};
-		22D8E97025FC2E4F00D95938 /* Constraints */ = {
+		22DAC604261885CF0099C441 /* MainFutoshiki */ = {
 			isa = PBXGroup;
 			children = (
-				22D8E96025F95AB300D95938 /* Constraint.cpp */,
-				22D8E96125F95AB300D95938 /* Constraint.hpp */,
-				22D8E96A25F97A2500D95938 /* InequalityConstraint.hpp */,
-				22D8E96425F961B300D95938 /* InequalityConstraint.cpp */,
-				22E524D625FCCE4D00785EE8 /* EqualityConstraint.cpp */,
-				22E524D725FCCE4D00785EE8 /* EqualityConstraint.hpp */,
+				22DAC605261885CF0099C441 /* main.cpp */,
 			);
-			name = Constraints;
+			path = MainFutoshiki;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		22DAC5842617CC970099C441 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		22D8E94525F94CEE00D95938 /* futoshiki */ = {
+		225C658A2617B71D0051BD0E /* TestFutoshiki */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 22D8E94D25F94CEE00D95938 /* Build configuration list for PBXNativeTarget "futoshiki" */;
+			buildConfigurationList = 225C658F2617B71D0051BD0E /* Build configuration list for PBXNativeTarget "TestFutoshiki" */;
 			buildPhases = (
-				22D8E94225F94CEE00D95938 /* Sources */,
-				22D8E94325F94CEE00D95938 /* Frameworks */,
-				22D8E94425F94CEE00D95938 /* CopyFiles */,
+				225C65872617B71D0051BD0E /* Sources */,
+				225C65882617B71D0051BD0E /* Frameworks */,
+				225C65892617B71D0051BD0E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22DAC59E2617CCF30099C441 /* PBXTargetDependency */,
+			);
+			name = TestFutoshiki;
+			productName = TestFutoshiki;
+			productReference = 225C658B2617B71D0051BD0E /* TestFutoshiki */;
+			productType = "com.apple.product-type.tool";
+		};
+		22DAC5872617CC970099C441 /* futoshiki */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22DAC5902617CC970099C441 /* Build configuration list for PBXNativeTarget "futoshiki" */;
+			buildPhases = (
+				22DAC5842617CC970099C441 /* Headers */,
+				22DAC5852617CC970099C441 /* Sources */,
+				22DAC5862617CC970099C441 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = futoshiki;
-			productName = futoshiki;
-			productReference = 22D8E94625F94CEE00D95938 /* futoshiki */;
+			productName = "futoshiki-lib";
+			productReference = 22DAC5882617CC970099C441 /* libfutoshiki.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		22DAC602261885CF0099C441 /* MainFutoshiki */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22DAC607261885CF0099C441 /* Build configuration list for PBXNativeTarget "MainFutoshiki" */;
+			buildPhases = (
+				22DAC5FF261885CF0099C441 /* Sources */,
+				22DAC600261885CF0099C441 /* Frameworks */,
+				22DAC601261885CF0099C441 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22DAC60E261886040099C441 /* PBXTargetDependency */,
+			);
+			name = MainFutoshiki;
+			productName = MainFutoshiki;
+			productReference = 22DAC603261885CF0099C441 /* MainFutoshiki */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -168,7 +251,13 @@
 			attributes = {
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
-					22D8E94525F94CEE00D95938 = {
+					225C658A2617B71D0051BD0E = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					22DAC5872617CC970099C441 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					22DAC602261885CF0099C441 = {
 						CreatedOnToolsVersion = 12.4;
 					};
 				};
@@ -186,33 +275,101 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22D8E94525F94CEE00D95938 /* futoshiki */,
+				225C658A2617B71D0051BD0E /* TestFutoshiki */,
+				22DAC5872617CC970099C441 /* futoshiki */,
+				22DAC602261885CF0099C441 /* MainFutoshiki */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		22D8E94225F94CEE00D95938 /* Sources */ = {
+		225C65872617B71D0051BD0E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				225C6570260E7FBD0051BD0E /* TwoDimCsp.cpp in Sources */,
-				225C6578260F9BB00051BD0E /* LatinSquare.cpp in Sources */,
-				22D8E95925F94EEB00D95938 /* Cell.cpp in Sources */,
-				225C657D260FC3AA0051BD0E /* easylogging++.cc in Sources */,
-				22D8E96625F961B300D95938 /* InequalityConstraint.cpp in Sources */,
-				22D8E95425F94DE700D95938 /* ConstraintSatisfactionProblem.cpp in Sources */,
-				22D8E94A25F94CEE00D95938 /* main.cpp in Sources */,
-				22D8E95E25F9570A00D95938 /* Utils.cpp in Sources */,
-				225C6574260F999C0051BD0E /* SquareCsp.cpp in Sources */,
-				22D8E96225F95AB300D95938 /* Constraint.cpp in Sources */,
-				22E524D825FCCE4D00785EE8 /* EqualityConstraint.cpp in Sources */,
+				225C658E2617B71D0051BD0E /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22DAC5852617CC970099C441 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DAC5DC2617D3EA0099C441 /* Cell.cpp in Sources */,
+				22DAC5F52617D8890099C441 /* utils.cpp in Sources */,
+				22DAC5AC2617CE7B0099C441 /* ConstraintSatisfactionProblem.cpp in Sources */,
+				22DAC5AF2617CE7B0099C441 /* LatinSquare.cpp in Sources */,
+				22DAC5B02617CE7B0099C441 /* EqualityConstraint.cpp in Sources */,
+				22DAC5D82617D3BB0099C441 /* easylogging++.cc in Sources */,
+				22DAC5B22617CE7B0099C441 /* Constraint.cpp in Sources */,
+				22DAC5B12617CE7B0099C441 /* InequalityConstraint.cpp in Sources */,
+				22DAC5AB2617CE7B0099C441 /* SquareCsp.cpp in Sources */,
+				22DAC5AD2617CE7B0099C441 /* TwoDimCsp.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		22DAC5FF261885CF0099C441 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22DAC606261885CF0099C441 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		22DAC59E2617CCF30099C441 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22DAC5872617CC970099C441 /* futoshiki */;
+			targetProxy = 22DAC59D2617CCF30099C441 /* PBXContainerItemProxy */;
+		};
+		22DAC60E261886040099C441 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22DAC5872617CC970099C441 /* futoshiki */;
+			targetProxy = 22DAC60D261886040099C441 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		225C65902617B71D0051BD0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
+					"$SRCROOT/futoshiki-lib/include",
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-lCatch2",
+					"-lCatch2Main",
+					"-lfutoshiki",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		225C65912617B71D0051BD0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
+					"$SRCROOT/futoshiki-lib/include",
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-lCatch2",
+					"-lCatch2Main",
+					"-lfutoshiki",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		22D8E94B25F94CEE00D95938 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -324,32 +481,73 @@
 			};
 			name = Release;
 		};
-		22D8E94E25F94CEE00D95938 /* Debug */ = {
+		22DAC5912617CC970099C441 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					AUTO_INITIALIZE_EASYLOGGINGPP,
+					"$(inherited)",
+				);
 				HEADER_SEARCH_PATHS = (
 					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
 					/usr/local/include,
+					"$SRCROOT/futoshiki-lib/include",
 				);
+				MACH_O_TYPE = mh_dylib;
 				OTHER_LDFLAGS = "-lz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		22DAC5922617CC970099C441 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				HEADER_SEARCH_PATHS = (
+					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
+					/usr/local/include,
+					"$SRCROOT/futoshiki-lib/include",
+				);
+				MACH_O_TYPE = mh_dylib;
+				OTHER_LDFLAGS = "-lz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		22DAC608261885CF0099C441 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					"$SRCROOT/futoshiki-lib/include",
+					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		22D8E94F25F94CEE00D95938 /* Release */ = {
+		22DAC609261885CF0099C441 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
-					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
 					/usr/local/include,
+					"$SRCROOT/futoshiki-lib/include",
+					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
 				);
-				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -357,6 +555,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		225C658F2617B71D0051BD0E /* Build configuration list for PBXNativeTarget "TestFutoshiki" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				225C65902617B71D0051BD0E /* Debug */,
+				225C65912617B71D0051BD0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		22D8E94125F94CEE00D95938 /* Build configuration list for PBXProject "futoshiki" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -366,11 +573,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		22D8E94D25F94CEE00D95938 /* Build configuration list for PBXNativeTarget "futoshiki" */ = {
+		22DAC5902617CC970099C441 /* Build configuration list for PBXNativeTarget "futoshiki" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22D8E94E25F94CEE00D95938 /* Debug */,
-				22D8E94F25F94CEE00D95938 /* Release */,
+				22DAC5912617CC970099C441 /* Debug */,
+				22DAC5922617CC970099C441 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22DAC607261885CF0099C441 /* Build configuration list for PBXNativeTarget "MainFutoshiki" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22DAC608261885CF0099C441 /* Debug */,
+				22DAC609261885CF0099C441 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

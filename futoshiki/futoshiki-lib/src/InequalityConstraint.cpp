@@ -5,12 +5,11 @@
 //  Created by Maximilian Noka on 10/03/2021.
 //
 
-#include "InequalityConstraint.hpp"
-#include "Cell.hpp"
-#include "ConstraintSatisfactionProblem.hpp"
-
-#include "utils/Utils.hpp"
-#include "utils/easylogging++.h"
+#include <futoshiki/InequalityConstraint.hpp>
+#include <futoshiki/Cell.hpp>
+#include <futoshiki/ConstraintSatisfactionProblem.hpp>
+#include <futoshiki/utils/Utils.hpp>
+#include <futoshiki/utils/easylogging++.h>
 
 namespace Csp {
 
@@ -25,6 +24,9 @@ InequalityConstraint::InequalityConstraint(
     , m_lhsCell(lhsCell)
     , m_rhsCell(rhsCell)
 {
+    if(!Valid()) {
+        m_provenInvalid = true;
+    }
     if(!SetSolvedIfPossible()) {
         m_csp->ReportIfConstraintBecomesActive();
     }
@@ -57,10 +59,7 @@ InequalityConstraint* InequalityConstraint::Clone(
 std::string InequalityConstraint::dPrint(bool log) const {
     std::stringstream ss;
     
-    ss << (m_solved ? "SOLVED" : "NOT SOLVED")
-        << (m_relatedCellsChanged ? "* " : "  ");
-    
-    ss << m_id << ": ";
+    ss << Constraint::dPrint(false);
     
     auto lhs = m_lhsCell.lock();
     auto rhs = m_rhsCell.lock();
@@ -78,7 +77,8 @@ std::string InequalityConstraint::dPrint(bool log) const {
 }
 
 bool InequalityConstraint::Apply() {
-    assertm(IsActive(), "ERR: should only apply active constraints.");
+    assertm(IsActive(), "Should only apply active constraints.");
+    assertm(!m_provenInvalid, "Should not try to apply constraints that are already proven invalid");
     
     bool constraintWasValid = true;
     switch (m_operator) {
@@ -98,6 +98,7 @@ bool InequalityConstraint::Apply() {
     }
     
     if (!constraintWasValid) {
+        m_provenInvalid = true;
         LOG(WARNING) << "Could not apply constraint, it was not valid";
     }
     
@@ -110,16 +111,19 @@ bool InequalityConstraint::Apply() {
     return constraintWasValid;
 }
 
-bool InequalityConstraint::Valid() const {
+bool InequalityConstraint::Valid() {
     switch (m_operator) {
         case Operator::LessThan:
-            return m_lhsCell.lock()->MinPossible() < m_rhsCell.lock()->MaxPossible();
+            m_provenInvalid = ! ( m_lhsCell.lock()->MinPossible() < m_rhsCell.lock()->MaxPossible() );
+            break;
         case Operator::GreaterThan:
-            return m_lhsCell.lock()->MaxPossible() > m_rhsCell.lock()->MinPossible();
+            m_provenInvalid = ! ( m_lhsCell.lock()->MaxPossible() > m_rhsCell.lock()->MinPossible() );
+            break;
         default:
             assertm(false, "invalid constraint operator for inequality constraint");
-            return false;
+            break;
     }
+    return !m_provenInvalid;
 }
 
 std::vector<std::string> InequalityConstraint::GetCellIds() const {

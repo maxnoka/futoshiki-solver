@@ -5,13 +5,14 @@
 //  Created by Maximilian Noka on 10/03/2021.
 //
 
-#include "ConstraintSatisfactionProblem.hpp"
+#include <futoshiki/ConstraintSatisfactionProblem.hpp>
 
-#include "Constraint.hpp"
-#include "Cell.hpp"
+#include <futoshiki/Constraint.hpp>
+#include <futoshiki/Cell.hpp>
 
-#include "utils/Utils.hpp"
-#include "utils/easylogging++.h"
+#include <futoshiki/utils/Utils.hpp>
+
+#include <futoshiki/utils/easylogging++.h>
 
 #include <iostream>
 #include <algorithm>
@@ -334,6 +335,17 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Dete
                     }; // invalid
                 }
             }
+            else if (constraint->ShouldStillCheckValid()) {
+                if(!constraint->Valid()) {
+                    LOG(WARNING) << "Constraint turned out to be invalid";
+                    return {
+                        false,
+                        false,
+                        {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
+                    }; // invalid
+                }
+                constraint->SetChecked();
+            }
         }
     }
     VLOG(1) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
@@ -349,9 +361,11 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     
     auto res = DeterministicSolve();
     if (!res.valid) {
+        LOG(INFO) << "Finished solving. Not valid";
         return res;
     }
     if (res.completeSolve) {
+        LOG(INFO) << "Finished solving. Found solution.";
         return res;
     }
 
@@ -373,6 +387,7 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
         reasonJson[i] = guesses[i].Serialize();
     }
     
+    LOG(INFO) << "No quesses worked. Proven invalid.";    
     return {
         false,
         false,
@@ -388,9 +403,15 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     
     auto res = DeterministicSolve();
     if (!res.valid) {
+        if (depthGuess == 0) {
+            LOG(INFO) << "Finished solving. Not valid";
+        }
         return res;
     }
     if (res.completeSolve) {
+        if (depthGuess == 0) {
+            LOG(INFO) << "Finished solving. Found solution.";
+        }
         return res;
     }
     

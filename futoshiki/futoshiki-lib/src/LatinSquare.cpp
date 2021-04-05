@@ -5,9 +5,8 @@
 //  Created by Maximilian Noka on 27/03/2021.
 //
 
-#include "LatinSquare.hpp"
-
-#include "Utils.hpp"
+#include <futoshiki/LatinSquare.hpp>
+#include <futoshiki/utils/Utils.hpp>
 
 namespace Csp {
 

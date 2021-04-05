@@ -10,7 +10,7 @@
 
 #include "Cell.hpp"
 
-#include "utils/Utils.hpp"
+#include <futoshiki/utils/Utils.hpp>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
@@ -69,7 +69,8 @@ public:
     
     Constraint() = delete;
     Constraint(const std::string& id, Operator op, ConstraintSatisfactionProblem* csp)
-    : m_solved(false) // up to the derived class to check this
+    : m_provenInvalid(false) // up to the derived class to check this
+    , m_solved(false) // up to the derived class to check this
     , m_operator(op)
     , m_relatedCellsChanged(true)
     , m_id(id)
@@ -88,42 +89,39 @@ public:
     
     // returns the number of cells solved by applying the constraint
     virtual bool Apply() = 0;
-    virtual bool Valid() const = 0;
+    virtual bool Valid() = 0;
     
     // cells reporting to the constraints
-    void ReportChanged() {
-        assertm(!m_solved, "cells changed, but constraint was already marked as solved\n");
-        const bool previouslyActive = IsActive();
-        m_relatedCellsChanged = true;
-        if (SetSolvedIfPossible()) {
-            if (previouslyActive) {
-                ReportBecameInactive();
-            }
-        }
-        else {
-            if(!previouslyActive) {
-                ReportBecameActive();
-            }
-        }
-    }
+    void ReportChanged();
     
     std::string Id() const {return m_id; }
     // true if all related cells are alread solved, so there's no more progress made in
     // applying it
     bool IsSolved() const { return m_solved; }
     bool IsActive() const { return !m_solved && m_relatedCellsChanged; }
+    // this state occurs if another constraint solved the last
+    // usnolved relatedCell. We need to make sure that this is valid
+    bool ShouldStillCheckValid() const {
+        return m_solved && m_relatedCellsChanged;
+    }
+    void SetChecked() {
+        assertm(ShouldStillCheckValid() && !m_provenInvalid, "Should only call this for cells in the SOLVED* state");
+        m_relatedCellsChanged = false;
+    }
+    
     Operator GetOperator() const { return m_operator; }
     
     virtual bool SetSolvedIfPossible() = 0;
     
 #ifdef DEBUG
-    virtual std::string dPrint(bool log) const = 0;
+    virtual std::string dPrint(bool log) const;
 #endif //DEBUG
     
     virtual std::vector<std::string> GetCellIds() const = 0;
     virtual crow::json::wvalue Serialize() const = 0;
     
 protected:
+    bool m_provenInvalid;
     bool m_solved;
     Operator m_operator;
     

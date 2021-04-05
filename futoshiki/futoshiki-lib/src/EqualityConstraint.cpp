@@ -5,13 +5,13 @@
 //  Created by Maximilian Noka on 13/03/2021.
 //
 
-#include "EqualityConstraint.hpp"
+#include <futoshiki/EqualityConstraint.hpp>
 
-#include "Cell.hpp"
-#include "ConstraintSatisfactionProblem.hpp"
+#include <futoshiki/Cell.hpp>
+#include <futoshiki/ConstraintSatisfactionProblem.hpp>
 
-#include "utils/Utils.hpp"
-#include "utils/easylogging++.h"
+#include <futoshiki/utils/Utils.hpp>
+#include <futoshiki/utils/easylogging++.h>
 
 #include <set>
 #include <iterator>
@@ -20,6 +20,17 @@
 namespace Csp {
 
 namespace {
+
+bool HaveDuplicateVals(const std::vector< std::weak_ptr<Cell> >& cellVec) {
+    std::set<int> cellVals;
+    for (auto cell : cellVec) {
+        auto [it, didInsertion] = cellVals.insert(cell.lock()->Value());
+        if (!didInsertion) {
+            return true;
+        }
+    }
+    return false;
+}
 
 // 1. false if invalid (ended up removing all possible options from the cell)
 // 2. the number of cells that we removed any values from
@@ -108,6 +119,9 @@ EqualityConstraint::EqualityConstraint(
         m_availableValues.m_container.emplace( pCell.lock()->GetPossibleValuesRef() );
     }
     
+    if(!Valid()) {
+        m_provenInvalid = true;
+    }
     if(!SetSolvedIfPossible()) {
         m_csp->ReportIfConstraintBecomesActive();
     }
@@ -154,10 +168,8 @@ EqualityConstraint* EqualityConstraint::Clone(
 
 std::string EqualityConstraint::dPrint(bool log) const {
     std::stringstream ss;
-    ss << (m_solved ? "SOLVED" : "NOT SOLVED")
-        << (m_relatedCellsChanged ? "* " : "  ");
     
-    ss << m_id << ": ";
+    ss << Constraint::dPrint(false);
 
     for (auto it = m_cells.cbegin(); it != m_cells.end() - 1; ++it) {
         ss << it->lock()->dPrint(false) << " " << m_operator << " ";
@@ -172,7 +184,8 @@ std::string EqualityConstraint::dPrint(bool log) const {
 }
 
 bool EqualityConstraint::Apply() {
-    assertm(IsActive(), "should not be applying inactive constraint\n");
+    assertm(IsActive(), "should not be applying inactive constraint");
+    assertm(!m_provenInvalid, "Should not try to apply constraints that are already proven invalid");
     
     bool constraintWasValid = true;
     switch (m_operator) {
@@ -190,6 +203,7 @@ bool EqualityConstraint::Apply() {
     }
     
     if (!constraintWasValid) {
+        m_provenInvalid = true;
         LOG(WARNING) << "Could not apply constraint, it was not valid";
     }
     
@@ -202,18 +216,25 @@ bool EqualityConstraint::Apply() {
     return constraintWasValid;
 }
 
-bool EqualityConstraint::Valid() const {
+bool EqualityConstraint::Valid() {
     switch (m_operator) {
         case Operator::NotEqualTo:
-            // TODO: probably a simple valid check will (it will be hard to keep track of eliminated values and all that without removing them from the cells)
-            return true;
+            if (!m_solved) {
+                // TODO: this needs to be implemented, but won't be simple
+                // assertm(false, "not-equal-to validity check not yet implemented when there are unsolved cells");
+            }
+            else if (HaveDuplicateVals(m_cells)) {
+                m_provenInvalid = true;
+            }
+            break;
         case Operator::EqualTo:
             assertm(false, "equal-to constraint not yet implemented");
-            return false;
+            break;
         default:
             assertm(false, "invalid constraint operator for equality constraint");
-            return false;
+            break;
     }
+    return !m_provenInvalid;
 }
 
 std::vector<std::string> EqualityConstraint::GetCellIds() const {

@@ -5,7 +5,7 @@
 //  Created by Maximilian Noka on 27/03/2021.
 //
 
-#include "SquareCsp.hpp"
+#include <futoshiki/SquareCsp.hpp>
 
 namespace Csp {
 

@@ -45,7 +45,7 @@ public:
     
     // return false if the constraint turned out not to be valid
     bool Apply() final;
-    bool Valid() const final;
+    bool Valid() final;
 
     bool SetSolvedIfPossible() final;
 

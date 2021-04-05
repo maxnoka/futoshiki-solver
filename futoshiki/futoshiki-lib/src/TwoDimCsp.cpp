@@ -5,10 +5,10 @@
 //  Created by Maximilian Noka on 26/03/2021.
 //
 
-#include "TwoDimCsp.hpp"
+#include <futoshiki/TwoDimCsp.hpp>
 
-#include "utils/Utils.hpp"
-#include "utils/easylogging++.h"
+#include <futoshiki/utils/Utils.hpp>
+#include <futoshiki/utils/easylogging++.h>
 
 #include <sstream>
 #include <iterator>

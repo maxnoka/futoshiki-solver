@@ -5,13 +5,11 @@
 //  Created by Maximilian Noka on 10/03/2021.
 //
 
-#include "Cell.hpp"
-
-#include "Constraint.hpp"
-#include "ConstraintSatisfactionProblem.hpp"
-
-#include "utils/Utils.hpp"
-#include "utils/easylogging++.h"
+#include <futoshiki/Cell.hpp>
+#include <futoshiki/Constraint.hpp>
+#include <futoshiki/ConstraintSatisfactionProblem.hpp>
+#include <futoshiki/utils/Utils.hpp>
+#include <futoshiki/utils/easylogging++.h>
 
 #include <iostream>
 #include <sstream>
