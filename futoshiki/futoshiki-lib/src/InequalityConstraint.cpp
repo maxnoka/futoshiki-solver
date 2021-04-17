@@ -32,6 +32,17 @@ InequalityConstraint::InequalityConstraint(
     }
 }
 
+InequalityConstraint::InequalityConstraint(
+    const InequalityConstraint& other,
+    const std::weak_ptr<Cell>& newlhsCell,
+    const std::weak_ptr<Cell>& newrhsCell,
+    ConstraintSatisfactionProblem* newCsp
+)
+    : Constraint(other, newCsp)
+    , m_lhsCell(newlhsCell)
+    , m_rhsCell(newrhsCell)
+{ }
+
 bool InequalityConstraint::SetSolvedIfPossible() {
     if (m_lhsCell.lock()->IsSolved() && m_rhsCell.lock()->IsSolved()) {
         m_solved = true;
@@ -47,9 +58,8 @@ InequalityConstraint* InequalityConstraint::Clone(
     ConstraintSatisfactionProblem* newCsp
 ) {
     auto clonedConstraint = new InequalityConstraint(
-        Id(),
+        *this,
         *newCellLookup.at(m_lhsCell.lock().get()),
-        m_operator,
         *newCellLookup.at(m_rhsCell.lock().get()),
         newCsp
     );
@@ -71,7 +81,7 @@ std::string InequalityConstraint::dPrint(bool log) const {
     ss << lhs->dPrint(false) << " " << m_operator << " " << rhs->dPrint(false);
     
     if (log) {
-        VLOG(1) << ss.str();
+        VLOG(2) << ss.str();
     }
     return ss.str();
 }
@@ -99,7 +109,7 @@ bool InequalityConstraint::Apply() {
     
     if (!constraintWasValid) {
         m_provenInvalid = true;
-        LOG(WARNING) << "Could not apply constraint, it was not valid";
+        VLOG(2) << "Could not apply constraint, it was not valid";
     }
     
     m_relatedCellsChanged = false;

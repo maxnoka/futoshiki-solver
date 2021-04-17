@@ -14,6 +14,8 @@
 #include <set>
 #include <algorithm>
 #include <cassert>
+#include <random>
+#include <iterator>
 
 // Use (void) to silent unused warnings.
 #define assertm(exp, msg) assert(((void)msg, exp))
@@ -122,6 +124,20 @@ std::vector<T> FlattenVector2d(const std::vector<std::vector<T>>& v) {
 
 // generate set sequence like 1, 2, 3, ..., size
 std::set<int> GenSetSequence(unsigned long size);
+
+template<typename Iter, typename RandomGenerator>
+Iter SelectRandomly(Iter start, Iter end, RandomGenerator& g) {
+    std::uniform_int_distribution<long> dis(0, std::distance(start, end) - 1);
+    std::advance(start, dis(g));
+    return start;
+}
+
+template<typename Iter>
+Iter SelectRandomly(Iter start, Iter end) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    return SelectRandomly(start, end, gen);
+}
 
 } // ::Utils
 

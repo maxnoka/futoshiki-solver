@@ -20,6 +20,7 @@
 #include <map>
 #include <cassert>
 #include <sstream>
+#include <random>
 
 namespace Csp {
 
@@ -151,17 +152,71 @@ ConstraintSatisfactionProblem& ConstraintSatisfactionProblem::operator =(const C
         return *this;
     }
     
-    auto tmp = ConstraintSatisfactionProblem(other);
+    // TODO: properly do copy swap idiom
     
-    std::swap(m_defaultPossibleValues, tmp.m_defaultPossibleValues);
-    std::swap(m_cells, tmp.m_cells);
-    std::swap(m_constraints, tmp.m_constraints);
-    std::swap(m_numSolvedCells, tmp.m_numSolvedCells);
-    std::swap(m_numSolvedConstraints, tmp.m_numSolvedConstraints);
-    std::swap(m_numActiveConstraints, tmp.m_numActiveConstraints);
-    std::swap(m_provenValid, tmp.m_provenValid);
-    std::swap(m_completelySolved, tmp.m_completelySolved);
-    std::swap(m_numCells, tmp.m_numCells);
+    m_cells = {};
+    m_constraints = {};
+    
+    m_numSolvedCells = other.m_numSolvedCells;
+    m_numSolvedConstraints = other.m_numSolvedConstraints;
+    m_numActiveConstraints = other.m_numActiveConstraints;
+    m_provenValid = other.m_provenValid;
+    m_completelySolved = other.m_completelySolved;
+    m_numCells = other.m_numCells;
+    m_defaultPossibleValues = other.m_defaultPossibleValues;
+    
+    // shallow copy all the cells to begin with
+    for (auto& cell : other.m_cells) {
+        m_cells.emplace( std::make_pair(cell.first, std::make_shared<Cell>(*cell.second.get(), this)) );
+    }
+    
+    // Create the old to new cell lookup vectors
+    std::vector<const Cell*> oldCellKeys(other.m_cells.size());
+    std::transform(
+        other.m_cells.cbegin(),
+        other.m_cells.cend(),
+        oldCellKeys.begin(),
+        [](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) -> const Cell* {
+            return pair.second.get();
+        }
+    );
+    std::vector< std::shared_ptr<Cell>* > newCellValues(m_cells.size());
+    std::transform(
+        m_cells.begin(),
+        m_cells.end(),
+        newCellValues.begin(),[](std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) -> std::shared_ptr<Cell>* { return &pair.second; }
+    );
+    // for both the below:
+    // key: old
+    // value: new
+    std::map<const Cell*, std::shared_ptr<Cell>* > newCellLookup =
+        Utils::ZipVectorsToMap(oldCellKeys, newCellValues);
+    
+    // Deep copy the constraints: updates the cell pointers to the new cells with the lookup map
+    for (const auto& otherConstraint : other.m_constraints) {
+        m_constraints.emplace_back(otherConstraint->Clone(newCellLookup, this));
+    }
+    
+    // Create the old to new constraint lookup vectors
+    std::vector<const Constraint*> oldConstraintKeys(other.m_constraints.size());
+    std::transform(
+        other.m_constraints.cbegin(),
+        other.m_constraints.cend(),
+        oldConstraintKeys.begin(),[](const std::shared_ptr<Constraint>& c) -> const Constraint* { return c.get(); }
+    );
+    std::vector<std::shared_ptr<Constraint>*> newConstraintValues(m_constraints.size());
+    std::transform(
+        m_constraints.begin(),
+        m_constraints.end(),
+            newConstraintValues.begin(),[](std::shared_ptr<Constraint>& c) -> std::shared_ptr<Constraint>* { return &c; }
+    );
+    std::map< const Constraint*, std::shared_ptr<Constraint>* > newConstraintLookup =
+        Utils::ZipVectorsToMap(oldConstraintKeys, newConstraintValues);
+    
+    // update the constraint pointers in the new cells
+    for (const auto& cell : m_cells) {
+        cell.second->UpdateConstraintPointers(newConstraintLookup);
+    }
     
     return *this;
 }
@@ -179,7 +234,7 @@ void ConstraintSatisfactionProblem::dPrint(bool printCells) const {
     for (auto constraint : m_constraints) {
         ss << constraint->dPrint(false) << "\n";
     }
-    VLOG(1) << ss.str();
+    VLOG(2) << ss.str();
 }
 
 bool ConstraintSatisfactionProblem::AddInequalityConstraint(
@@ -288,7 +343,7 @@ void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
     
     if (m_numSolvedCells == m_numCells) {
         m_completelySolved = true;
-        VLOG(2) << "All cells solved";
+        VLOG(3) << "All cells solved";
     }
 }
 
@@ -301,7 +356,7 @@ void ConstraintSatisfactionProblem::ReportIfConstraintNewlySolved() {
     // assertm(m_numSolvedConstraints <= m_constraints.size() + 1, "number of solved constraints should be less than the number of constraints");
     
     if (m_numSolvedConstraints == m_constraints.size()) {
-        VLOG(2) << "All constraints solved";
+        VLOG(3) << "All constraints solved";
     }
 }
 
@@ -317,43 +372,57 @@ void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
     --m_numActiveConstraints;
 
     if (m_numActiveConstraints == 0) {
-        VLOG(2) << "No more active constraints.";
+        VLOG(3) << "No more active constraints.";
     }
 }
 
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Generate() {
+    assertm(false, "not yet implemented for general CSP");
+    return {};
+}
+
 ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::DeterministicSolve() {
-    VLOG(1) << "Starting deterministic solve ";
+    VLOG(2) << "Starting deterministic solve ";
     while(m_numActiveConstraints > 0) {
         for (auto& constraint : m_constraints) {
             if (constraint->IsActive()) {
                 if(!constraint->Apply()) {
-                    LOG(WARNING) << "Constraint turned out to be invalid";
+                    VLOG(2) << "Constraint turned out to be invalid";
                     return {
                         false,
                         false,
                         {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
                     }; // invalid
                 }
-            }
-            else if (constraint->ShouldStillCheckValid()) {
-                if(!constraint->Valid()) {
-                    LOG(WARNING) << "Constraint turned out to be invalid";
-                    return {
-                        false,
-                        false,
-                        {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
-                    }; // invalid
-                }
-                constraint->SetChecked();
             }
         }
     }
-    VLOG(1) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
+    
+    for (auto& constraint : m_constraints) {
+        if (constraint->ShouldStillCheckValid()) {
+            if(!constraint->Valid()) {
+                VLOG(2) << "Constraint turned out to be invalid";
+                return {
+                    false,
+                    false,
+                    {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
+                }; // invalid
+            }
+            constraint->SetChecked();
+        }
+    }
+    
+    VLOG(2) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
     m_provenValid = true;
     return {m_completelySolved, m_provenValid, {SolveSolution::ReasonType::ManagedToSolve} }; // valid
 }
 
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve(int depthGuess) {
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve() {
+
+    return Solve(false);
+}
+
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve(bool random, int depthGuess) {
     
     if (depthGuess == 0) {
         LOG(INFO) << "Solving...";
@@ -366,16 +435,26 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     }
     if (res.completeSolve) {
         LOG(INFO) << "Finished solving. Found solution.";
+        res.reason.details["requiredGuessDepth"] = depthGuess;
         return res;
     }
 
-    LOG(INFO) << "Require guess. Depth to " << depthGuess + 1;
-    auto guesses = GetGuesses();
+    ++depthGuess;
+    VLOG(2) << "Require guess. Depth to " << depthGuess;
+    auto guesses = GetGuesses(random);
     for (auto guess : guesses) {
+        VLOG(2) << "Trying Guess " << guess.Serialize().dump()
+            << " (" << depthGuess << ")";
         auto branchCsp(*this);
         branchCsp.MakeGuess(guess);
-        auto res = branchCsp.Solve(depthGuess + 1);
+        auto res = branchCsp.Solve(random, depthGuess);
         if (res.completeSolve) {
+            if (depthGuess == 1) {
+                LOG(INFO) << "Finished solving. Found a solution.";
+            }
+            else {
+                VLOG(1) << "Found a solution (" << depthGuess << ")";
+            }
             *this = branchCsp;
             return res;
         }
@@ -395,6 +474,10 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     };
 }
 
+ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveRandom() {
+    return Solve(true);
+}
+
 ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveUnique(int depthGuess) {
     
     if (depthGuess == 0) {
@@ -412,26 +495,52 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
         if (depthGuess == 0) {
             LOG(INFO) << "Finished solving. Found solution.";
         }
+        res.reason.details["requiredGuessDepth"] = depthGuess;
         return res;
+    }
+    
+    if (depthGuess >= kMaxGuessDepth) {
+        VLOG(1) << "Require guess, but max guess depth exceeded: "
+                  << depthGuess << "/" << kMaxGuessDepth << ".";
+        return {
+            false,
+            false,
+            {SolveSolution::ReasonType::GuessDepthExceeded, {} }
+        };
     }
     
     ConstraintSatisfactionProblem lastValidSolution;
     bool alreadyHaveAValidSolution = false;
     
-    auto guesses = GetGuesses();
+    auto guesses = GetGuesses(false);
     
-    LOG(INFO) << "Require guess. Depth to " << depthGuess + 1;
+    ++depthGuess;
+    VLOG(1) << "Require guess. Depth to " << depthGuess;
     for (auto guess : guesses) {
+        VLOG(2) << "Trying Guess " << guess.Serialize().dump()
+            << " (" << depthGuess << ")";
+
         auto branchCsp(*this);
         branchCsp.MakeGuess(guess);
-        auto res = branchCsp.SolveUnique(depthGuess + 1);
+        auto res = branchCsp.SolveUnique(depthGuess);
         if (!res.valid) { // the CSP with the guess does not have unique solution
-            return res;
+            if (res.reason.reasonType == ConstraintSatisfactionProblem::SolveSolution::ReasonType::GuessDepthExceeded) {
+                if (depthGuess == 1) {
+                    LOG(INFO) << "Finished solving. Not able to prove uniqueness of solution within max guess depth limit.";
+                }
+                return res;
+            }
+            continue;
         }
         if (res.completeSolve) {
-            LOG(INFO) << "Guess produced solution";
+            VLOG(2) << "Guess produced solution (" << depthGuess << ")";
             if (alreadyHaveAValidSolution) {
-                LOG(INFO) << "Found two solutions. Not unique";
+                if (depthGuess == 1) {
+                    LOG(INFO) << "Finished solving. Found two solutions. Not unique.";
+                }
+                else {
+                    VLOG(1) << "Found two solutions. Not unique (" << depthGuess << ")";
+                }
                 crow::json::wvalue reasonJson;
                 reasonJson[0] = Serialize();
                 reasonJson[1] = lastValidSolution.Serialize();
@@ -448,11 +557,22 @@ ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solv
     
     if (alreadyHaveAValidSolution) {
         *this = lastValidSolution;
-        LOG(INFO) << "Found only one solution. Proven unique";
-        return { true, true, {SolveSolution::ReasonType::ManagedToSolve} };
+        if (depthGuess == 1) {
+            LOG(INFO) << "Finished solving. Found only one solution. Proven unique.";
+        }
+        else {
+            VLOG(1) << "Found only one solution. Proven unique (" << depthGuess << ")";
+        }
+        crow::json::wvalue reasonJson;
+        reasonJson["requiredGuessDepth"] = depthGuess;
+        return { true, true, {SolveSolution::ReasonType::ManagedToSolve, std::move(reasonJson)} };
     }
-    
-    LOG(INFO) << "No quesses worked. Proven invalid.";
+    if (depthGuess == 1) {
+        LOG(INFO) << "Finished solving. No quesses worked. Proven invalid.";
+    }
+    else {
+        VLOG(1) << "No quesses worked. Proven invalid (" << depthGuess << ")";
+    }
     crow::json::wvalue reasonJson;
     size_t numGuesses = guesses.size();
     for (unsigned int i = 0; i < numGuesses; ++i) {
@@ -471,7 +591,7 @@ void ConstraintSatisfactionProblem::MakeGuess(const Guess& guess) {
 
 // our heuristic here is to just chose all of the possible values
 // for the cell with the lowest number of possible values
-std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem::GetGuesses() const {
+std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem::GetGuesses(bool random) const {
     
     auto remainingCellKeys = RemainingCellKeys();
     
@@ -484,7 +604,7 @@ std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem:
     );
     
     auto chosenCellKey = remainingCellKeys.front();
-    auto& possibleVals =m_cells.at(chosenCellKey)->GetPossibleValuesRef();
+    auto& possibleVals = m_cells.at(chosenCellKey)->GetPossibleValuesRef();
     
     std::vector<Guess> outGuesses(possibleVals.size());
     std::transform(
@@ -495,6 +615,14 @@ std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem:
             return {chosenCellKey, possibleVal};
         }
     );
+    
+    if (random) {
+        std::shuffle(
+            outGuesses.begin(),
+            outGuesses.end(),
+            std::mt19937{std::random_device{}()}
+        );
+    }
     
     return outGuesses;
 }

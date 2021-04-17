@@ -27,7 +27,7 @@ namespace Csp {
 
 class Constraint {
 public:
-    enum class Operator {
+    enum class Operator : int {
         EqualTo = 0,
         NotEqualTo,
         LessThan,
@@ -69,13 +69,19 @@ public:
     
     Constraint() = delete;
     Constraint(const std::string& id, Operator op, ConstraintSatisfactionProblem* csp)
-    : m_provenInvalid(false) // up to the derived class to check this
-    , m_solved(false) // up to the derived class to check this
-    , m_operator(op)
-    , m_relatedCellsChanged(true)
-    , m_id(id)
-    , m_csp(csp)
+        : m_provenInvalid(false) // up to the derived class to check this
+        , m_solved(false) // up to the derived class to check this
+        , m_operator(op)
+        , m_relatedCellsChanged(true)
+        , m_id(id)
+        , m_csp(csp)
     { }
+    
+    Constraint(const Constraint& other, ConstraintSatisfactionProblem* newCsp)
+        : Constraint(other)
+    {
+        m_csp = newCsp;
+    }
     
     virtual ~Constraint() = default;
     

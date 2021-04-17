@@ -24,20 +24,20 @@ std::string Constraint::dPrint(bool log) const {
     ss << m_id << ": ";
     
     if (log) {
-        VLOG(1) << ss.str();
+        VLOG(2) << ss.str();
     }
     return ss.str();
 }
 
 void Constraint::ReportBecameInactive() const {
     assertm(!IsActive(), "reporting became inactive, but still active");
-    VLOG(2) << "con_" << m_id << " reporting became inactive";
+    VLOG(3) << "con_" << m_id << " reporting became inactive";
     m_csp->ReportIfConstraintBecomesInactive();
 }
 
 void Constraint::ReportBecameActive() const {
     assertm(IsActive(), "reporting became active, but still inactive");
-    VLOG(2) << "con_" << m_id << " reporting became active";
+    VLOG(3) << "con_" << m_id << " reporting became active";
     m_csp->ReportIfConstraintBecomesActive();
 }
 

@@ -42,6 +42,9 @@ public:
     
     void AddConstraint(const std::shared_ptr<Constraint>& constraintToAdd);
     
+    // cannot forward delcare nested classes
+    bool HasAppliedConstraint(const int op);
+    
     // return false if constraint was invalid
     // true otherwise
     bool EnforceLessThan(int lessThanThis);

@@ -54,6 +54,31 @@ std::pair<bool, unsigned int> EliminateSelectivelyFromCells(const std::vector< s
 
 };
 
+bool EqualityConstraint::EvalOnlyOptions() {
+    m_availableValues.Update();
+    auto& allPossibleValueCombinations = m_availableValues.m_container;
+    std::multiset<int> valueCounts;
+    for (auto& combination : allPossibleValueCombinations) {
+        for (auto value : combination.m_ref.get()) {
+            valueCounts.insert(value);
+        }
+    }
+    for (auto value : valueCounts) {
+        if (valueCounts.count(value) == 1) {
+            for (auto& cell : m_cells) {
+                if (cell.lock()->IsSolved()) {
+                    continue;
+                }
+                if (cell.lock()->GetPossibleValuesRef().count(value)) {
+                    cell.lock()->SetVal(value);
+                }
+            }
+        }
+    }
+    
+    return Valid();
+}
+
 // bool: if the not equal condition turned out to be valid
 bool EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions() {
     // if we eliminate some variables, then we need to repeat
@@ -94,15 +119,13 @@ bool EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions() {
                 
                 // no need to go again if all of the cells are solved already
                 if (eliminatedAny) {
-                    if (m_solved) { // set by the cells if they were set at all
-                        return true;
-                    }
                     break;
                 }
             }
         }
     } while (eliminatedAny);
-    return true;
+    
+    return Valid();
 }
 
 EqualityConstraint::EqualityConstraint(
@@ -125,6 +148,21 @@ EqualityConstraint::EqualityConstraint(
     if(!SetSolvedIfPossible()) {
         m_csp->ReportIfConstraintBecomesActive();
     }
+}
+
+EqualityConstraint::EqualityConstraint(
+    const EqualityConstraint& other,
+    const std::vector< std::weak_ptr<Cell> >& newCells,
+    ConstraintSatisfactionProblem* newCsp
+)
+    : Constraint(other, newCsp)
+    , m_cells(newCells)
+    , m_availableValues()
+{
+    for (auto& pCell : m_cells) {
+        m_availableValues.m_container.emplace( pCell.lock()->GetPossibleValuesRef() );
+    }
+    m_availableValues.Update();
 }
 
 bool EqualityConstraint::SetSolvedIfPossible() {
@@ -158,10 +196,10 @@ EqualityConstraint* EqualityConstraint::Clone(
     );
     
     auto clonedConstraint = new EqualityConstraint(
-        Id(),
+        *this,
         newCells,
-        m_operator,
-        newCsp);
+        newCsp
+    );
     
     return clonedConstraint;
 }
@@ -177,7 +215,7 @@ std::string EqualityConstraint::dPrint(bool log) const {
     ss << m_cells.back().lock()->dPrint(false);
     
     if (log) {
-        VLOG(1) << ss.str();
+        VLOG(2) << ss.str();
     }
     
     return ss.str();
@@ -191,6 +229,8 @@ bool EqualityConstraint::Apply() {
     switch (m_operator) {
         case Operator::NotEqualTo: {
             constraintWasValid = EvalMutuallyExclusiveNotEqualConditions();
+            // TODO: only do this if the prerequisite conditions are met
+            constraintWasValid = constraintWasValid && EvalOnlyOptions();
             break;
         }
         case Operator::EqualTo: {
@@ -204,7 +244,7 @@ bool EqualityConstraint::Apply() {
     
     if (!constraintWasValid) {
         m_provenInvalid = true;
-        LOG(WARNING) << "Could not apply constraint, it was not valid";
+        VLOG(2) << "Could not apply constraint, it was not valid";
     }
     
     m_relatedCellsChanged = false;

@@ -54,10 +54,20 @@ void Cell::AddConstraint(const std::shared_ptr<Constraint>& constraintToAdd) {
     m_appliedConstraints.push_back(constraintToAdd);
 }
 
+bool Cell::HasAppliedConstraint(const int op) {
+    auto convertedOp = static_cast<Constraint::Operator>(op);
+    for (auto& constraint : m_appliedConstraints) {
+        if (constraint.lock()->GetOperator() == convertedOp) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Cell::EnforceLessThan(int lessThanThis) {
     if (IsSolved()) {
         if (m_val > lessThanThis) {
-            LOG(WARNING) << "Cannot enforce less than " << lessThanThis << "(val " << m_val << ")";
+            VLOG(2) << "Cannot enforce less than " << lessThanThis << "(val " << m_val << ")";
             return false;
         }
         return true;
@@ -74,7 +84,7 @@ bool Cell::EnforceLessThan(int lessThanThis) {
         m_possibleValues.erase(rit.base(), m_possibleValues.end());
         
         if (m_possibleValues.size() == 0) {
-            LOG(WARNING) << "Cannot enforce less than " << lessThanThis;
+            VLOG(2) << "Cannot enforce less than " << lessThanThis;
             return false;
         }
         
@@ -89,7 +99,7 @@ bool Cell::EnforceLessThan(int lessThanThis) {
 bool Cell::EnforceGreaterThan(int greaterThanThis) {
     if (IsSolved()) {
         if (m_val < greaterThanThis) {
-            LOG(WARNING) << "WARN: Cannot enforce greater than " << greaterThanThis << "(val " << m_val << ")";
+            VLOG(2) << "Cannot enforce greater than " << greaterThanThis << "(val " << m_val << ")";
             return false;
         }
         return true;
@@ -106,7 +116,7 @@ bool Cell::EnforceGreaterThan(int greaterThanThis) {
         m_possibleValues.erase(m_possibleValues.begin(), it);
         
         if (m_possibleValues.size() == 0) {
-            LOG(WARNING) << "WARN: Cannot enforce greater than " << greaterThanThis;
+            VLOG(2) << "Cannot enforce greater than " << greaterThanThis;
             return false;
         }
         
@@ -125,7 +135,7 @@ std::pair<bool, bool> Cell::EliminateVals(const std::set<int>& toRemove) {
     }
     
     if (m_possibleValues.empty()) {
-        LOG(ERROR) << "no more possible values left for this cell";
+        VLOG(2) << "no more possible values left for this cell";
         return std::make_pair(false, removedAny);
     }
     
@@ -191,7 +201,7 @@ std::string Cell::dPrint(bool log) const {
     ss << ")";
     
     if (log) {
-        VLOG(1) << ss.str();
+        VLOG(2) << ss.str();
     }
     
     return ss.str();

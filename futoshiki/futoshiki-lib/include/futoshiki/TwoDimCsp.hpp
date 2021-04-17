@@ -60,12 +60,12 @@ public:
 
     unsigned long m_numRows;
     unsigned long m_numCols;
-    
-private:
-    
+
+protected:
     bool ValidCoords(const CellCoords& cords);
     unsigned long CoordsToIndex(const CellCoords& cords);
     
+private:
     std::vector< std::vector< std::weak_ptr<Cell> > > GetGrid() const;
     std::vector< std::weak_ptr<Cell> > GetRow(unsigned long rowIdx) const;
     std::vector< std::weak_ptr<Cell> > GetCol(unsigned long colIdx) const;

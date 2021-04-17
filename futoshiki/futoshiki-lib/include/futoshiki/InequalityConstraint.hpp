@@ -28,6 +28,12 @@ public:
         const std::weak_ptr<Cell>& rhsCell,
         ConstraintSatisfactionProblem* csp
     );
+    InequalityConstraint(
+        const InequalityConstraint& other,
+        const std::weak_ptr<Cell>& newlhsCell,
+        const std::weak_ptr<Cell>& newrhsCell,
+        ConstraintSatisfactionProblem* newCsp
+    );
     InequalityConstraint() = delete;
     
     // uses the lookup for deep copy:

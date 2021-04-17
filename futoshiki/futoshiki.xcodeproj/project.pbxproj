@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		225C658E2617B71D0051BD0E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 225C658D2617B71D0051BD0E /* main.cpp */; };
+		22CC76132620F030009F4F9A /* Futoshiki.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22CC76112620F030009F4F9A /* Futoshiki.cpp */; };
+		22CC761D262B452A009F4F9A /* CspSolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22CC761B262B452A009F4F9A /* CspSolver.cpp */; };
 		22DAC59F2617CCF70099C441 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
 		22DAC5AB2617CE7B0099C441 /* SquareCsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */; };
 		22DAC5AC2617CE7B0099C441 /* ConstraintSatisfactionProblem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */; };
@@ -64,6 +66,8 @@
 /* Begin PBXFileReference section */
 		225C658B2617B71D0051BD0E /* TestFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
 		225C658D2617B71D0051BD0E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22CC76112620F030009F4F9A /* Futoshiki.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Futoshiki.cpp; path = src/Futoshiki.cpp; sourceTree = "<group>"; };
+		22CC761B262B452A009F4F9A /* CspSolver.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CspSolver.cpp; path = src/CspSolver.cpp; sourceTree = "<group>"; };
 		22DAC5882617CC970099C441 /* libfutoshiki.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libfutoshiki.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SquareCsp.cpp; path = src/SquareCsp.cpp; sourceTree = "<group>"; };
 		22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConstraintSatisfactionProblem.cpp; path = src/ConstraintSatisfactionProblem.cpp; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 				22DAC5A72617CE7A0099C441 /* LatinSquare.cpp */,
 				22DAC5A32617CE7A0099C441 /* SquareCsp.cpp */,
 				22DAC5A52617CE7A0099C441 /* TwoDimCsp.cpp */,
+				22CC76112620F030009F4F9A /* Futoshiki.cpp */,
+				22CC761B262B452A009F4F9A /* CspSolver.cpp */,
 			);
 			path = "futoshiki-lib";
 			sourceTree = "<group>";
@@ -298,9 +304,11 @@
 				22DAC5DC2617D3EA0099C441 /* Cell.cpp in Sources */,
 				22DAC5F52617D8890099C441 /* utils.cpp in Sources */,
 				22DAC5AC2617CE7B0099C441 /* ConstraintSatisfactionProblem.cpp in Sources */,
+				22CC76132620F030009F4F9A /* Futoshiki.cpp in Sources */,
 				22DAC5AF2617CE7B0099C441 /* LatinSquare.cpp in Sources */,
 				22DAC5B02617CE7B0099C441 /* EqualityConstraint.cpp in Sources */,
 				22DAC5D82617D3BB0099C441 /* easylogging++.cc in Sources */,
+				22CC761D262B452A009F4F9A /* CspSolver.cpp in Sources */,
 				22DAC5B22617CE7B0099C441 /* Constraint.cpp in Sources */,
 				22DAC5B12617CE7B0099C441 /* InequalityConstraint.cpp in Sources */,
 				22DAC5AB2617CE7B0099C441 /* SquareCsp.cpp in Sources */,

@@ -31,6 +31,11 @@ public:
         Operator op,
         ConstraintSatisfactionProblem* csp
     );
+    EqualityConstraint(
+        const EqualityConstraint& other,
+        const std::vector< std::weak_ptr<Cell> >& newCells,
+        ConstraintSatisfactionProblem* newCsp
+    );
     EqualityConstraint() = delete;
     
     // uses the lookup for deep copy:
@@ -58,6 +63,7 @@ private:
     DISALLOW_COPY_AND_ASSIGN(EqualityConstraint);
     // bool: if the not equal condition turned out to be valid
     bool EvalMutuallyExclusiveNotEqualConditions();
+    bool EvalOnlyOptions(); // this should only be used if the CSP is such that all cells in a not equal group have the same possible values and the number of available possile values = the number of cells in the group, e.g. for a latin square
     
     std::vector< std::weak_ptr<Cell> > m_cells;
     // multiset of references to the available values set of all the cells

@@ -29,6 +29,8 @@ class Cell;
 
 class ConstraintSatisfactionProblem {
 public:
+    static constexpr unsigned int kMaxGuessDepth = 2;
+    
     ConstraintSatisfactionProblem() = default;
     ConstraintSatisfactionProblem(
         const std::vector<int>& initValues,
@@ -71,7 +73,8 @@ public:
             ManagedToSolve = 0,
             ConstraintCannotBeSatisfied,
             NoGuessesWorked,
-            NotUnique
+            NotUnique,
+            GuessDepthExceeded
         };
         
         struct Reason {
@@ -107,15 +110,21 @@ public:
             case SolveSolution::ReasonType::NotUnique:
                 os << "Not uniquely solvable.";
                 break;
+            case SolveSolution::ReasonType::GuessDepthExceeded:
+                os << "Not proveably uniquely solveable in < " << kMaxGuessDepth << " guesses.";
         }
         
         return os;
     }
     
+    virtual SolveSolution Generate();
+    
     SolveSolution DeterministicSolve();
     // also does guessing
-    SolveSolution Solve(int depthGuess = 0);
+    SolveSolution Solve();
+    SolveSolution SolveRandom();
     SolveSolution SolveUnique(int depthGuess = 0);
+    void SolveStep();
     
     struct Guess {
         unsigned long cellKey;
@@ -140,7 +149,11 @@ public:
     
     virtual void dPrint(bool printCells) const;
     
+    void MakeGuess(const Guess& guess);
+    
 protected:
+    SolveSolution Solve(bool random, int depthGuess = 0);
+
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
     std::vector< std::shared_ptr<Constraint> > m_constraints;
     
@@ -150,17 +163,18 @@ protected:
         const std::string& idPrefix = "cnst"
     );
     
+    std::vector<unsigned long> RemainingCellKeys() const;
+
+    std::set<int> m_defaultPossibleValues;
+    
 private:
-    void MakeGuess(const Guess& guess);
     
     // returns a set of guess which are mutually exclusive
     // and exhaustive:
     // - no two guesses can result in the same completeSolve
     // - if none of the guesses resultr in a completeSolve,
     //   then such a thing does not exist
-    std::vector<Guess> GetGuesses() const;
-    
-    std::vector<unsigned long> RemainingCellKeys() const;
+    std::vector<Guess> GetGuesses(bool random) const;
     
     bool m_completelySolved;
     bool m_provenValid;
@@ -169,7 +183,6 @@ private:
     unsigned long m_numActiveConstraints;
     
     unsigned long m_numCells;
-    std::set<int> m_defaultPossibleValues;
 }; // ConstraintSatisfactionProblem
 
 } // ::Csp
