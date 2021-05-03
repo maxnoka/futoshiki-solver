@@ -21,6 +21,14 @@ SquareCsp::SquareCsp(
     }
 }
 
+SquareCsp::SquareCsp(
+    unsigned long size,
+    const std::set<int>& defaultPossibleValues
+)
+    : TwoDimCsp(size, size, defaultPossibleValues)
+    , m_size(size)
+{ }
+
 crow::json::wvalue SquareCsp::Serialize() const {
     auto out = crow::json::wvalue();
     

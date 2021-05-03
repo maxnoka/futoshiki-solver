@@ -32,6 +32,19 @@ std::vector< std::pair<std::string, int> > GenIdValuePairs(const std::vector< st
     return out;
 }
 
+std::vector< std::pair<std::string, int> > GenUnsetBoard(unsigned long numCols, unsigned long numRows) {
+    std::vector<int> flattened(numCols * numRows, Cell::kUnsolvedSymbol);
+
+    std::vector< std::pair<std::string, int> > out( flattened.size() );
+    for (auto [cellIdx, initValue] : Utils::enumerate(flattened)) {
+        std::stringstream ss;
+        ss << ( cellIdx % numCols ) << "_" << ( cellIdx / numCols );
+        
+        out[cellIdx] = std::make_pair(ss.str(), initValue);
+    }
+    
+    return out;
+}
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
@@ -109,6 +122,18 @@ TwoDimCsp::TwoDimCsp(
         throw std::invalid_argument("require rectangular cell vector for two dimensional CSP");
     }
 }
+
+TwoDimCsp::TwoDimCsp(
+    unsigned long columns,
+    unsigned long rows,
+    const std::set<int>& defaultPossibleValues
+)
+    : ConstraintSatisfactionProblem(
+        GenUnsetBoard(columns, rows),
+        defaultPossibleValues)
+    , m_numRows(rows)
+    , m_numCols(columns)
+{ }
 
 bool TwoDimCsp::AddInequalityConstraint(
     const CellCoords& lhsCellCoords,

@@ -19,6 +19,11 @@ public:
         const std::set<int>& defaultPossibleValues
     );
     
+    SquareCsp(
+        unsigned long size,
+        const std::set<int>& defaultPossibleValues
+    );
+    
     virtual crow::json::wvalue Serialize() const override;
     
 protected:

@@ -23,6 +23,8 @@
 		22DAC5F52617D8890099C441 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5F42617D8890099C441 /* utils.cpp */; };
 		22DAC606261885CF0099C441 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC605261885CF0099C441 /* main.cpp */; };
 		22DAC60F2618860A0099C441 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
+		22F9748A263FE2E900398267 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F97489263FE2E900398267 /* main.cpp */; };
+		22F97496263FE96F00398267 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,13 @@
 			remoteInfo = "futoshiki-lib";
 		};
 		22DAC60D261886040099C441 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22D8E93E25F94CEE00D95938 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22DAC5872617CC970099C441;
+			remoteInfo = futoshiki;
+		};
+		22F97497263FE96F00398267 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 22D8E93E25F94CEE00D95938 /* Project object */;
 			proxyType = 1;
@@ -53,6 +62,15 @@
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 		22DAC601261885CF0099C441 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		22F97485263FE2E900398267 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -82,6 +100,8 @@
 		22DAC5F42617D8890099C441 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		22DAC603261885CF0099C441 /* MainFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MainFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
 		22DAC605261885CF0099C441 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22F97487263FE2E900398267 /* WebFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WebFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
+		22F97489263FE2E900398267 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +128,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		22F97484263FE2E900398267 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22F97496263FE96F00398267 /* libfutoshiki.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -122,9 +150,10 @@
 		22D8E93D25F94CEE00D95938 = {
 			isa = PBXGroup;
 			children = (
+				22F97488263FE2E900398267 /* WebFutoshiki */,
+				22DAC604261885CF0099C441 /* MainFutoshiki */,
 				225C658C2617B71D0051BD0E /* TestFutoshiki */,
 				22DAC5892617CC970099C441 /* futoshiki-lib */,
-				22DAC604261885CF0099C441 /* MainFutoshiki */,
 				22D8E94725F94CEE00D95938 /* Products */,
 				22DAC4F62617C0550099C441 /* Frameworks */,
 			);
@@ -136,6 +165,7 @@
 				225C658B2617B71D0051BD0E /* TestFutoshiki */,
 				22DAC5882617CC970099C441 /* libfutoshiki.a */,
 				22DAC603261885CF0099C441 /* MainFutoshiki */,
+				22F97487263FE2E900398267 /* WebFutoshiki */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,6 +211,14 @@
 				22DAC605261885CF0099C441 /* main.cpp */,
 			);
 			path = MainFutoshiki;
+			sourceTree = "<group>";
+		};
+		22F97488263FE2E900398267 /* WebFutoshiki */ = {
+			isa = PBXGroup;
+			children = (
+				22F97489263FE2E900398267 /* main.cpp */,
+			);
+			path = WebFutoshiki;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,6 +287,24 @@
 			productReference = 22DAC603261885CF0099C441 /* MainFutoshiki */;
 			productType = "com.apple.product-type.tool";
 		};
+		22F97486263FE2E900398267 /* WebFutoshiki */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 22F9748D263FE2E900398267 /* Build configuration list for PBXNativeTarget "WebFutoshiki" */;
+			buildPhases = (
+				22F97483263FE2E900398267 /* Sources */,
+				22F97484263FE2E900398267 /* Frameworks */,
+				22F97485263FE2E900398267 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22F97498263FE96F00398267 /* PBXTargetDependency */,
+			);
+			name = WebFutoshiki;
+			productName = WebFutoshiki;
+			productReference = 22F97487263FE2E900398267 /* WebFutoshiki */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -264,6 +320,9 @@
 						CreatedOnToolsVersion = 12.4;
 					};
 					22DAC602261885CF0099C441 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					22F97486263FE2E900398267 = {
 						CreatedOnToolsVersion = 12.4;
 					};
 				};
@@ -284,6 +343,7 @@
 				225C658A2617B71D0051BD0E /* TestFutoshiki */,
 				22DAC5872617CC970099C441 /* futoshiki */,
 				22DAC602261885CF0099C441 /* MainFutoshiki */,
+				22F97486263FE2E900398267 /* WebFutoshiki */,
 			);
 		};
 /* End PBXProject section */
@@ -324,6 +384,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		22F97483263FE2E900398267 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22F9748A263FE2E900398267 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -337,12 +405,18 @@
 			target = 22DAC5872617CC970099C441 /* futoshiki */;
 			targetProxy = 22DAC60D261886040099C441 /* PBXContainerItemProxy */;
 		};
+		22F97498263FE96F00398267 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22DAC5872617CC970099C441 /* futoshiki */;
+			targetProxy = 22F97497263FE96F00398267 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		225C65902617B71D0051BD0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
@@ -362,6 +436,7 @@
 		225C65912617B71D0051BD0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
@@ -508,7 +583,7 @@
 					"$SRCROOT/futoshiki-lib/include",
 				);
 				MACH_O_TYPE = mh_dylib;
-				OTHER_LDFLAGS = "-lz";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -528,7 +603,7 @@
 					"$SRCROOT/futoshiki-lib/include",
 				);
 				MACH_O_TYPE = mh_dylib;
-				OTHER_LDFLAGS = "-lz";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -537,6 +612,7 @@
 		22DAC608261885CF0099C441 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
@@ -550,12 +626,43 @@
 		22DAC609261885CF0099C441 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					"$SRCROOT/futoshiki-lib/include",
 					/Users/MaxNoka/OneDrive/Projects/futoshiki/crow/include,
 				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		22F9748B263FE2E900398267 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					"$SRCROOT/futoshiki-lib/include",
+					$SRCROOT/../crow/include,
+					/usr/local/include,
+				);
+				OTHER_LDFLAGS = "-lz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		22F9748C263FE2E900398267 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					"$SRCROOT/futoshiki-lib/include",
+					$SRCROOT/../crow/include,
+					/usr/local/include,
+				);
+				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -595,6 +702,15 @@
 			buildConfigurations = (
 				22DAC608261885CF0099C441 /* Debug */,
 				22DAC609261885CF0099C441 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		22F9748D263FE2E900398267 /* Build configuration list for PBXNativeTarget "WebFutoshiki" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22F9748B263FE2E900398267 /* Debug */,
+				22F9748C263FE2E900398267 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

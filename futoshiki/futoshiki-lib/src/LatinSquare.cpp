@@ -20,6 +20,12 @@ LatinSquare::LatinSquare(
     }
 }
 
+LatinSquare::LatinSquare(unsigned long size)
+    : SquareCsp( size, Utils::GenSetSequence(size) )
+{
+    AddEqualityConstraintToAllRowsAndCols(Constraint::Operator::NotEqualTo);
+}
+
 crow::json::wvalue LatinSquare::Serialize() const {
     auto out = crow::json::wvalue();
     

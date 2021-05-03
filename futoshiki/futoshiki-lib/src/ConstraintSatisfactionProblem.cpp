@@ -376,222 +376,22 @@ void ConstraintSatisfactionProblem::ReportIfConstraintBecomesInactive() {
     }
 }
 
+/*
 ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Generate() {
     assertm(false, "not yet implemented for general CSP");
     return {};
 }
+*/
 
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::DeterministicSolve() {
-    VLOG(2) << "Starting deterministic solve ";
-    while(m_numActiveConstraints > 0) {
-        for (auto& constraint : m_constraints) {
-            if (constraint->IsActive()) {
-                if(!constraint->Apply()) {
-                    VLOG(2) << "Constraint turned out to be invalid";
-                    return {
-                        false,
-                        false,
-                        {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
-                    }; // invalid
-                }
-            }
-        }
-    }
-    
-    for (auto& constraint : m_constraints) {
-        if (constraint->ShouldStillCheckValid()) {
-            if(!constraint->Valid()) {
-                VLOG(2) << "Constraint turned out to be invalid";
-                return {
-                    false,
-                    false,
-                    {SolveSolution::ReasonType::ConstraintCannotBeSatisfied, constraint->Serialize()}
-                }; // invalid
-            }
-            constraint->SetChecked();
-        }
-    }
-    
-    VLOG(2) << "Finished deterministic solve (" << (m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
-    m_provenValid = true;
-    return {m_completelySolved, m_provenValid, {SolveSolution::ReasonType::ManagedToSolve} }; // valid
-}
-
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve() {
-
-    return Solve(false);
-}
-
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::Solve(bool random, int depthGuess) {
-    
-    if (depthGuess == 0) {
-        LOG(INFO) << "Solving...";
-    }
-    
-    auto res = DeterministicSolve();
-    if (!res.valid) {
-        LOG(INFO) << "Finished solving. Not valid";
-        return res;
-    }
-    if (res.completeSolve) {
-        LOG(INFO) << "Finished solving. Found solution.";
-        res.reason.details["requiredGuessDepth"] = depthGuess;
-        return res;
-    }
-
-    ++depthGuess;
-    VLOG(2) << "Require guess. Depth to " << depthGuess;
-    auto guesses = GetGuesses(random);
-    for (auto guess : guesses) {
-        VLOG(2) << "Trying Guess " << guess.Serialize().dump()
-            << " (" << depthGuess << ")";
-        auto branchCsp(*this);
-        branchCsp.MakeGuess(guess);
-        auto res = branchCsp.Solve(random, depthGuess);
-        if (res.completeSolve) {
-            if (depthGuess == 1) {
-                LOG(INFO) << "Finished solving. Found a solution.";
-            }
-            else {
-                VLOG(1) << "Found a solution (" << depthGuess << ")";
-            }
-            *this = branchCsp;
-            return res;
-        }
-    }
-    
-    crow::json::wvalue reasonJson;
-    size_t numGuesses = guesses.size();
-    for (unsigned int i = 0; i < numGuesses; ++i) {
-        reasonJson[i] = guesses[i].Serialize();
-    }
-    
-    LOG(INFO) << "No quesses worked. Proven invalid.";    
-    return {
-        false,
-        false,
-        {SolveSolution::ReasonType::NoGuessesWorked, std::move(reasonJson) }
-    };
-}
-
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveRandom() {
-    return Solve(true);
-}
-
-ConstraintSatisfactionProblem::SolveSolution ConstraintSatisfactionProblem::SolveUnique(int depthGuess) {
-    
-    if (depthGuess == 0) {
-        LOG(INFO) << "Solving uniquely...";
-    }
-    
-    auto res = DeterministicSolve();
-    if (!res.valid) {
-        if (depthGuess == 0) {
-            LOG(INFO) << "Finished solving. Not valid";
-        }
-        return res;
-    }
-    if (res.completeSolve) {
-        if (depthGuess == 0) {
-            LOG(INFO) << "Finished solving. Found solution.";
-        }
-        res.reason.details["requiredGuessDepth"] = depthGuess;
-        return res;
-    }
-    
-    if (depthGuess >= kMaxGuessDepth) {
-        VLOG(1) << "Require guess, but max guess depth exceeded: "
-                  << depthGuess << "/" << kMaxGuessDepth << ".";
-        return {
-            false,
-            false,
-            {SolveSolution::ReasonType::GuessDepthExceeded, {} }
-        };
-    }
-    
-    ConstraintSatisfactionProblem lastValidSolution;
-    bool alreadyHaveAValidSolution = false;
-    
-    auto guesses = GetGuesses(false);
-    
-    ++depthGuess;
-    VLOG(1) << "Require guess. Depth to " << depthGuess;
-    for (auto guess : guesses) {
-        VLOG(2) << "Trying Guess " << guess.Serialize().dump()
-            << " (" << depthGuess << ")";
-
-        auto branchCsp(*this);
-        branchCsp.MakeGuess(guess);
-        auto res = branchCsp.SolveUnique(depthGuess);
-        if (!res.valid) { // the CSP with the guess does not have unique solution
-            if (res.reason.reasonType == ConstraintSatisfactionProblem::SolveSolution::ReasonType::GuessDepthExceeded) {
-                if (depthGuess == 1) {
-                    LOG(INFO) << "Finished solving. Not able to prove uniqueness of solution within max guess depth limit.";
-                }
-                return res;
-            }
-            continue;
-        }
-        if (res.completeSolve) {
-            VLOG(2) << "Guess produced solution (" << depthGuess << ")";
-            if (alreadyHaveAValidSolution) {
-                if (depthGuess == 1) {
-                    LOG(INFO) << "Finished solving. Found two solutions. Not unique.";
-                }
-                else {
-                    VLOG(1) << "Found two solutions. Not unique (" << depthGuess << ")";
-                }
-                crow::json::wvalue reasonJson;
-                reasonJson[0] = Serialize();
-                reasonJson[1] = lastValidSolution.Serialize();
-                return {
-                    false,
-                    false,
-                    {SolveSolution::ReasonType::NotUnique, std::move(reasonJson) }
-                };
-            }
-            lastValidSolution = branchCsp;
-            alreadyHaveAValidSolution = true;
-        }
-    }
-    
-    if (alreadyHaveAValidSolution) {
-        *this = lastValidSolution;
-        if (depthGuess == 1) {
-            LOG(INFO) << "Finished solving. Found only one solution. Proven unique.";
-        }
-        else {
-            VLOG(1) << "Found only one solution. Proven unique (" << depthGuess << ")";
-        }
-        crow::json::wvalue reasonJson;
-        reasonJson["requiredGuessDepth"] = depthGuess;
-        return { true, true, {SolveSolution::ReasonType::ManagedToSolve, std::move(reasonJson)} };
-    }
-    if (depthGuess == 1) {
-        LOG(INFO) << "Finished solving. No quesses worked. Proven invalid.";
-    }
-    else {
-        VLOG(1) << "No quesses worked. Proven invalid (" << depthGuess << ")";
-    }
-    crow::json::wvalue reasonJson;
-    size_t numGuesses = guesses.size();
-    for (unsigned int i = 0; i < numGuesses; ++i) {
-        reasonJson[i] = guesses[i].Serialize();
-    }
-    return {
-        false,
-        false,
-        {SolveSolution::ReasonType::NoGuessesWorked, std::move(reasonJson) }
-    };
-}
-
-void ConstraintSatisfactionProblem::MakeGuess(const Guess& guess) {
+/*
+void Csp::MakeGuess(const Guess& guess) {
     m_cells.at(guess.cellKey)->SetVal(guess.val);
 }
+*/
 
 // our heuristic here is to just chose all of the possible values
 // for the cell with the lowest number of possible values
-std::vector<ConstraintSatisfactionProblem::Guess> ConstraintSatisfactionProblem::GetGuesses(bool random) const {
+std::vector<Guess> ConstraintSatisfactionProblem::GetGuesses(bool random) const {
     
     auto remainingCellKeys = RemainingCellKeys();
     

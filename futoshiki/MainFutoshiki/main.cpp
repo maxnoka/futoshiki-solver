@@ -5,6 +5,7 @@
 //  Created by Maximilian Noka on 03/04/2021.
 //
 
+#include <futoshiki/CspSolver.hpp>
 #include <futoshiki/Futoshiki.hpp>
 #include <futoshiki/LatinSquare.hpp>
 #include <futoshiki/ConstraintSatisfactionProblem.hpp>
@@ -31,120 +32,15 @@ int main(int argc, const char * argv[]) {
     // and how the solver traverses the graph somehow
     // would also like to get the "this is the reason why its invalid"
     // heuristic function for guesses...
-
-    for (int i = 0; i < 100; ++i) {
-
-        auto csp = Csp::Futoshiki(
-            {
-                {
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol
-                },
-                {
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol
-                },
-                {
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol
-                },
-                {
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol
-                },
-                {
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol,
-                    Csp::Cell::kUnsolvedSymbol
-                }
-            }
-        );
-        
-        auto generatedRes = csp.Generate();
-        auto solveRes = csp.SolveUnique();
-        LOG(INFO) << "xxx ----------------";
-        crow::json::rvalue hi = crow::json::load(generatedRes.reason.details.dump());
-        LOG(INFO) << "xxx: " << hi["requiredGuessDepth"].i();
-        LOG(INFO) << "xxx: " << solveRes.reason.details.dump();
+    for (int i=0; i < 1; ++i) {
+        auto generatedCsp = Csp::Futoshiki::Generate(6);
+        generatedCsp.dPrint(false);
+        auto solver = Csp::CspSolver<Csp::LatinSquare>(std::move(generatedCsp));
+        auto solveRes = solver.SolveUnique();
+        solver.GetSolutions().front().csp.get()->dPrint(false);
+        LOG(INFO) << "num guesses: " << solver.GetSolutions().front().seq.size();
     }
-     
-    /*
-    auto csp = Csp::Futoshiki(
-        {
-            {
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol
-            },
-            {
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol
-            },
-            {
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol
-            },
-            {
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol
-            },
-            {
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol,
-                Csp::Cell::kUnsolvedSymbol
-            }
-        }
-    );
-    
-    auto res = csp.DeterministicSolve();
-    csp.MakeGuess({0, 3});
-    csp.DeterministicSolve();
-    csp.MakeGuess({6, 1});
-    csp.DeterministicSolve();
-    csp.MakeGuess({12, 1});
-    csp.DeterministicSolve();
-    csp.MakeGuess({18, 5});
-    csp.DeterministicSolve();
-    csp.MakeGuess({24, 5});
-    csp.DeterministicSolve();
-    csp.MakeGuess({7, 4});
-    csp.DeterministicSolve();
-    csp.MakeGuess({11, 5}); // 7c
-    csp.DeterministicSolve();
-    csp.MakeGuess({19, 4});
-    csp.DeterministicSolve();
-    csp.dPrintGrid();
-    csp.MakeGuess({23, 2});
-    csp.DeterministicSolve();
-    csp.dPrintGrid();
-    */
+    // TODO:
     
     return 0;
 }

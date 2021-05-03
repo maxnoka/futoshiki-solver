@@ -8,6 +8,7 @@
 #ifndef ConstraintSatisfactionProblem_hpp
 #define ConstraintSatisfactionProblem_hpp
 
+#include "CspSolver.hpp"
 #include "InequalityConstraint.hpp"
 #include "EqualityConstraint.hpp"
 
@@ -27,10 +28,22 @@ namespace Csp {
 
 class Cell;
 
-class ConstraintSatisfactionProblem {
-public:
-    static constexpr unsigned int kMaxGuessDepth = 2;
+struct Guess {
+    unsigned long cellKey;
+    int val;
     
+    crow::json::wvalue Serialize() const {
+        auto out = crow::json::wvalue();
+        out["cell"] = cellKey;
+        out["val"] = val;
+        return out;
+    }
+};
+
+class ConstraintSatisfactionProblem {
+    template <typename CSP, typename Sfinae> friend class CspSolver;
+    // friend class CspSolver;
+public:
     ConstraintSatisfactionProblem() = default;
     ConstraintSatisfactionProblem(
         const std::vector<int>& initValues,
@@ -65,80 +78,6 @@ public:
     void ReportIfConstraintBecomesActive();
     void ReportIfConstraintBecomesInactive();
     
-    struct SolveSolution {
-        bool completeSolve;
-        bool valid; // if invalid, then completeSolve is not defined
-        
-        enum class ReasonType {
-            ManagedToSolve = 0,
-            ConstraintCannotBeSatisfied,
-            NoGuessesWorked,
-            NotUnique,
-            GuessDepthExceeded
-        };
-        
-        struct Reason {
-            ReasonType reasonType;
-            crow::json::wvalue details;
-        };
-        
-        Reason reason;
-    };
-    
-    friend std::ostream& operator<< (std::ostream& os, const SolveSolution& sol) {
-        if (sol.completeSolve) {
-            os << "Solved.";
-        }
-        else {
-            os << "Could not solve. ";
-        }
-        
-        if (!sol.valid) {
-            os << "Not valid. Reason: ";
-        }
-        
-        switch (sol.reason.reasonType) {
-            case SolveSolution::ReasonType::ManagedToSolve:
-                os << "Solved.";
-                break;
-            case SolveSolution::ReasonType::ConstraintCannotBeSatisfied:
-                os << "Constraint could not be satisfied.";
-                break;
-            case SolveSolution::ReasonType::NoGuessesWorked:
-                os << "No options for a cell lead to valid solutions.";
-                break;
-            case SolveSolution::ReasonType::NotUnique:
-                os << "Not uniquely solvable.";
-                break;
-            case SolveSolution::ReasonType::GuessDepthExceeded:
-                os << "Not proveably uniquely solveable in < " << kMaxGuessDepth << " guesses.";
-        }
-        
-        return os;
-    }
-    
-    virtual SolveSolution Generate();
-    
-    SolveSolution DeterministicSolve();
-    // also does guessing
-    SolveSolution Solve();
-    SolveSolution SolveRandom();
-    SolveSolution SolveUnique(int depthGuess = 0);
-    void SolveStep();
-    
-    struct Guess {
-        unsigned long cellKey;
-        int val;
-        
-        crow::json::wvalue Serialize() const {
-            auto out = crow::json::wvalue();
-            out["cell"] = cellKey;
-            out["val"] = val;
-            return out;
-        }
-    };
-    
-    
     bool IsCompletelySolved() { return m_completelySolved; }
     bool ProvenInValid() { return m_provenValid;}
     
@@ -149,11 +88,9 @@ public:
     
     virtual void dPrint(bool printCells) const;
     
-    void MakeGuess(const Guess& guess);
+    // void MakeGuess(const Guess& guess);
     
 protected:
-    SolveSolution Solve(bool random, int depthGuess = 0);
-
     std::map< unsigned long, std::shared_ptr<Cell> > m_cells;
     std::vector< std::shared_ptr<Constraint> > m_constraints;
     

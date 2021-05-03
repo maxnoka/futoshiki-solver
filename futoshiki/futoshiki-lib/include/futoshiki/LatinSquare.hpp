@@ -18,6 +18,9 @@ public:
         const std::vector< std::vector<int> >& initValues
     );
     
+    LatinSquare(unsigned long size);
+    
+    
     virtual crow::json::wvalue Serialize() const override;
     
 }; // LatinSquare

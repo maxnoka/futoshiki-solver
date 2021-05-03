@@ -98,38 +98,39 @@ bool Futoshiki::AddRandomConstraint(
     return true;
 }
 
-
-ConstraintSatisfactionProblem::SolveSolution Futoshiki::Generate() {
+Futoshiki Futoshiki::Generate(unsigned long size) {
     LOG(INFO) << "Generating Futoshiki puzzle";
     
-    Futoshiki copy(*this);
-    auto res = copy.SolveUnique();
-    if (res.completeSolve) {
-        LOG(INFO) << "Starting point already uniquely solveable";
-        return res;
-    }
-    if (!res.valid && res.reason.reasonType != ConstraintSatisfactionProblem::SolveSolution::ReasonType::GuessDepthExceeded) {
-        LOG(INFO) << "Starting point is not valid";
-        return res;
-    }
+    Futoshiki out(size);
     
     LOG(INFO) << "Generating reference";
-    Futoshiki reference(*this);
-    res = reference.SolveRandom();
-    assertm(res.completeSolve, "should be randomly solveable from the check above");
+    auto solver = Csp::CspSolver<Futoshiki>(Futoshiki(out));
+    auto res = solver.SolveRandom();
+    assertm(res.completeSolve, "empty board should be randomly solveable");
+    auto reference = solver.GetSolutions().front();
     
     LOG(INFO) << "Adding constraints until uniquely solveable";
+    
+    // have not proven that we need at least (size - 1) [note we add one at the
+    // beginning of the do loop below] constraints for a futoshiki puzzle, but
+    // I think we do
+    for (int i = 0; i < size - 2; ++i) {
+        LOG(INFO) << "Adding Constraint...";
+        out.AddRandomConstraint(*reference.csp);
+    }
+    
     bool nowSolveable = false;
     do {
         LOG(INFO) << "Adding Constraint...";
-        AddRandomConstraint(reference);
+        out.AddRandomConstraint(*reference.csp);
         
-        Futoshiki copy(*this);
-        res = copy.SolveUnique();
+        Futoshiki copy(out);
+        auto solver = Csp::CspSolver<Futoshiki>(std::move(copy));
+        res = solver.SolveUnique();
         nowSolveable = res.completeSolve;
     }
     while (!nowSolveable);
-    return res;
+    return out;
 }
 
 }  // ::Csp

@@ -23,6 +23,12 @@ public:
         const std::set<int>& defaultPossibleValues
     );
     
+    TwoDimCsp(
+        unsigned long columns,
+        unsigned long rows,
+        const std::set<int>& defaultPossibleValues
+    );
+    
     //return false if invalid constraint
     bool AddInequalityConstraint(
         const CellCoords& lhsCellCoords,

@@ -17,15 +17,18 @@ public:
     Futoshiki(
         const std::vector< std::vector<int> >& initValues
     )
-    : LatinSquare(initValues)
+        : LatinSquare(initValues)
+    { };
+    
+    Futoshiki(unsigned long size)
+        : LatinSquare(size)
     { };
     
     bool AddRandomConstraint(
         const Futoshiki& refSolution
     );
     
-    virtual SolveSolution Generate() override;
-    
+    static Futoshiki Generate(unsigned long size);
 }; // LatinSquare
 
 } // ::Csp
