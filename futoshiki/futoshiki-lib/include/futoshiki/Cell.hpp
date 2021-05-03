@@ -67,6 +67,7 @@ public:
     const std::set<int>& GetPossibleValuesRef() { return m_possibleValues; }
     
     crow::json::wvalue Serialize() const;
+    Cell Deserialzie(const crow::json::rvalue& inJson);
     
     std::string dPrint(bool log) const;
     
