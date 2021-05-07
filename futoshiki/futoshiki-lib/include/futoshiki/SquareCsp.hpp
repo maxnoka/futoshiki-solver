@@ -20,6 +20,10 @@ public:
     );
     
     SquareCsp(
+        std::vector< std::vector<Cell> >&& initCells
+    );
+    
+    SquareCsp(
         unsigned long size,
         const std::set<int>& defaultPossibleValues
     );

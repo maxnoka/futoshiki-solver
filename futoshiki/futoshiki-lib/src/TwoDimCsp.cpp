@@ -17,16 +17,18 @@ namespace Csp {
 
 namespace {
 
-std::vector< std::pair<std::string, int> > GenIdValuePairs(const std::vector< std::vector<int> >& initValues) {
-    std::vector<int> flattened = Utils::FlattenVector2d(initValues);
+template <typename T>
+std::vector< std::pair<std::string, T> > GenIdValuePairs( const std::vector< std::vector<T> >& values) {
+    
+    std::vector<T> flattened = Utils::FlattenVector2d(values);
 
-    std::vector< std::pair<std::string, int> > out( flattened.size() );
+    std::vector< std::pair<std::string, T> > out;
 
-    for (auto [cellIdx, initValue] : Utils::enumerate(flattened)) {
+    for (auto [cellIdx, value] : Utils::enumerate(flattened)) {
         std::stringstream ss;
-        ss << ( cellIdx % initValues[0].size() ) << "_" << ( cellIdx / initValues[0].size() );
+        ss << ( cellIdx % values[0].size() ) << "_" << ( cellIdx / values[0].size() );
         
-        out[cellIdx] = std::make_pair(ss.str(), initValue);
+        out.emplace_back(std::make_pair(ss.str(), value));
     }
     
     return out;
@@ -105,7 +107,6 @@ Direction CoordsRelativeDirection (
     }
 }
 
-
 }
 
 TwoDimCsp::TwoDimCsp(
@@ -119,6 +120,18 @@ TwoDimCsp::TwoDimCsp(
     , m_numCols(initValues[0].size())
 {
     if (!Utils::Vector2dIsRectangular(initValues)) {
+        throw std::invalid_argument("require rectangular cell vector for two dimensional CSP");
+    }
+}
+
+TwoDimCsp::TwoDimCsp(
+    std::vector< std::vector<Cell> >&& initCells
+)
+    : ConstraintSatisfactionProblem(Utils::FlattenVector2d(initCells))
+    , m_numRows(initCells.size())
+    , m_numCols(initCells[0].size())
+{
+    if (!Utils::Vector2dIsRectangular(initCells)) {
         throw std::invalid_argument("require rectangular cell vector for two dimensional CSP");
     }
 }

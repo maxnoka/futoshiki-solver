@@ -24,6 +24,10 @@ public:
     );
     
     TwoDimCsp(
+        std::vector< std::vector<Cell> >&& initCells
+    );
+    
+    TwoDimCsp(
         unsigned long columns,
         unsigned long rows,
         const std::set<int>& defaultPossibleValues

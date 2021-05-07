@@ -22,6 +22,17 @@ SquareCsp::SquareCsp(
 }
 
 SquareCsp::SquareCsp(
+    std::vector< std::vector<Cell> >&& initCells
+)
+    : TwoDimCsp(std::move(initCells))
+    , m_size(initCells.size())
+{
+    if (!Utils::Vector2dIsSquare(initCells)) { // not sure if this is ok
+        throw std::invalid_argument("require square cell vector for square CSP");
+    }
+}
+
+SquareCsp::SquareCsp(
     unsigned long size,
     const std::set<int>& defaultPossibleValues
 )

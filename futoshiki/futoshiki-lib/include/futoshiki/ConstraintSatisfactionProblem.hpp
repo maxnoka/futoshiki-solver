@@ -56,6 +56,10 @@ public:
         const std::set<int>& defaultPossibleValues
     );
     
+    ConstraintSatisfactionProblem(
+        std::vector<Cell>&& initCells
+    );
+    
     ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other);
     ConstraintSatisfactionProblem& operator =(const ConstraintSatisfactionProblem& other);
     

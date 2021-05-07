@@ -82,6 +82,29 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(
     }
 }
 
+ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(
+    std::vector<Cell>&& initCells
+)
+    : m_numSolvedCells(0) // reported back to us when we construct the cells
+    , m_numSolvedConstraints(0)
+    , m_numActiveConstraints(0)
+    , m_provenValid(false)
+    , m_completelySolved(false)
+    , m_numCells(initCells.size())
+    , m_defaultPossibleValues()
+    , m_cells()
+    , m_constraints()
+{
+    for (auto [cellIdx, initCell] : Utils::enumerate(initCells)) {
+        m_cells.emplace(
+            std::make_pair(
+                cellIdx,
+                std::make_shared<Cell>(initCell, this)
+            )
+        );
+    }
+}
+
 ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(const ConstraintSatisfactionProblem& other)
     : m_numSolvedCells(other.m_numSolvedCells)
     , m_numSolvedConstraints(other.m_numSolvedConstraints)

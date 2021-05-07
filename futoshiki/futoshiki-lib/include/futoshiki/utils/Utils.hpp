@@ -98,7 +98,7 @@ struct ReferenceContainer {
 template <typename T>
 bool Vector2dIsRectangular(const std::vector<std::vector<T>>& vector2D) {
     unsigned long dim2(vector2D[0].size());
-    for ( auto row : vector2D) {
+    for ( auto& row : vector2D) {
         if (row.size() != dim2) { return false; }
     }
     return true;

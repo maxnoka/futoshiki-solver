@@ -33,6 +33,57 @@ Cell::Cell(int initVal, const std::string& id, const std::set<int>& possibleValu
     }
 }
 
+Cell::Cell(const crow::json::rvalue& cellJson)
+    : m_val(kUnsolvedSymbol) // set using SetIfPossible bellow
+    , m_id()
+    , m_possibleValues() // set below depending on if the cell is set
+    , m_appliedConstraints()
+    , m_csp(nullptr)
+{
+    if (cellJson.t() != crow::json::type::Object) {
+        throw std::runtime_error("cannot construct cell. json needs to be of type object");
+    }
+    
+    if (   !cellJson.has("val")
+        || !cellJson.has("possible_vals")
+        || !cellJson.has("cell_id")
+    ) {
+        throw std::runtime_error("cannot construct cell. "
+            "Missing required fields (val, possible_vals, cell_id");
+    }
+
+    if (cellJson["val"].t() != crow::json::type::Number) {
+        throw std::runtime_error("cannot construct cell. \"val\" field needs "
+            "to be of type number");
+    }
+    auto initVal = cellJson["val"].i();
+
+    if (cellJson["possible_vals"].t() != crow::json::type::List) {
+        throw std::runtime_error("cannot construct cell. \"possible_vals\" field needs "
+            "to be of type list");
+    }
+    if (cellJson["cell_id"].t() != crow::json::type::String) {
+        throw std::runtime_error("cannot construct cell. \"cell_id\" field needs "
+            "to be of type string");
+    }
+    
+    for (auto& possibleVal : cellJson["possible_vals"]) {
+        if (possibleVal.t() != crow::json::type::Number) {
+            throw std::runtime_error("cannot construct cell. \"possibl_vals\" items "
+                "to be of type number");
+        }
+        m_possibleValues.insert(possibleVal.i());
+    }
+
+    if (initVal != kUnsolvedSymbol) {
+        if (m_possibleValues.count(initVal) == 0) {
+            throw std::runtime_error("input values must be possible values");
+        }
+        m_possibleValues = { static_cast<int>(initVal) };
+        SetIfPossible();
+    }
+}
+
 Cell::Cell(const Cell& other, ConstraintSatisfactionProblem* newCsp)
     : m_val(other.m_val)
     , m_id(other.m_id)

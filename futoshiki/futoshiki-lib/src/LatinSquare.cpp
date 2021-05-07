@@ -20,6 +20,16 @@ LatinSquare::LatinSquare(
     }
 }
 
+LatinSquare::LatinSquare(
+    std::vector< std::vector<Cell> >&& initCells
+)
+    : SquareCsp( std::move(initCells) )
+{
+    if (!AddEqualityConstraintToAllRowsAndCols(Constraint::Operator::NotEqualTo)) {
+        throw std::runtime_error("initial values do not satisfy latin square constraint");
+    }
+}
+
 LatinSquare::LatinSquare(unsigned long size)
     : SquareCsp( size, Utils::GenSetSequence(size) )
 {

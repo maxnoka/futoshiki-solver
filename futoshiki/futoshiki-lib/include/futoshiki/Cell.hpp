@@ -33,10 +33,12 @@ public:
     // assumes the possible values vector is sorted
     Cell(int initVal, const std::string& id, const std::set<int>& possibleValues, ConstraintSatisfactionProblem* csp);
     Cell() = delete;
-    Cell(const Cell& other) = delete;
-    Cell& operator =(const Cell&) = delete;
+    Cell(const Cell& other) = default;
+    Cell& operator =(const Cell&) = default;
     // only shallow copy available, use UpdateConstraintPointers once the constraints are copied as well;
     Cell(const Cell& other, ConstraintSatisfactionProblem*);
+
+    Cell(const crow::json::rvalue& cellJson);
     
     void UpdateConstraintPointers(const std::map< const Constraint*, std::shared_ptr<Constraint>* >& newConstraintLookup);
     

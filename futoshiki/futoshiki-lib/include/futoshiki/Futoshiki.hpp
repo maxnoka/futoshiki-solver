@@ -24,6 +24,12 @@ public:
         : LatinSquare(size)
     { };
     
+    Futoshiki(
+        std::vector< std::vector<Cell> >&& initCells
+    )
+        : LatinSquare(std::move(initCells))
+    { };
+    
     bool AddRandomConstraint(
         const Futoshiki& refSolution
     );

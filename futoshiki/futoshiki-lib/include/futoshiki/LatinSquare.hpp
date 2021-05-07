@@ -18,6 +18,10 @@ public:
         const std::vector< std::vector<int> >& initValues
     );
     
+    LatinSquare(
+        std::vector< std::vector<Cell> >&& initCells
+    );
+    
     LatinSquare(unsigned long size);
     
     
