@@ -66,6 +66,7 @@ Cell::Cell(const crow::json::rvalue& cellJson)
         throw std::runtime_error("cannot construct cell. \"cell_id\" field needs "
             "to be of type string");
     }
+    m_id = cellJson["cell_id"].s();
     
     for (auto& possibleVal : cellJson["possible_vals"]) {
         if (possibleVal.t() != crow::json::type::Number) {
@@ -73,6 +74,10 @@ Cell::Cell(const crow::json::rvalue& cellJson)
                 "to be of type number");
         }
         m_possibleValues.insert(possibleVal.i());
+    }
+    
+    if (m_possibleValues.size() == 0) {
+        throw std::runtime_error("must have some possible values");
     }
 
     if (initVal != kUnsolvedSymbol) {
@@ -218,7 +223,9 @@ bool Cell::SetIfPossible() {
     
     if (m_possibleValues.size() == 1) {
         m_val = *m_possibleValues.begin();
-        m_csp->ReportIfCellNewlySolved();
+        if (m_csp) {
+            m_csp->ReportIfCellNewlySolved();
+        }
         /* NOTE
         for (auto& constraint : m_appliedConstraints) {
             constraint.lock()->SetSolvedIfPossible();

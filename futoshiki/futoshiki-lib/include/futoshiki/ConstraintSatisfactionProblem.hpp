@@ -85,6 +85,8 @@ public:
     bool IsCompletelySolved() { return m_completelySolved; }
     bool ProvenInValid() { return m_provenValid;}
     
+    unsigned long FindCellIdx(const std::string& cellId);
+    
     virtual crow::json::wvalue Serialize() const;
     crow::json::wvalue SerializeCsp() const;
     std::vector<crow::json::wvalue> SerializeCells() const;

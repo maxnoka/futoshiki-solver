@@ -96,6 +96,9 @@ ConstraintSatisfactionProblem::ConstraintSatisfactionProblem(
     , m_constraints()
 {
     for (auto [cellIdx, initCell] : Utils::enumerate(initCells)) {
+        if (initCell.IsSolved()) {
+            ReportIfCellNewlySolved();
+        }
         m_cells.emplace(
             std::make_pair(
                 cellIdx,
@@ -358,6 +361,19 @@ bool ConstraintSatisfactionProblem::AddEqualityConstraint(
 
     return true;
 }
+
+unsigned long ConstraintSatisfactionProblem::FindCellIdx(const std::string& cellId) {
+    auto it = std::find_if(m_cells.begin(), m_cells.end(),
+        [&cellId](const std::pair< const unsigned long, std::shared_ptr<Cell> >& pair) {
+            return pair.second->Id() == cellId;
+        }
+    );
+    if (it == m_cells.end()) {
+        throw std::runtime_error("did not find cell");
+    }
+    return it->first;
+}
+
 
 void ConstraintSatisfactionProblem::ReportIfCellNewlySolved() {
     ++m_numSolvedCells;

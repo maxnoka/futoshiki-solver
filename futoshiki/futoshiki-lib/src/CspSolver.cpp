@@ -63,10 +63,16 @@ CspSolver<CSP, EnableIfPolicy<CSP>>::SolveDeterministic() {
     
     VLOG(2) << "Finished deterministic solve (" << (m_working->m_completelySolved ? "SOLVED" : "UNSOLVED") << ")";
     m_working->m_provenValid = true;
+    crow::json::wvalue reasonJson;
+    if (m_working->m_completelySolved) {
+        crow::json::wvalue solutionsJson;
+        solutionsJson[0] =  m_working->Serialize();
+        reasonJson["solutions"] = std::move(solutionsJson);
+    }
     return {
         m_working->m_completelySolved,
         m_working->m_provenValid,
-        {SolveSolution::ReasonType::ManagedToSolve}
+        {SolveSolution::ReasonType::ManagedToSolve, std::move(reasonJson)}
     };
 }
 
@@ -99,7 +105,7 @@ CspSolver<CSP, EnableIfPolicy<CSP> >::SolveWorking(bool random, bool checkUnique
         else {
             VLOG(2) << "Guess {}" << " (" << depthGuess << ") produced solution";
         }
-        deterministicRes.reason.details["requiredGuessDepth"] = depthGuess;
+        deterministicRes.reason.details["solutions"][0]["requiredGuessDepth"] = depthGuess;
         return deterministicRes;
     }
     
@@ -157,11 +163,14 @@ CspSolver<CSP, EnableIfPolicy<CSP> >::SolveWorking(bool random, bool checkUnique
         assertm(m_foundSolutions.size() == 1, "should not get to this point with more than one solution");
         VLOG(2) << "Found only one solution. Proven unique (" << depthGuess << ")";
         crow::json::wvalue reasonJson;
-        reasonJson["requiredGuessDepth"] = depthGuess;
+        crow::json::wvalue solutionsJson;
+        solutionsJson[0] =  m_foundSolutions.front().csp->Serialize();
+        solutionsJson[0]["requiredGuessDepth"] = depthGuess;
+        reasonJson["solutions"] = std::move(solutionsJson);
         return { true, true, {SolveSolution::ReasonType::ManagedToSolve, std::move(reasonJson)} };
     }
     
-    VLOG(2) << "No quesses worked. Proven invalid.";
+    VLOG(2) << "No guesses worked. Proven invalid.";
     crow::json::wvalue reasonJson;
     size_t numGuesses = guesses.size();
     for (unsigned int i = 0; i < numGuesses; ++i) {
@@ -200,7 +209,6 @@ CspSolver<CSP, EnableIfPolicy<CSP>>::Solve() {
     }
     if (res.completeSolve) {
         LOG(INFO) << "Finished solving. Found solution.";
-        res.reason.details["requiredGuessDepth"] = m_foundSolutions.front().seq.size();
     }
     return res;
 }

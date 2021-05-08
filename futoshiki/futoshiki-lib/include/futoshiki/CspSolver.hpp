@@ -55,6 +55,17 @@ public:
             crow::json::wvalue details;
         };
         
+        crow::json::wvalue ToJson() {
+            crow::json::wvalue out;
+            out["solved"] = completeSolve;
+            std::stringstream ss;
+            ss << *this;
+            out["outcome"] = ss.str();
+            out["details"] = std::move(reason.details);
+            
+            return out;
+        };
+        
         Reason reason;
     };
     
@@ -73,7 +84,6 @@ public:
                 os << "Not finished solving.";
                 break;
             case SolveSolution::ReasonType::ManagedToSolve:
-                os << "Solved.";
                 break;
             case SolveSolution::ReasonType::ConstraintCannotBeSatisfied:
                 os << "Constraint could not be satisfied.";

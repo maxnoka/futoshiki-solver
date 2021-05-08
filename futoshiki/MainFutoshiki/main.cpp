@@ -32,6 +32,17 @@ int main(int argc, const char * argv[]) {
     // and how the solver traverses the graph somehow
     // would also like to get the "this is the reason why its invalid"
     // heuristic function for guesses...
+    
+    crow::json::wvalue a;
+    a = std::vector<int> {1, 2, 3};
+    LOG(INFO) << a.dump();
+    LOG(INFO) << a.estimate_length();
+    LOG(INFO) << a[0].dump();
+    for (auto& key : a.keys()) {
+        LOG(INFO) << key;
+    }
+    // LOG(INFO) << a.t();
+    /*
     for (int i=0; i < 1; ++i) {
         auto generatedCsp = Csp::Futoshiki::Generate(6);
         generatedCsp.dPrint(false);
@@ -40,6 +51,7 @@ int main(int argc, const char * argv[]) {
         solver.GetSolutions().front().csp.get()->dPrint(false);
         LOG(INFO) << "num guesses: " << solver.GetSolutions().front().seq.size();
     }
+    */
     // TODO:
     
     return 0;

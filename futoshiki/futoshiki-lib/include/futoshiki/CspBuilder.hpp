@@ -12,8 +12,11 @@
 
 namespace Csp {
 
-Futoshiki MakeFutoshikiFromJson(const crow::json::rvalue& json);
+Futoshiki MakeFutoshikiFromJson(const crow::json::rvalue& json, const crow::json::rvalue& constraintsJson);
 
+bool AddConstraintsFromJson(const crow::json::rvalue& constraintsJson, ConstraintSatisfactionProblem* pCsp);
+
+bool AddConstraintFromJson(const crow::json::rvalue& constraintJson, ConstraintSatisfactionProblem* pCsp);
 }
 
 #endif /* CspBuilder_hpp */

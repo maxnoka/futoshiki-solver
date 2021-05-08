@@ -7,6 +7,7 @@
 
 #include <futoshiki/CspSolver.hpp>
 #include <futoshiki/Futoshiki.hpp>
+#include <futoshiki/CspBuilder.hpp>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
@@ -123,80 +124,16 @@ int main(int argc, const char * argv[]) {
             return crow::response(400);
         }
         
-        for (auto& constraint : constraints) {
-            if (constraint.t() != crow::json::type::Object) {
-                return crow::response(400);
-            }
+        try {
+            auto csp = Csp::MakeFutoshikiFromJson(rows, constraints);  // can throw
+            auto solver = Csp::CspSolver<Csp::Futoshiki>(std::move(csp));
+            auto res = solver.SolveUnique();
             
-            if (   !constraint.has("operator")
-                || !constraint.has("type")
-                || !constraint.has("constraint_id")
-                || !constraint.has("cells")
-            ) {
-                return crow::response(400);
-            }
-            
-            if (constraint["operator"].t() != crow::json::type::String) {
-                return crow::response(400);
-            }
-            if (constraint["type"].t() != crow::json::type::String) {
-                return crow::response(400);
-            }
-            if (constraint["constraint_id"].t() != crow::json::type::String) {
-                return crow::response(400);
-            }
-            if (constraint["cells"].t() != crow::json::type::List) {
-                return crow::response(400);
-            }
-            auto cellIds = constraint["cells"];
-            
-            for (auto& cellId : cellIds) {
-                if (cellId.t() != crow::json::type::String) {
-                    return crow::response(400);
-                }
-            }
+            return crow::response {res.ToJson()};
         }
-        
-        for (auto& row : rows) {
-            if (row.t() != crow::json::type::List) {
-                return crow::response(400);
-            }
-            if (rows.size() != gridSize) {
-                return crow::response(400);
-            }
-            
-            for (auto& cell : row) {
-                if (cell.t() != crow::json::type::Object) {
-                    return crow::response(400);
-                }
-                
-                if (   !cell.has("val")
-                    || !cell.has("possible_vals")
-                    || !cell.has("cell_id")
-                ) {
-                    return crow::response(400);
-                }
-                
-                if (cell["val"].t() != crow::json::type::Number) {
-                    return crow::response(400);
-                }
-                if (cell["possible_vals"].t() != crow::json::type::List) {
-                    return crow::response(400);
-                }
-                if (cell["cell_id"].t() != crow::json::type::String) {
-                    return crow::response(400);
-                }
-                
-                for (auto& possibleVal : cell["possible_vals"]) {
-                    if (possibleVal.t() != crow::json::type::Number) {
-                        return crow::response(400);
-                    }
-                }
-            }
+        catch (...) {
+            return crow::response(400);
         }
-        
-        auto generatedCsp = Csp::Futoshiki::Generate(2);
-        return crow::response{ generatedCsp.Serialize() };
     });
     
     app.port(18080).run();
