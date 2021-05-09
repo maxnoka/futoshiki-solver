@@ -22,6 +22,11 @@ namespace {
     constexpr auto kMaxPuzzleSizeGenerate = 6;
 }
 
+void AddHeaders(crow::response& response) {
+    response.add_header("Access-Control-Allow-Origin", "*");
+    response.add_header("Content-Type", "application/json; charset=UTF-8");
+}
+
 class EasyLoggingCrowLogHandler : public crow::ILogHandler {
 public:
     void log(std::string message, crow::LogLevel level) override {
@@ -63,26 +68,38 @@ int main(int argc, const char * argv[]) {
     {
         auto in = crow::json::load(req.body);
         if (!in || !in.has("size") || !in.has("type") ) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         if (in["size"].t() != crow::json::type::Number) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         if (in["type"].t() != crow::json::type::String) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         
         auto puzzleTypeString = in["type"].s();
         if (puzzleTypeString != "futoshiki") {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         auto size = in["size"].i();
         if (size < 2 || size > kMaxPuzzleSizeGenerate) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         
         auto generatedCsp = Csp::Futoshiki::Generate(size);
-        return crow::response{ generatedCsp.Serialize() };
+        crow::response response { generatedCsp.Serialize() };
+        AddHeaders(response);
+        return response;
     });
     
     CROW_ROUTE(app, "/solve")
@@ -96,32 +113,44 @@ int main(int argc, const char * argv[]) {
             || !in.has("cells")
             || !in.has("constraints")
         ) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         if (in["grid_size"].t() != crow::json::type::Number) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         auto gridSize = in["grid_size"].i();
         
         if (in["num_cells"].t() != crow::json::type::Number) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         auto numCells = in["num_cells"].i();
         
         if (in["cells"].t() != crow::json::type::List) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         auto rows = in["cells"];
         
         if (in["constraints"].t() != crow::json::type::List) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         auto constraints = in["constraints"];
         
         if (rows.size() != gridSize // numRows
             || (gridSize * gridSize) != numCells
         ) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
         
         try {
@@ -129,10 +158,14 @@ int main(int argc, const char * argv[]) {
             auto solver = Csp::CspSolver<Csp::Futoshiki>(std::move(csp));
             auto res = solver.SolveUnique();
             
-            return crow::response {res.ToJson()};
+            crow::response response {res.ToJson()};
+            AddHeaders(response);
+            return response;
         }
         catch (...) {
-            return crow::response(400);
+            crow::response response {400};
+            AddHeaders(response);
+            return response;
         }
     });
     

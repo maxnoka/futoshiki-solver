@@ -31,8 +31,8 @@ class Game {
         }
 
         // the constraints between cells of different rows
-        for ($rowIdx=0; $rowIdx < $board_size - 1; $rowIdx++) { 
-            for ($colIdx=0; $colIdx < $board_size; $colIdx++) {    
+        for ($rowIdx=0; $rowIdx < $board_size; $rowIdx++) { 
+            for ($colIdx=0; $colIdx < $board_size - 1; $colIdx++) {    
                 $new = new Constraint($colIdx, $rowIdx, "+", "col");
                 $this->constraints["col"][$colIdx][] = $new;
             }
@@ -70,8 +70,8 @@ class Game {
             exit();
         }
 
-        if(!isset($data->board_size) ||
-           !isset($data->rows) ||
+        if(!isset($data->grid_size) ||
+           !isset($data->cells) ||
            !isset($data->constraints)){
             // set response code - 400 bad request
             http_response_code(400);
@@ -79,7 +79,7 @@ class Game {
             exit();
         }
 
-        $size = filter_var(htmlspecialchars($data->board_size), FILTER_VALIDATE_INT);
+        $size = filter_var(htmlspecialchars($data->grid_size), FILTER_VALIDATE_INT);
         if ($size === false) {
             http_response_code(400);
             echo json_encode(array("message" => "Unable to solve. Board size is invalid (require int)."));
@@ -94,19 +94,20 @@ class Game {
 
         $obj = new Game($size);
 
-        if (gettype($data->rows) != "array") {
+        if (gettype($data->cells) != "array") {
             http_response_code(400);
-            echo json_encode(array("message" => "Unable to solve. Invalid data (rows)"));
+            echo json_encode(array("message" => "Unable to solve. Invalid data (cells)"));
             exit();
         }
-        
-        if (sizeof($data->rows) != $size) {
+
+        if (sizeof($data->cells) != $size) {
             http_response_code(400);
             echo json_encode(array("message" => "Unable to solve. Invalid data (needs to be NxN shape, where N=board_size)"));
             exit();
         }
 
-        foreach ($data->rows as $rowIdx => $row) {
+        $lookup = array();
+        foreach ($data->cells as $rowIdx => $row) {
             if (gettype($row) != "array") {
                 http_response_code(400);
                 echo json_encode(array("message" => "Unable to solve. Invalid data (row within rows)"));
@@ -117,21 +118,39 @@ class Game {
                 http_response_code(400);
                 echo json_encode(array("message" => "Unable to solve. Invalid data (needs to be NxN shape)"));
                 exit();
-            } 
+            }
 
-            foreach ($row as $cellIdx => $val) {
+            foreach ($row as $cellIdx => $cellObj) {
+                if (gettype($cellObj) != "object") {
+                    http_response_code(400);
+                    echo json_encode(array("message" => "Unable to solve. Invalid data (cell object)"));
+                    exit();
+                }
+
+                if(!isset($cellObj->val)
+                   || !isset($cellObj->cell_id)){
+                    // set response code - 400 bad request
+                    http_response_code(400);
+                    echo json_encode(array("message" => "Unable to solve. Cell data is incomplete."));
+                    exit();
+                }
+                $lookup[$cellObj->cell_id]["row"] = $rowIdx;
+                $lookup[$cellObj->cell_id]["col"] = $cellIdx;
+
+                $val = $cellObj->val;
                 $validVal = filter_var(htmlspecialchars($val), FILTER_VALIDATE_INT);
                 if ($validVal === false) {
                     http_response_code(400);
-                    echo json_encode(array("message" => "Unable to solve. Board value is invalid (require int)."));
+                    echo json_encode(array("message" => "Unable to solve. Cell value is invalid (require int)."));
                     exit();
                 }
 
                 if ($validVal > $size || $validVal < 0) {
                     http_response_code(400);
-                    echo json_encode(array("message" => "Unable to solve. Board value is invalid (require integer in range [0, board_size])."));
+                    echo json_encode(array("message" => "Unable to solve. Cell value is invalid (require integer in range [0, board_size])."));
                     exit();
                 }
+
                 $obj->rows[$rowIdx]->cells[$cellIdx]->val = $validVal;
             }
         }
@@ -143,8 +162,13 @@ class Game {
         }
 
         foreach ($data->constraints as $constraintIdx => $constraintJson) {
-            if(!isset($constraintJson->colIdx) ||
-               !isset($constraintJson->rowIdx) ||
+            if (gettype($constraintJson) != "object") {
+                http_response_code(400);
+                echo json_encode(array("message" => "Unable to solve. Invalid data (constraint object)"));
+                exit();
+            }
+
+            if(!isset($constraintJson->cells) ||
                !isset($constraintJson->operator) ||
                !isset($constraintJson->type)){
                 // set response code - 400 bad request 
@@ -153,50 +177,77 @@ class Game {
                 exit();
             }
 
-            $validColIdx = filter_var(htmlspecialchars($constraintJson->colIdx), FILTER_VALIDATE_INT);
-            $validRowIdx = filter_var(htmlspecialchars($constraintJson->rowIdx), FILTER_VALIDATE_INT);
-
-            if ($validColIdx === false || $validRowIdx === false) {
+            if (gettype($constraintJson->cells) != "array") {
                 http_response_code(400);
-                echo json_encode(array("message" => "Unable to solve. Constraint or row indices invalid (require int)."));
+                echo json_encode(array("message" => "Unable to solve. Invalid data (cells array in constraint object)"));
                 exit();
             }
 
-            if ($constraintJson->operator == ">") {$validOperator = ">";}
-            else if ($constraintJson->operator == "<") {$validOperator = "<";}
-            else if ($constraintJson->operator == "+") {$validOperator = "+";}
+            if (sizeof($constraintJson->cells) != 2) {
+                http_response_code(400);
+                echo json_encode(array("message" => "Unable to solve. Invalid data (constraints need to have exactly two cells)"));
+                exit();
+            }
+
+            foreach ($constraintJson->cells as $cellIdx => $cellId) {
+                if (!key_exists($cellId, $lookup)) {
+                    http_response_code(400);
+                    echo json_encode(array("message" => "Unable to solve.  Invalid data (constraints reference non existant cells)"));
+                    exit();
+                }
+            }
+            $rowIdx_lhs = $lookup[$constraintJson->cells[0]]["row"];
+            $colIdx_lhs = $lookup[$constraintJson->cells[0]]["col"];
+            $rowIdx_rhs = $lookup[$constraintJson->cells[1]]["row"];
+            $colIdx_rhs = $lookup[$constraintJson->cells[1]]["col"];
+
+
+            $diffX = $colIdx_lhs - $colIdx_rhs;
+            $diffY = $rowIdx_lhs - $rowIdx_rhs;
+
+            // var_dump($diffX);
+            // var_dump($diffY);
+
+            if (abs($diffX) == 1 && $diffY == 0) {
+                $validType = "row";
+                $validColIdx = $colIdx_rhs + $diffX;
+                $validRowIdx = $rowIdx_lhs;
+            }
+            else if (abs($diffY) == 1 && $diffX == 0) {
+                $validType = "col";
+                $validColIdx = $colIdx_lhs;
+                $validRowIdx = $rowIdx_rhs + $diffY;
+            }
+            else {
+                http_response_code(400);
+                echo json_encode(array("message" => "Unable to solve.  Invalid data (constraints cells not adjacent)"));
+                exit();
+            }
+
+            if ($constraintJson->operator == ">") {
+                if ($diffX < 0 || $diffY < 0) {
+                    $validOperator = "<";
+                }
+                $validOperator = ">";
+            }
+            else if ($constraintJson->operator == "<") {
+                if ($diffX < 0 || $diffY < 0) {
+                    $validOperator = ">";
+                }
+                $validOperator = "<";
+            }
             else {
                 http_response_code(400);
                 echo json_encode(array("message" => "Unable to solve. Constraint operator is invalid."));
                 exit();
             }
 
-            if ($constraintJson->type == "row") {$validType = "row";}
-            else if ($constraintJson->type == "col") {$validType = "col";}
-            else {
-                http_response_code(400);
-                echo json_encode(array("message" => "Unable to solve. Constraint type is invalid."));
-                exit();
-            }
-
-            $eitherNegative = $validColIdx < 0 || $validRowIdx < 0;
-            $eitherTooLarge = false;
-            if (($validType == "row")) {
-                if ($validColIdx >= $size - 1 || $validRowIdx >= $size) {
-                    $eitherTooLarge = true;
-                }
-            }
-            else {
-                if ($validColIdx >= $size || $validRowIdx >= $size - 1) {
-                    $eitherTooLarge = true;
-                }
-            }
-
-            if ($eitherNegative || $eitherTooLarge) {
-                http_response_code(400);
-                echo json_encode(array("message" => "Unable to solve. Constraint indices invalid."));
-                exit();
-            }
+/*
+            var_dump($validColIdx);
+            var_dump($validRowIdx);
+            var_dump($validOperator);
+            var_dump($validType);
+*/
 
             $obj->addConstraint($validColIdx, $validRowIdx, $validOperator, $validType);
         }
@@ -218,6 +269,7 @@ class Game {
         //      2,2:2,3:<
         //      3,0:3,1:>"
 
+/*
         $command = BIN_PATH . "/futoshiki-solver ";
         $command .= "\"" . $this->serializeBoard() . "\" ";
         $command .= "\"" . $this->serializeConstraints() . "\"";
@@ -235,7 +287,10 @@ class Game {
             $finalOutput[] = explode(",", $outRow);
 
         }
-        return $finalOutput;
+*/
+    var_dump($result);
+        
+        return $this->serializeGrid();
     }
 
     public function addConstraint($colIdx, $rowIdx, $operator, $type) {

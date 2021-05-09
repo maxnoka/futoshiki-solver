@@ -1,21 +1,44 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,400');
 
 body {
-    font-family: 'Raleway', sans-serif;
+    font-family: monospace;
 }
 
 #app {
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  text-align: center;
   min-height: 100vh;
 }
 
+#grid-container {
+  display: grid;
+  grid-template-areas:
+  "controls puzzle"
+  "status status";
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#puzzle-status-bar {
+    grid-area: status;
+}
+
 #puzzle-contianer {
+    align-content: center;
+    grid-area: puzzle;
     margin: 30px;
 }
+
+#puzzle-controlls-wrapper {
+    grid-area: controls;
+    align-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 
 table {
     border-collapse: collapse;
@@ -51,6 +74,10 @@ td {
     appearance: none;
     -webkit-appearance: none;
     border: none;
+}
+
+.puzzle-cell-number input:disabled{
+    text-decoration: underline;
 }
 
 .puzzle-cell-number input:focus{
@@ -93,12 +120,6 @@ input[type=number] {
 
 .size-selector-value {
     margin: 10px;
-}
-
-.puzzle-controlls-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 #temp {

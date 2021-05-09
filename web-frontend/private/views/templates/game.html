@@ -1,33 +1,37 @@
-<div id="puzzle-controlls-wrapper">
-	<div class="size-selector-wrapper">
-		<a href="index.php?size=<?php echo $this->board_size + 1;?>"><div class="arrow-up arrow"></div></a>
-		<div class="size-selector-value"> <?php echo $this->board_size;?> </div>
-		<a href="index.php?size=<?php echo $this->board_size - 1;?>"><div class="arrow-down arrow"></div></a>
-	</div>
-	<div id="puzzle-solve-button" class="puzzle-controlls-button"> Solve </div>
-	<div id="puzzle-clear-button" class="puzzle-controlls-button"> Clear </div>
-</div>
+<div id="grid-container">
+  <div id="puzzle-controlls-wrapper">
+    <div class="size-selector-wrapper">
+      <a href="index.php?size=<?php echo $this->board_size + 1;?>"><div class="arrow-up arrow"></div></a>
+      <div class="size-selector-value"> <?php echo $this->board_size;?> </div>
+      <a href="index.php?size=<?php echo $this->board_size - 1;?>"><div class="arrow-down arrow"></div></a>
+    </div>
+    <div id="puzzle-solve-button" class="puzzle-controlls-button"> Solve </div>
+    <div id="puzzle-clear-button" class="puzzle-controlls-button"> Clear </div>
+    <div id="puzzle-generate-button" class="puzzle-controlls-button"> Generate </div>
+  </div>
 
-<div id="puzzle-contianer">
-    <table id="puzzle-grid">
-        <tbody>
-        	<?php
-        	for ($rowIdx=0; $rowIdx < $this->board_size - 1; $rowIdx++) {
-        		$row = $this->rows[$rowIdx];
+  <div id="puzzle-contianer">
+      <table id="puzzle-grid">
+          <tbody>
+            <?php
+            for ($rowIdx=0; $rowIdx < $this->board_size - 1; $rowIdx++) {
+              $row = $this->rows[$rowIdx];
 
-	        	$row->render($this->constraints["row"][$rowIdx]);
+              $row->render($this->constraints["row"][$rowIdx]);
 
-	        	echo '<tr class="puzzle-row-constraints">';
-	        	for ($i=0; $i < $this->board_size - 1; $i++) { 
-	        		$this->constraints["col"][$rowIdx][$i]->render();
-	        		include TEMPLATE_PATH . '/' . 'constraint-row-blank.html';
-	        	}
-	        	$this->constraints["col"][$this->board_size - 1][$rowIdx]->render();
-	        echo "</tr>";
-	        }
+              echo '<tr class="puzzle-row-constraints">';
+              for ($i=0; $i < $this->board_size - 1; $i++) { 
+                $this->constraints["col"][$rowIdx][$i]->render();
+                include TEMPLATE_PATH . '/' . 'constraint-row-blank.html';
+              }
+              $this->constraints["col"][$rowIdx][$this->board_size - 1]->render();
+            echo "</tr>";
+            }
 
-	        $this->rows[$this->board_size - 1]->render($this->constraints["row"][$rowIdx]);
-	        ?>
-		</tbody>
-    </table>
+            $this->rows[$this->board_size - 1]->render($this->constraints["row"][$this->board_size - 1]);
+            ?>
+      </tbody>
+      </table>
+  </div>
+  <div id="puzzle-status-bar"></div>
 </div>
