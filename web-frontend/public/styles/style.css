@@ -94,6 +94,10 @@ td {
     margin: 2px;
 }
 
+.puzzle-cell-wrong {
+    color: red;
+}
+
 .puzzle-cell-blank {
     width: 30px;
     height: 30px;

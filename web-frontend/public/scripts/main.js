@@ -37,6 +37,7 @@ $(document).on('click', '#puzzle-generate-button', function(){
 
 $(document).on('click', '#puzzle-solve-button', function(){
   clearError();
+  clearWrong();
   setSetCellsToStarting();
   disableConstraintButtons();
 
@@ -67,6 +68,40 @@ $(document).on('click', '#puzzle-solve-button', function(){
     }
   });
 
+  return false;
+});
+
+$(document).on('click', '#puzzle-check-button', function(){
+  clearError();
+  clearWrong();
+  disableConstraintButtons();
+
+  var toSend = {"grid_size" : 0,
+                "cells" : [],
+                "num_cells" : 4,
+                "constraints": []};
+
+  toSend.cells = getStartingCellVals();
+  toSend.grid_size = toSend.cells.length;
+  toSend.num_cells = toSend.grid_size * toSend.grid_size;
+  toSend.constraints = getConstraints();
+
+  $.ajax({
+    type: "POST",
+    url: "http://localhost:18080/solve",
+    data: JSON.stringify(toSend),
+    success: function(data){
+      if(data.solved) {
+        checkBoard(data.details.solutions[0].cells);
+      }
+      else {
+        displayError(data.outcome);
+      }
+    },
+    error: function(data) {
+      displayError("Invalid input");
+    }
+  });
   return false;
 });
 
@@ -156,6 +191,34 @@ function getCellVals() {
   return rowsVals;
 }
 
+function getStartingCellVals() {
+  var rows = document.querySelectorAll('[class^="puzzle-row-numbers"]');
+  var rowsVals = []
+
+  var numRows = rows.length;
+  var possibleVals = Array.from(new Array(numRows), (x, i) => i + 1);
+
+  Object.entries(rows).forEach(([rowIdx, row]) => {
+    var cells = row.querySelectorAll('.puzzle-cell-number');
+    var cellsVals = [];
+    Object.entries(cells).forEach(([colIdx, cell]) => {
+      var element = cell.querySelector('input');
+      var val = "0";
+      if (element.classList.contains("puzzle-cell-starting")) {
+        val = element.value;
+      }
+      var out = { 
+        "cell_id": `${colIdx}_${rowIdx}`,
+        "possible_vals": possibleVals
+      };
+      out["val"] = Number(val);
+      cellsVals.push(out);
+    });
+    rowsVals.push(cellsVals);
+  });
+  return rowsVals;
+}
+
 function fillConstraints(data) {
   data.forEach(constraint => {
     var lhsCellId = constraint.cells[0];
@@ -215,7 +278,8 @@ function getConstraints() {
 
   constraints.forEach(constraint => {
     var idString = constraint.id.substring(19);  // leaves e.g. row_0_0
-    var myRe = /(?<=_)[\d]+/gm;  // gets the digits after each underscore
+    // var myRe = /(?<=_)[\d]+/gm;  // gets the digits after each underscore
+    var myRe = /[\d]+/gm;  // gets the digits after each underscore
     var matches = idString.match(myRe);
 
     var singleOut = {"cells" : [],
@@ -263,7 +327,20 @@ function getConstraints() {
   return out;
 }
 
+function clearWrong() {
+  var rows = document.querySelectorAll('[class^="puzzle-row-numbers"]');
+
+  rows.forEach(row => {
+    var cells = row.querySelectorAll('.puzzle-cell-number');
+    cells.forEach(cell => {
+      var element = cell.querySelector('input');
+      element.classList.remove("puzzle-cell-wrong");
+    });
+  });
+}
+
 function clearBoard() {
+  clearWrong();
   var rows = document.querySelectorAll('[class^="puzzle-row-numbers"]');
 
   rows.forEach(row => {
@@ -295,6 +372,21 @@ function fillBoard(data, setStarting) {
             element.classList.add("puzzle-cell-starting");
             element.setAttribute("disabled", "");
         }
+      }
+    });
+  });
+};
+
+function checkBoard(data) {
+  var rows = document.querySelectorAll('[class^="puzzle-row-numbers"]');
+
+  rows.forEach(function(row, rowIndex) {
+    var cells = row.querySelectorAll('.puzzle-cell-number');
+    cells.forEach(function(cell, cellIndex) {
+      var val = data[rowIndex][cellIndex]["val"];
+      var element = cell.querySelector('input');
+      if (element.value != "" && element.value != val) {
+        element.classList.add("puzzle-cell-wrong");
       }
     });
   });

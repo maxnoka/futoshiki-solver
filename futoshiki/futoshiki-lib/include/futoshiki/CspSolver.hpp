@@ -33,7 +33,7 @@ using EnableIfPolicy = typename std::enable_if_t< std::is_base_of<ConstraintSati
 
 template <typename CSP>
 class CspSolver <CSP, EnableIfPolicy<CSP> > {
-    static constexpr unsigned int kMaxGuessDepth = 2;
+    static constexpr unsigned int kMaxGuessDepth = 4;
 public:
     CspSolver(CSP&& startingPoint);
     
