@@ -26,8 +26,6 @@ void AddHeaders(crow::response& response) {
 
 int main(int argc, const char * argv[]) {
      START_EASYLOGGINGPP(argc, argv);
-     el::Configurations conf("/Users/MaxNoka/OneDrive/Projects/futoshiki/futoshiki/conf/logging.conf");
-     el::Loggers::reconfigureLogger("default", conf);
      el::Loggers::setVerboseLevel(0);;
     
     auto logHandler = std::make_unique<EasyLoggingCrowLogHandler>();

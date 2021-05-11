@@ -119,9 +119,7 @@ public:
     
     virtual bool SetSolvedIfPossible() = 0;
     
-#ifdef DEBUG
     virtual std::string dPrint(bool log) const;
-#endif //DEBUG
     
     virtual std::vector<std::string> GetCellIds() const = 0;
     virtual crow::json::wvalue Serialize() const = 0;
