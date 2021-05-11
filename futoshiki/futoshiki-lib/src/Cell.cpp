@@ -73,7 +73,10 @@ Cell::Cell(const crow::json::rvalue& cellJson)
             throw std::runtime_error("cannot construct cell. \"possibl_vals\" items "
                 "to be of type number");
         }
-        m_possibleValues.insert(possibleVal.i());
+        if (!Utils::CanTypeFitValue<int>(possibleVal.i())) {
+            throw std::runtime_error("possible val outside range");
+        }
+        m_possibleValues.insert(static_cast<int>(possibleVal.i()));
     }
     
     if (m_possibleValues.size() == 0) {
@@ -81,7 +84,10 @@ Cell::Cell(const crow::json::rvalue& cellJson)
     }
 
     if (initVal != kUnsolvedSymbol) {
-        if (m_possibleValues.count(initVal) == 0) {
+        if (!Utils::CanTypeFitValue<int>(initVal)) {
+            throw std::runtime_error("init val outside range");
+        }
+        if (m_possibleValues.count(static_cast<int>(initVal)) == 0) {
             throw std::runtime_error("input values must be possible values");
         }
         m_possibleValues = { static_cast<int>(initVal) };

@@ -24,6 +24,7 @@
 		22DAC5F52617D8890099C441 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC5F42617D8890099C441 /* utils.cpp */; };
 		22DAC606261885CF0099C441 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DAC605261885CF0099C441 /* main.cpp */; };
 		22DAC60F2618860A0099C441 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
+		22DBD00F264B15BD001D0646 /* EasyLoggingCrowLogHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22DBD00D264B15BD001D0646 /* EasyLoggingCrowLogHandler.cpp */; };
 		22F9748A263FE2E900398267 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22F97489263FE2E900398267 /* main.cpp */; };
 		22F97496263FE96F00398267 /* libfutoshiki.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 22DAC5882617CC970099C441 /* libfutoshiki.a */; };
 /* End PBXBuildFile section */
@@ -97,11 +98,13 @@
 		22DAC5A92617CE7A0099C441 /* InequalityConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InequalityConstraint.cpp; path = src/InequalityConstraint.cpp; sourceTree = "<group>"; };
 		22DAC5AA2617CE7A0099C441 /* Constraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Constraint.cpp; path = src/Constraint.cpp; sourceTree = "<group>"; };
 		22DAC5B62617CE950099C441 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
-		22DAC5D72617D3BB0099C441 /* easylogging++.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "easylogging++.cc"; path = "src/easylogging++.cc"; sourceTree = "<group>"; };
+		22DAC5D72617D3BB0099C441 /* easylogging++.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "easylogging++.cc"; sourceTree = "<group>"; };
 		22DAC5DB2617D3EA0099C441 /* Cell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cell.cpp; path = src/Cell.cpp; sourceTree = "<group>"; };
 		22DAC5F42617D8890099C441 /* utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		22DAC603261885CF0099C441 /* MainFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MainFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
 		22DAC605261885CF0099C441 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		22DBD00D264B15BD001D0646 /* EasyLoggingCrowLogHandler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EasyLoggingCrowLogHandler.cpp; sourceTree = "<group>"; };
+		22DBD00E264B15BD001D0646 /* EasyLoggingCrowLogHandler.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EasyLoggingCrowLogHandler.hpp; sourceTree = "<group>"; };
 		22F97487263FE2E900398267 /* WebFutoshiki */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WebFutoshiki; sourceTree = BUILT_PRODUCTS_DIR; };
 		22F97489263FE2E900398267 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -152,9 +155,9 @@
 		22D8E93D25F94CEE00D95938 = {
 			isa = PBXGroup;
 			children = (
+				225C658C2617B71D0051BD0E /* TestFutoshiki */,
 				22F97488263FE2E900398267 /* WebFutoshiki */,
 				22DAC604261885CF0099C441 /* MainFutoshiki */,
-				225C658C2617B71D0051BD0E /* TestFutoshiki */,
 				22DAC5892617CC970099C441 /* futoshiki-lib */,
 				22D8E94725F94CEE00D95938 /* Products */,
 				22DAC4F62617C0550099C441 /* Frameworks */,
@@ -185,7 +188,6 @@
 				22DAC5FA2617D8950099C441 /* utils */,
 				22DAC5B62617CE950099C441 /* include */,
 				22DAC5DB2617D3EA0099C441 /* Cell.cpp */,
-				22DAC5D72617D3BB0099C441 /* easylogging++.cc */,
 				22DAC5AA2617CE7A0099C441 /* Constraint.cpp */,
 				22DAC5A42617CE7A0099C441 /* ConstraintSatisfactionProblem.cpp */,
 				22DAC5A82617CE7A0099C441 /* EqualityConstraint.cpp */,
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				22DAC5F42617D8890099C441 /* utils.cpp */,
+				22DAC5D72617D3BB0099C441 /* easylogging++.cc */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -220,6 +223,8 @@
 			isa = PBXGroup;
 			children = (
 				22F97489263FE2E900398267 /* main.cpp */,
+				22DBD00D264B15BD001D0646 /* EasyLoggingCrowLogHandler.cpp */,
+				22DBD00E264B15BD001D0646 /* EasyLoggingCrowLogHandler.hpp */,
 			);
 			path = WebFutoshiki;
 			sourceTree = "<group>";
@@ -392,6 +397,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22DBD00F264B15BD001D0646 /* EasyLoggingCrowLogHandler.cpp in Sources */,
 				22F9748A263FE2E900398267 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

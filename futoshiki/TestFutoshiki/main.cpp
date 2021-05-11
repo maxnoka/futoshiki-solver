@@ -101,10 +101,4 @@ TEST_CASE( "2x2 Generate", "[futoshiki]" ) {
     
     REQUIRE(solveRes.valid);
     REQUIRE(solveRes.completeSolve);
-    
-    /*
-    auto generatedReqGuess = crow::json::load(generatedRes.reason.details.dump())["requiredGuessDepth"].i();
-    auto solveReqGuess = crow::json::load(solveRes.reason.details.dump())["requiredGuessDepth"].i();
-    REQUIRE(generatedReqGuess == solveReqGuess);
-    */
 }

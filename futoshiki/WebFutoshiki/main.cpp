@@ -1,22 +1,19 @@
 //
 //  main.cpp
-//  MainFutoshiki
+//  WebFutoshiki
 //
 //  Created by Maximilian Noka on 03/04/2021.
 //
+
+#include "EasyLoggingCrowLogHandler.hpp"
 
 #include <futoshiki/CspSolver.hpp>
 #include <futoshiki/Futoshiki.hpp>
 #include <futoshiki/CspBuilder.hpp>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wshorten-64-to-32"
-#pragma clang diagnostic ignored "-Wdocumentation"
-#pragma clang diagnostic ignored "-Wcomma"
-#include <crow.h>
-#pragma clang diagnostic pop
-
 #include <futoshiki/utils/easylogging++.h>
+
+#include <crow.h>
 
 namespace {
     constexpr auto kMaxPuzzleSizeGenerate = 6;
@@ -26,31 +23,6 @@ void AddHeaders(crow::response& response) {
     response.add_header("Access-Control-Allow-Origin", "*");
     response.add_header("Content-Type", "application/json; charset=UTF-8");
 }
-
-class EasyLoggingCrowLogHandler : public crow::ILogHandler {
-public:
-    void log(std::string message, crow::LogLevel level) override {
-        static constexpr auto kCrowLogPrefixLength = 33;
-        message = message.substr(kCrowLogPrefixLength);
-        switch (level) {
-            case crow::LogLevel::Debug:
-                LOG(DEBUG) << message;
-                return;
-            case crow::LogLevel::Info:
-                LOG(INFO) << message;
-                return;
-            case crow::LogLevel::Warning:
-                LOG(WARNING) << message;
-                return;
-            case crow::LogLevel::Error:
-                LOG(ERROR) << message;
-                return;
-            case crow::LogLevel::Critical:
-                LOG(FATAL) << message;
-                return;
-        }
-    }
-};
 
 int main(int argc, const char * argv[]) {
      START_EASYLOGGINGPP(argc, argv);
