@@ -14,14 +14,6 @@ class Row {
         $this->$rowIdx = $rowIdx;
     }
 
-    public function serializeRow() {
-        $vals = array();
-        foreach ($this->cells as $cellIdx => $cell) {
-            $vals[] = $cell->val;
-        }
-    	return implode(",", $vals);
-    }
-
     public function render($rowConstraints) {
     	include TEMPLATE_PATH . '/' . 'row.html';
     }
