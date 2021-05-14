@@ -37,11 +37,10 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/extern/crow/CMakeLists.txt")
 endif()
 
 add_subdirectory(extern/crow)
-
 # The compiled library code is here
 add_subdirectory(src)
 
-# The executable code is here
+add_subdirectory(web-app)
 add_subdirectory(cli-app)
 
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)

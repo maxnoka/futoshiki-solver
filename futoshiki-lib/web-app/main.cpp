@@ -1,10 +1,10 @@
+#define CROW_MAIN
 //
 //  main.cpp
 //  WebFutoshiki
 //
 //  Created by Maximilian Noka on 03/04/2021.
 //
-
 #include "EasyLoggingCrowLogHandler.hpp"
 
 #include <futoshiki/CspSolver.hpp>
@@ -14,6 +14,8 @@
 #include <futoshiki/utils/easylogging++.h>
 
 #include <crow.h>
+
+INITIALIZE_EASYLOGGINGPP
 
 namespace {
     constexpr auto kMaxPuzzleSizeGenerate = 6;

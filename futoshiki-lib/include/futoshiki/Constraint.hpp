@@ -16,7 +16,7 @@
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wcomma"
-#include <crow/json.h>
+#include <crow.h>
 #pragma clang diagnostic pop
 
 #include <memory>

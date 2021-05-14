@@ -8,7 +8,7 @@
 #ifndef EasyLoggingCrowLogHandler_hpp
 #define EasyLoggingCrowLogHandler_hpp
 
-#include <crow/logging.h>
+#include <crow.h>
 
 class EasyLoggingCrowLogHandler : public crow::ILogHandler {
 public:

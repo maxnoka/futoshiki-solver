@@ -1,4 +1,3 @@
-file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
 set( HEADER_LIST 
   "${Futoshiki_SOURCE_DIR}/include/futoshiki/Cell.hpp"
   "${Futoshiki_SOURCE_DIR}/include/futoshiki/Constraint.hpp"
@@ -34,7 +33,7 @@ set( SOURCES_LIST
 
 add_library(futoshiki_library ${SOURCES_LIST} ${HEADER_LIST})
 target_include_directories(futoshiki_library PUBLIC ../include)
-target_link_libraries(futoshiki_library PUBLIC crow_library)
+target_link_libraries(futoshiki_library LINK_PUBLIC crow_library)
 target_compile_features(futoshiki_library PRIVATE cxx_std_17)
 
 # for IDEs
