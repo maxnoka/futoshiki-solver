@@ -1,0 +1,3 @@
+[submodule "futoshiki-lib/extern/crow"]
+	path = futoshiki-lib/extern/crow
+	url = https://github.com/maxnoka/crow.git
