@@ -20,7 +20,7 @@ GenAdjacentCellPairs(const unsigned long numRows, const unsigned long numCols) {
     std::vector<std::pair<TwoDimCsp::CellCoords, TwoDimCsp::CellCoords> > out;
     for (unsigned long rowIdx=0; rowIdx < numRows; ++rowIdx) {
         for (unsigned long colIdx=0; colIdx < numCols - 1; ++colIdx) {
-            out.push_back(std::make_pair(std::make_tuple(rowIdx, colIdx), std::make_pair(rowIdx, colIdx+1)));
+            out.push_back(std::make_pair(std::make_pair(rowIdx, colIdx), std::make_pair(rowIdx, colIdx+1)));
         }
     }
     
