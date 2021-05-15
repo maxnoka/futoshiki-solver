@@ -1,1 +1,2 @@
-futoshiki-lib/*build*
+build/
+.vscode
