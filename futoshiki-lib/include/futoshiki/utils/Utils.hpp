@@ -79,6 +79,22 @@ struct SetReferenceMember {
     };
 };
 
+template<typename SetReferenceType>
+struct SetPointerMember {
+    SetPointerMember(SetReferenceType* setPointer)
+        : m_ref(setPointer)
+    {}
+    
+    SetReferenceType* m_ref;
+    
+    friend bool operator<(
+        const SetPointerMember& lhs,
+        const SetPointerMember& rhs
+    ) {
+        return *lhs.m_ref < *rhs.m_ref;
+    };
+};
+
 template<typename ContainerType>
 struct ReferenceContainer {
     ReferenceContainer()

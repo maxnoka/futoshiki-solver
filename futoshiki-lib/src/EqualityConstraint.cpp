@@ -55,11 +55,9 @@ std::pair<bool, unsigned int> EliminateSelectivelyFromCells(const std::vector< s
 };
 
 bool EqualityConstraint::EvalOnlyOptions() {
-    m_availableValues.Update();
-    auto& allPossibleValueCombinations = m_availableValues.m_container;
     std::multiset<int> valueCounts;
-    for (auto& combination : allPossibleValueCombinations) {
-        for (auto value : combination.m_ref.get()) {
+    for (auto& combination : m_availableValues) {
+        for (auto value : *combination) {
             valueCounts.insert(value);
         }
     }
@@ -88,30 +86,30 @@ bool EqualityConstraint::EvalMutuallyExclusiveNotEqualConditions() {
     //   invalid from the remaining (1, 2), (1, 2), (3), (3)
     bool eliminatedAny = false;
     do {
-        // need to update this every time, as changes in the references in the container
-        // do not get update in the multiset automatically
-        m_availableValues.Update();
-        auto& allPossibleValueCombinations = m_availableValues.m_container;
-        
         // iterate only over the unique possible value combinations
         // TODO: use num with std::advance
-        for (auto it_UniqueCombi = allPossibleValueCombinations.begin();
-             it_UniqueCombi != allPossibleValueCombinations.end();
-             it_UniqueCombi = allPossibleValueCombinations.upper_bound(*it_UniqueCombi)
+        for (auto it_UniqueCombi = m_availableValues.begin();
+             it_UniqueCombi != m_availableValues.end();
+             it_UniqueCombi = m_availableValues.upper_bound(*it_UniqueCombi)
         ) {
             // the number of cells with the same possible value combinations
-            auto num = allPossibleValueCombinations.count(*it_UniqueCombi);
+            // TODO: this doesn't work for some reason on some architectures / compilers ???
+            // auto num = m_availableValues.count(*it_UniqueCombi);
+            size_t num = 0;
+            for (auto pSet : m_availableValues) {
+                num += (**it_UniqueCombi == *pSet);
+            }
             
             // e.g. three cells with (1, 2). This isn't possible
-            if ( num > it_UniqueCombi->m_ref.get().size() ) {
+            if ( num > (*it_UniqueCombi)->size() ) {
                 return false;
             }
             // e.g. two cells with (1, 2) => coupled and no *other* cells can have (1, 2)
-            else if ( num == it_UniqueCombi->m_ref.get().size() ) {
+            else if ( num == (*it_UniqueCombi)->size() ) {
                 // first eliminate the variable from the *other* cells,
                 // e.g. (1, 2, 3) -> (3), but not (1, 2) -> ()
                 // then do the process again
-                auto [valid, numElimintatedFrom] = EliminateSelectivelyFromCells(m_cells, it_UniqueCombi->m_ref.get(), it_UniqueCombi->m_ref.get());
+                auto [valid, numElimintatedFrom] = EliminateSelectivelyFromCells(m_cells, **it_UniqueCombi, **it_UniqueCombi);
                 if (!valid) {
                     return false;
                 }
@@ -139,7 +137,7 @@ EqualityConstraint::EqualityConstraint(
     , m_availableValues()
 {
     for (auto& pCell : m_cells) {
-        m_availableValues.m_container.emplace( pCell.lock()->GetPossibleValuesRef() );
+        m_availableValues.emplace( pCell.lock()->GetPossibleValuesPointer() );
     }
     
     if(!Valid()) {
@@ -160,9 +158,8 @@ EqualityConstraint::EqualityConstraint(
     , m_availableValues()
 {
     for (auto& pCell : m_cells) {
-        m_availableValues.m_container.emplace( pCell.lock()->GetPossibleValuesRef() );
+        m_availableValues.emplace( pCell.lock()->GetPossibleValuesPointer() );
     }
-    m_availableValues.Update();
 }
 
 bool EqualityConstraint::SetSolvedIfPossible() {

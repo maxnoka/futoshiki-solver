@@ -12,7 +12,6 @@ INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, const char * argv[]) {
     START_EASYLOGGINGPP(argc, argv);
-    el::Loggers::setVerboseLevel(0);
 
     auto csp = Csp::LatinSquare(
         {

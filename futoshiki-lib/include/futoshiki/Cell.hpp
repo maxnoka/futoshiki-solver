@@ -67,6 +67,7 @@ public:
     // TODO: this maybe requires some more thinking (what's the point of all the weak and shared
     // pointers if i'm just going to end up doing this
     const std::set<int>& GetPossibleValuesRef() { return m_possibleValues; }
+    const std::set<int>* GetPossibleValuesPointer() { return &m_possibleValues; }
     
     crow::json::wvalue Serialize() const;
     Cell Deserialzie(const crow::json::rvalue& inJson);

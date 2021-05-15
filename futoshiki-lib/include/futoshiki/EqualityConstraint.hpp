@@ -66,10 +66,7 @@ private:
     bool EvalOnlyOptions(); // this should only be used if the CSP is such that all cells in a not equal group have the same possible values and the number of available possile values = the number of cells in the group, e.g. for a latin square
     
     std::vector< std::weak_ptr<Cell> > m_cells;
-    // multiset of references to the available values set of all the cells
-    // need to call .Update() before accessing the multiset
-    Utils::ReferenceContainer< std::multiset< Utils::SetReferenceMember<const std::set<int>> > > m_availableValues;
-    
+    std::multiset< const std::set<int>*> m_availableValues;
 }; // InequalityConstraint
 
 } // ::Csp
