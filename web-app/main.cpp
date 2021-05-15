@@ -28,7 +28,6 @@ void AddHeaders(crow::response& response) {
 
 int main(int argc, const char * argv[]) {
      START_EASYLOGGINGPP(argc, argv);
-     el::Loggers::setVerboseLevel(0);;
     
     auto logHandler = std::make_unique<EasyLoggingCrowLogHandler>();
     crow::logger::setHandler(logHandler.get());
