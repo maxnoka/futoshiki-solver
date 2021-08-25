@@ -48,14 +48,18 @@ std::vector< std::pair<std::string, int> > GenUnsetBoard(unsigned long numCols, 
     return out;
 }
 
+#ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
+#endif
 std::string CoordsToId(const TwoDimCsp::CellCoords& cords) {
     std::stringstream ss;
     ss <<  cords.first << "_" << cords.second;
     return ss.str();
 }
+#ifdef __clang__
 #pragma clang diagnostic pop
+#endif
 
 TwoDimCsp::CellCoords IdToCoords(const std::string& id) {
     std::size_t underScore = id.find_first_of("_");

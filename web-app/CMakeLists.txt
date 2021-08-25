@@ -5,4 +5,4 @@ set( WEB_SOURCES_LIST
 )
 add_executable(web_app ${WEB_SOURCES_LIST})
 
-target_link_libraries(web_app PRIVATE crow_library z futoshiki_library) 
+target_link_libraries(web_app PRIVATE crow_library futoshiki_library) 
